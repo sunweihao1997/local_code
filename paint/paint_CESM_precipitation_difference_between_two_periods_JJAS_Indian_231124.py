@@ -12,7 +12,8 @@ module_path = "/home/sun/local_code/module"
 sys.path.append(module_path)
 from module_sun import *
 
-f0 = xr.open_dataset("/mnt/d/samssd/precipitation/processed/EUI_CESM_fixEU_precipitation_difference_period_1901_1960_JJAS.nc")
+#f0 = xr.open_dataset("/mnt/d/samssd/precipitation/processed/EUI_CESM_fixEU_precipitation_difference_period_1901_1960_JJAS.nc")
+f0 = xr.open_dataset("/mnt/d/samssd/precipitation/processed/EUI_CESM_BTAL_precipitation_difference_period_1901_1960_JJAS.nc")
 
 
 def plot_diff_rainfall(extent):
@@ -40,10 +41,10 @@ def plot_diff_rainfall(extent):
     ax1.plot([40,120],[0,0],'k--')
 
     # Set ylabel name
-    ax1.set_ylabel('Fix_EU', fontsize=25)
+    ax1.set_ylabel('ALL_Forcing', fontsize=25)
 
     # Set title
-    ax1.set_title('1941to1960 - 1901to1921', fontsize=25)
+    ax1.set_title('1941to1960 - 1901to1920', fontsize=25)
 
     # Shading for precipitation
     im1  =  ax1.contourf(f0['lon'].data, f0['lat'].data, np.average(f0['JJAS_prect_diff'], axis=0), levels=levels, cmap='bwr_r', alpha=1, extend='both')
@@ -60,7 +61,7 @@ def plot_diff_rainfall(extent):
     cb.ax.set_xticks([-1.8, -1.5, -1.2, -0.9, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, -0.05, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.9, 1.2, 1.5, 1.8])
     cb.ax.tick_params(labelsize=15, rotation=45)
 
-    plt.savefig('/mnt/d/samssd/paint/EUI_CESM_fixEU_precipitation_difference_1900_1960_stippling.pdf', dpi=500)
+    plt.savefig('/mnt/d/samssd/paint/EUI_CESM_All_Forcing_precipitation_difference_1900_1960_stippling.pdf', dpi=500)
 
 lonmin,lonmax,latmin,latmax  =  40,115,-10,40
 extent     =  [lonmin,lonmax,latmin,latmax]
