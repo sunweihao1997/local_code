@@ -1,6 +1,10 @@
 '''
 2023-11-20
 This script is to paint the trend in precipitation for the period 1900 to 1960
+
+2023-11-22 Update:
+1. Change the method for stippling, not use M-K trend test. From the advice of Massimo, when the sign among the CESM ensemble is similar, then stipple it
+2. Add result of the noEU experiment
 '''
 import xarray as xr
 import numpy as np
@@ -47,14 +51,14 @@ def paint_trend(lat, lon, trend, level, p, title_name, pic_path, pic_name):
     im  =  ax.contourf(lon, lat, trend, levels=level, cmap='bwr_r', alpha=1, extend='both')
 
     # Stippling picture
-    sp  =  ax.contourf(lon, lat, p, levels=[0.1, 1], colors='none', hatches=['.'])
+    sp  =  ax.contourf(lon, lat, p, levels=[0.1, 1], colors='none', hatches=['..'])
 
     # --- Coast Line ---
     ax.coastlines(resolution='50m', lw=1.75)
 
     # --- title ---
-    ax.set_title('mm day^-1 decade^-1', loc='right', fontsize=10)
-    ax.set_title(title_name, loc='left', fontsize=10)
+    ax.set_title('mm day^-1 decade^-1', loc='right', fontsize=15)
+    ax.set_title(title_name, loc='left', fontsize=15)
 
     # ========= add colorbar =================
     fig.subplots_adjust(top=0.8) 
@@ -85,6 +89,13 @@ def main():
         level=np.linspace(-0.2, 0.2, 21), 
         pic_path='/Volumes/samssd/paint/',
         pic_name='EUI_GPCC_trend_spatial_distribution_1900_1960.png'
+    )
+
+    paint_trend(
+        lat=f0['lat2'].data, lon=f0['lon2'].data, trend=f0['trend_gpcc'].data, p=f0['p_gpcc'].data, title_name='GPCC', 
+        level=np.linspace(-0.6, 0.6, 13), 
+        pic_path='/Volumes/samssd/paint/',
+        pic_name='EUI_GPCC_trend_spatial_distribution_1900_1960.pdf'
     )
 
 if __name__ == '__main__':
