@@ -1,3 +1,0 @@
-sun
-sun
-test
