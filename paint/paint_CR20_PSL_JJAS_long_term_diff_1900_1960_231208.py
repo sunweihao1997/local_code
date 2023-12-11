@@ -7,7 +7,8 @@ import numpy as np
 import sys
 import matplotlib.pyplot as plt
 
-module_path = '/Users/sunweihao/local_code/module'
+#module_path = '/Users/sunweihao/local_code/module'
+module_path = '/home/sun/local_code/module'
 sys.path.append(module_path)
 
 from module_sun import set_cartopy_tick
@@ -15,7 +16,8 @@ from module_sun import set_cartopy_tick
 periodA_1 = 1890 ; periodA_2 = 1920
 periodB_1 = 1940 ; periodB_2 = 1960
 
-file_path = '/Volumes/samssd/'
+#file_path = '/Volumes/samssd/'
+file_path = '/mnt/e/'
 file_name = 'prmsl.mon.mean.nc'
 
 f0 = xr.open_dataset(file_path + file_name)
@@ -89,7 +91,7 @@ def plot_slp_changes_two_period(data, ref_file, plot_name):
     ax.coastlines(resolution='110m', lw=1.25)
 
     ax.set_title('1901-1920 to 1941-1960',fontsize=15)
-    ax.set_title('ERA20C',loc='right', fontsize=15)
+    ax.set_title('20CR',loc='right', fontsize=15)
 
     #add_vector_legend(ax=ax, q=q, speed=0.25)
     plt.colorbar(im, orientation='horizontal')

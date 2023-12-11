@@ -7,7 +7,7 @@ import numpy as np
 import sys
 import matplotlib.pyplot as plt
 
-module_path = '/Users/sunweihao/local_code/module'
+module_path = '/home/sun/local_code/module'
 sys.path.append(module_path)
 
 from module_sun import set_cartopy_tick
@@ -15,7 +15,8 @@ from module_sun import set_cartopy_tick
 periodA_1 = 1900 ; periodA_2 = 1920
 periodB_1 = 1940 ; periodB_2 = 1960
 
-file_path = '/Volumes/samssd/ERA20C/'
+#file_path = '/Volumes/samssd/ERA20C/'
+file_path = '/mnt/e/ERA20C/'
 file_name = 'ERA20C_PSL_monthly_1900_2010.nc'
 
 f0 = xr.open_dataset(file_path + file_name, engine='netcdf4')
