@@ -17,10 +17,10 @@ periodA_1 = 1900 ; periodA_2 = 1920
 periodB_1 = 1940 ; periodB_2 = 1960
 
 #file_path = '/Volumes/samssd/'
-file_path = '/mnt/e/'
-file_name = 'prmsl.mon.mean.nc'
+file_path = '/mnt/d/'
+file_name = 'omega.mon.mean.nc'
 
-f0 = xr.open_dataset(file_path + file_name)
+f0 = xr.open_dataset(file_path + file_name).sel(level=500)
 #print(f0)
 
 # ======================================== Part of calculation =========================================
@@ -86,28 +86,27 @@ def plot_slp_changes_two_period(data, ref_file, plot_name):
 
     set_cartopy_tick(ax=ax,extent=[0, 150, 0, 80],xticks=np.linspace(0,150,6,dtype=int),yticks=np.linspace(0,80,9,dtype=int),nx=1,ny=1,labelsize=10)
 
-    im  =  ax.contourf(cyclic_lon, ref_file['lat'].data, cyclic_data_slp, np.linspace(-80,80,9), cmap='coolwarm', alpha=1, extend='both')
+    im  =  ax.contourf(cyclic_lon, ref_file['lat'].data, cyclic_data_slp, np.linspace(-20, 20, 21), cmap='coolwarm', alpha=1, extend='both')
 
     ax.coastlines(resolution='110m', lw=1.25)
 
     ax.set_title('1901-1920 to 1941-1960',fontsize=15)
     ax.set_title('20CR',loc='right', fontsize=15)
-    ax.set_title('PSL',loc='left', fontsize=15)
+    ax.set_title('OMEGA 500hPa',loc='left', fontsize=15)
 
     #add_vector_legend(ax=ax, q=q, speed=0.25)
     plt.colorbar(im, orientation='horizontal')
     
-    plt.savefig('/mnt/e/paint/EUI_CR20_PSL_1900_1960_diff.pdf', dpi=500)
-    #plt.savefig('test1.png')
+    plt.savefig('/mnt/e/paint/EUI_CR20_OMEGA_1900_1960_diff.pdf', dpi=500)
+    #plt.savefig('test.png')
 
 # ============================= Part3. Main ==============================================
 def main():
-    #print(f0)
-    JJAS_PSL = cal_JJAS_average_each_year(ncfile=f0, varname='prmsl')
+    JJAS_OMEGA = cal_JJAS_average_each_year(ncfile=f0, varname='omega')
 
-    JJAS_PSL_DIFF = cal_JJAS_PSL_diff_between_periods(ncfile=JJAS_PSL, varname='JJAS_PSL', periodA_1=periodA_1, periodA_2=periodA_2, periodB_1=periodB_1, periodB_2=periodB_2)
+    JJAS_OMEGA = cal_JJAS_PSL_diff_between_periods(ncfile=JJAS_OMEGA, varname='JJAS_PSL', periodA_1=periodA_1, periodA_2=periodA_2, periodB_1=periodB_1, periodB_2=periodB_2)
 
-    plot_slp_changes_two_period(data=JJAS_PSL_DIFF, ref_file=JJAS_PSL, plot_name='a')
+    plot_slp_changes_two_period(data=JJAS_OMEGA * 1000, ref_file=f0, plot_name='a')
 
 if __name__ == '__main__':
     main()

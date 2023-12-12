@@ -1,6 +1,6 @@
 '''
-2023-12-8
-This script is to calculate and paint the changes in PSL between 1900-1920 and 1940-1960, using ERA20C data
+2023-12-11
+This script is to calculate and paint the changes in Skin Temperature between 1900-1920 and 1940-1960, using CR20 data
 '''
 import xarray as xr
 import numpy as np
@@ -18,7 +18,7 @@ periodB_1 = 1940 ; periodB_2 = 1960
 
 #file_path = '/Volumes/samssd/'
 file_path = '/mnt/e/'
-file_name = 'prmsl.mon.mean.nc'
+file_name = 'skt.mon.mean.nc'
 
 f0 = xr.open_dataset(file_path + file_name)
 #print(f0)
@@ -47,7 +47,7 @@ def cal_JJAS_average_each_year(ncfile, varname):
 
     ncfile_return  =  xr.Dataset(
         {
-            "JJAS_PSL": (["time", "lat", "lon"], JJAS_var),
+            "JJAS_TS": (["time", "lat", "lon"], JJAS_var),
         },
         coords={
             "time": (["time"], np.linspace(1806, 1806+len(time)-1, len(time))),
@@ -55,12 +55,12 @@ def cal_JJAS_average_each_year(ncfile, varname):
             "lon":  (["lon"],  lon),
         },
         )
-    ncfile_return['JJAS_PSL'].attrs = ncfile[varname].attrs
+    ncfile_return['JJAS_TS'].attrs = ncfile[varname].attrs
     #
     
     return ncfile_return
 
-def cal_JJAS_PSL_diff_between_periods(ncfile, varname, periodA_1, periodA_2, periodB_1, periodB_2):
+def cal_JJAS_ts_diff_between_periods(ncfile, varname, periodA_1, periodA_2, periodB_1, periodB_2):
     '''
         This function is to calculate the difference between two periods
     '''
@@ -72,7 +72,7 @@ def cal_JJAS_PSL_diff_between_periods(ncfile, varname, periodA_1, periodA_2, per
     return period_diff
 
 # ============================ Part2: painting ==============================================
-def plot_slp_changes_two_period(data, ref_file, plot_name):
+def plot_skt_changes_two_period(data, ref_file, plot_name):
     '''This function is to plot difference among two periods'''
     import cartopy.crs as ccrs
     from cartopy.util import add_cyclic_point
@@ -86,28 +86,28 @@ def plot_slp_changes_two_period(data, ref_file, plot_name):
 
     set_cartopy_tick(ax=ax,extent=[0, 150, 0, 80],xticks=np.linspace(0,150,6,dtype=int),yticks=np.linspace(0,80,9,dtype=int),nx=1,ny=1,labelsize=10)
 
-    im  =  ax.contourf(cyclic_lon, ref_file['lat'].data, cyclic_data_slp, np.linspace(-80,80,9), cmap='coolwarm', alpha=1, extend='both')
+    im  =  ax.contourf(cyclic_lon, ref_file['lat'].data, cyclic_data_slp, np.linspace(-1,1,11), cmap='coolwarm', alpha=1, extend='both')
 
     ax.coastlines(resolution='110m', lw=1.25)
 
     ax.set_title('1901-1920 to 1941-1960',fontsize=15)
     ax.set_title('20CR',loc='right', fontsize=15)
-    ax.set_title('PSL',loc='left', fontsize=15)
+    ax.set_title('TS',loc='left', fontsize=15)
 
     #add_vector_legend(ax=ax, q=q, speed=0.25)
     plt.colorbar(im, orientation='horizontal')
     
-    plt.savefig('/mnt/e/paint/EUI_CR20_PSL_1900_1960_diff.pdf', dpi=500)
-    #plt.savefig('test1.png')
+    plt.savefig('/mnt/e/paint/EUI_CR20_TS_1900_1960_diff.pdf', dpi=500)
+    #plt.savefig('test.png')
 
 # ============================= Part3. Main ==============================================
 def main():
     #print(f0)
-    JJAS_PSL = cal_JJAS_average_each_year(ncfile=f0, varname='prmsl')
+    JJAS_TS = cal_JJAS_average_each_year(ncfile=f0, varname='skt')
 
-    JJAS_PSL_DIFF = cal_JJAS_PSL_diff_between_periods(ncfile=JJAS_PSL, varname='JJAS_PSL', periodA_1=periodA_1, periodA_2=periodA_2, periodB_1=periodB_1, periodB_2=periodB_2)
+    JJAS_TS_DIFF = cal_JJAS_ts_diff_between_periods(ncfile=JJAS_TS, varname='JJAS_TS', periodA_1=periodA_1, periodA_2=periodA_2, periodB_1=periodB_1, periodB_2=periodB_2)
 
-    plot_slp_changes_two_period(data=JJAS_PSL_DIFF, ref_file=JJAS_PSL, plot_name='a')
+    plot_skt_changes_two_period(data=JJAS_TS_DIFF, ref_file=JJAS_TS, plot_name='a')
 
 if __name__ == '__main__':
     main()
