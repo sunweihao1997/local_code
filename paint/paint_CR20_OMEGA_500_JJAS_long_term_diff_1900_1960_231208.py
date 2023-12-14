@@ -92,7 +92,7 @@ def plot_slp_changes_two_period(data, ref_file, plot_name):
 
     ax.set_title('1901-1920 to 1941-1960',fontsize=15)
     ax.set_title('20CR',loc='right', fontsize=15)
-    ax.set_title('OMEGA 500hPa',loc='left', fontsize=15)
+    ax.set_title('OMEGA',loc='left', fontsize=15)
 
     #add_vector_legend(ax=ax, q=q, speed=0.25)
     plt.colorbar(im, orientation='horizontal')
