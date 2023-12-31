@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import sys
+import matplotlib.patches as mpatches
 
 module_path = "/home/sun/local_code/module"
 sys.path.append(module_path)
@@ -53,6 +54,11 @@ def plot_diff_rainfall(extent):
 
     # Coast Line
     ax1.coastlines(resolution='110m', lw=1.75)
+
+    # Add a rectangle
+    ax.add_patch(mpatches.Rectangle(xy=[76, 18], width=11, height=10,
+                                facecolor='none', edgecolor='orange',
+                                transform=ccrs.PlateCarree()))
 
     # ========= add colorbar =================
     fig1.subplots_adjust(top=0.8) 

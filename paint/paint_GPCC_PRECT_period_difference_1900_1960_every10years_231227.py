@@ -18,7 +18,6 @@ import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import sys
 import matplotlib.patches as mpatches
-from scipy import stats
 
 module_path = '/home/sun/local_code/module/'
 sys.path.append(module_path)
@@ -85,28 +84,6 @@ varname   = 'precip'
 
 # ================================================================================
 
-def cal_ttest(data1, data2):
-    '''
-        This function calculate difference using ttest
-        data1 and data2 should be anomaly value compared with climatology
-    '''
-    import scipy.stats as stats
-
-    # claim the array to save the p value
-    p_array = np.zeros((data1.shape[1], data1.shape[2])) # it should be (lat, lon)
-
-    # Compare on each point
-    y_num = data1.shape[1]  ;  x_num = data1.shape[2]
-    for yy in range(y_num):
-        for xx in range(x_num):
-            t_value, p_value = stats.ttest_ind(data1[:, yy, xx], data2[:, yy, xx])
-            print(p_value)
-            p_array[yy, xx] = p_value
-
-    return p_array
-    
-
-
 
 def paint_trend(lat, lon, diff, level, p, title_name, pic_path, pic_name):
     '''
@@ -132,7 +109,7 @@ def paint_trend(lat, lon, diff, level, p, title_name, pic_path, pic_name):
     im  =  ax.contourf(lon, lat, diff, levels=level, cmap='bwr_r', alpha=1, extend='both')
 
 #    # Stippling picture
-    sp  =  ax.contourf(lon, lat, p, levels=[0., 0.05], colors='none', hatches=['..'])
+#    sp  =  ax.contourf(lon, lat, p, levels=[0.1, 1], colors='none', hatches=['..'])
 
     # --- Coast Line ---
     ax.coastlines(resolution='50m', lw=1.5)
@@ -158,61 +135,22 @@ def paint_trend(lat, lon, diff, level, p, title_name, pic_path, pic_name):
 
 # =================== Calculation for period difference ==========================
 
-periodA_1 = 1900 ; periodA_2 = 1920
-periodB_1 = 1940 ; periodB_2 = 1960
+periodA_1 = 1950 ; periodA_2 = 1960
+periodB_1 = 1960 ; periodB_2 = 1970
 
 data_path = '/home/sun/data/aerosol/'
 
 f0        = xr.open_dataset(data_path + 'Aerosol_Research_GPCC_PRECT_JJA_JJAS_average.nc')
 
-lat       = f0.lat.data ; lon       = f0.lon.data
-
 f0_p1     = f0.sel(time=slice(periodA_1, periodA_2))
 f0_p2     = f0.sel(time=slice(periodB_1, periodB_2))
 
 diff_precip_JJAS = np.average(f0_p2['JJAS_PRECT'].data, axis=0) - np.average(f0_p1['JJAS_PRECT'].data, axis=0)
-diff_precip_JJA  = np.average(f0_p2['JJA_PRECT'].data, axis=0)  - np.average(f0_p1['JJA_PRECT'].data, axis=0)
-
-# ================== Calculation fot ttest ========================================
-
-# Prepare for the anomaly array
-#anomaly_periodA = f0_p1['JJAS_PRECT'].data.copy() ; anomaly_periodB = f0_p2['JJAS_PRECT'].data.copy()
-
-#p_value = np.ones((len(lat), len(lon)))
-#
-#for yy in range(len(f0.lat.data)):
-#    for xx in range(len(f0.lon.data)):
-#        if np.isnan(f0_p1['JJAS_PRECT'].data[0, yy, xx]):
-#            continue
-#        else:
-#            anomaly_periodA = f0_p1['JJAS_PRECT'].data[:, yy, xx] - np.average(f0['JJAS_PRECT'].data[:, yy, xx])
-#            anomaly_periodB = f0_p2['JJAS_PRECT'].data[:, yy, xx] - np.average(f0['JJAS_PRECT'].data[:, yy, xx])
-#            a,b  = stats.ttest_ind(anomaly_periodA, anomaly_periodB, equal_var=False)
-#            p_value[yy, xx] = b
-#
-##print(np.nanmin(p_value))
-##print(np.nanmax(p_value))
-#
-#ncfile  =  xr.Dataset(
-#    {
-#       "pavlue_GPCC_JJAS_periods": (["lat", "lon"], p_value),
-#                                        
-#    },
-#    coords={
-#        "lat":  (["lat"],  f0.lat.data),
-#        "lon":  (["lon"],  f0.lon.data),
-#    },
-#    )
-#
-#ncfile.attrs['description'] = "Created on 2023-12-27. This is the p_value for GPCC precipitation period difference (1900-1920) (1940-1960)"
-#ncfile.to_netcdf("/home/sun/data/aerosol/Aerosol_research_GPCC_JJAS_periods_pvalue.nc")
-
-# ================== DONE for Calculation fot ttest ========================================
+#diff_precip_JJA  = np.average(f0_p2['JJA_PRECT'].data, axis=0)  - np.average(f0_p1['JJA_PRECT'].data, axis=0)
 
 def main():
-    pvalue = xr.open_dataset("/home/sun/data/aerosol/Aerosol_research_GPCC_JJAS_periods_pvalue.nc")
-    paint_trend(lat=lat, lon=lon, diff=diff_precip_JJAS, level=np.linspace(-3, 3, 13), p=pvalue["pavlue_GPCC_JJAS_periods"], title_name='JJAS', pic_path='/home/sun/paint/aerosol_research/', pic_name="Aerosol_Research_GPCC_PRECT_JJAS_period_diff_1900_1960.pdf")
-#    paint_trend(lat=lat, lon=lon, diff=diff_precip_JJA, level=np.linspace(-3, 3, 13), p=None, title_name='JJA', pic_path='/home/sun/paint/aerosol_research/',    pic_name="Aerosol_Research_GPCC_PRECT_JJA_period_diff_1900_1960.pdf")
+    paint_trend(lat=lat, lon=lon, diff=diff_precip_JJAS, level=np.linspace(-3, 3, 13), p=None, title_name='JJAS', pic_path='/home/sun/paint/aerosol_research/', pic_name="Aerosol_Research_GPCC_PRECT_JJAS_period_diff_1950_1960.pdf")
+    #paint_trend(lat=lat, lon=lon, diff=diff_precip_JJA, level=np.linspace(-3, 3, 13), p=None, title_name='JJA', pic_path='/home/sun/paint/aerosol_research/',    pic_name="Aerosol_Research_GPCC_PRECT_JJA_period_diff_1900_1910.pdf")
 ##
 if __name__ == '__main__':
     main()

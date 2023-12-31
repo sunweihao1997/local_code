@@ -14,6 +14,8 @@ file_src = 'precip.mon.total.v2020.nc'
 
 f0       = xr.open_dataset(path_src + file_src)
 #print(f0)
+#print(np.isnan(f0['precip']).any())
+#print(f0)
 time     = f0.time.data
 lat      = f0.lat.data # 90 to -90
 lon      = f0.lon.data
@@ -67,6 +69,7 @@ def cal_moving_average(x, w):
 
 # =========================================================================
 
+
 # ======================== Paint for area-averaged mean evolution ================
 
 def plot_area_average_evolution(f0, varname, extent):
@@ -76,6 +79,7 @@ def plot_area_average_evolution(f0, varname, extent):
     # 1. Extract data from original file using extent
 
     f0_area = f0.sel(lat=slice(extent[0], extent[1]), lon=slice(extent[2], extent[3]))
+    #print(f0_area)
 
     # 2. Claim the array for saving the 165-year data
 
@@ -84,7 +88,7 @@ def plot_area_average_evolution(f0, varname, extent):
     # 3. Calculate for each year
 
     for yy in range(years):
-        area_mean[yy] = np.average(f0_area[varname].data[yy])
+        area_mean[yy] = np.nanmean(f0_area[varname].data[yy])
 
     # 4. Smoothing
     w = 13
@@ -103,22 +107,24 @@ def plot_area_average_evolution(f0, varname, extent):
     
     ax.set_ylabel("Observation-Based Data", fontsize=11)
 
-    ax.set_title("GPCC", loc='left', fontsize=15)
-    ax.set_title("76-87°E, 20-28°N", loc='right', fontsize=15)
+    ax.set_title("(a)", loc='left', fontsize=15)
+    ax.set_title("74-86°E, 18-28°N", loc='right', fontsize=15)
 
-    plt.savefig("/home/sun/paint/EUI_GPCC_PRECT_evolution_area_average_Indian_key_region.pdf", dpi=700)
-    #plt.savefig("test.png", dpi=700)
+    # Plot zero line
+    ax.plot([1891, 2020], [0, 0], 'k--')
 
-    #print(len(area_mean_smooth))
+    # Set the limit for the x-axis
+    ax.set_xlim((1895, 2005))
 
-    #print(area_mean - np.average(area_mean))
+    plt.savefig("/home/sun/paint/aerosol_research/Aerosol_research_GPCC_PRECT_evolution_area_average_Indian_key_region.pdf", dpi=700)
+
 
 
 
 
 def main():
     JJAS_mean = cal_JJAS_mean(f0, [6, 7, 8, 9], 'precip')
-    plot_area_average_evolution(JJAS_mean, 'JJAS_PRECT', [28, 20, 76, 87])
+    plot_area_average_evolution(JJAS_mean, 'JJAS_PRECT', [28, 18, 74, 86])
     #print(JJAS_mean)
 
 
