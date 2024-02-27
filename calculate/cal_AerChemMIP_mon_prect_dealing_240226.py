@@ -1,6 +1,19 @@
 '''
 2024-2-26
 This script is to deal with the AerChemMIP experiment data, the variable is monthly prect
+
+Short Document:
+These content introduce the structure of this script
+
+1. sorted the files by the experiment name and save them separately
+2. for each model:
+    2.1 retrieve the data from each experiment directory and then see how many variant-id groups
+    2.2 Deal with the single variant-id group
+
+Note:
+For the hostorical, ssp370, ssp370NTCF, ssp370NTCFCH4 experiments, it can be directly used by changing the Model_name variable
+
+If there could be some improvement, I thought it can detect the experiment automaticly, instead of pre-process
 '''
 import os
 
