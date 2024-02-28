@@ -50,5 +50,5 @@ ncfile['pr'].attrs['units'] = 'mm day-1'
 ncfile.attrs['description'] = 'Created on 2024-2-27. This file save the CMIP6 historical monthly precipitation data. The result is the multi-model average value'
 ncfile.attrs['Mother'] = 'local-code: cal_CMIP6_historical_period_average_prect_240227.py'
 #
-out_path = '/mnt/d/samssd/precipitation/CESM/ensemble_JJAS/'
+
 ncfile.to_netcdf(src_path + 'CMIP6_model_historical_monthly_precipitation_1985-2014.nc')
