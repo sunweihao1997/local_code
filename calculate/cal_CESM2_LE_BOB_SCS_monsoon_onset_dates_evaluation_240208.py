@@ -13,25 +13,25 @@ import pymannkendall as mk
 
 # ==== File location information ====
 
-src_path = '/home/sun/data/download_data/CESM2_LE/day_u850/temporary/'
+#src_path = '/home/sun/data/download_data/CESM2_LE/day_u850/temporary/'
+#
+## ===================================
+#
+## ==== File list process ====
+## Under this path, the python script and BSSP370 should be removed
+#
+#file_list0 = os.listdir(src_path)
+#file_list  = []
 
-# ===================================
-
-# ==== File list process ====
-# Under this path, the python script and BSSP370 should be removed
-
-file_list0 = os.listdir(src_path)
-file_list  = []
-
-for ffff in file_list0:
-    if "python" in ffff or "BSSP" in ffff:
-        continue
-    else:
-        file_list.append(ffff)
-
-file_list.sort()
-
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#for ffff in file_list0:
+#    if "python" in ffff or "BSSP" in ffff:
+#        continue
+#    else:
+#        file_list.append(ffff)
+#
+#file_list.sort()
+#
+## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # ==== Function: filter out the member =======
 
@@ -95,7 +95,7 @@ def BOB_monsoon_onset_time_series(f0):
     # The array includes total 135 years everyday area-averaged uwind at 850 hPa
     BOB_u850_total = np.zeros((165, 365)) # 135 yr's daily data
 
-    extent = [2.5, 12.5, 85, 100]
+    extent = [5, 12.5, 85, 100]
 
     j = 0
     for yy in range(1850, 2014 + 1):
@@ -376,52 +376,44 @@ def main_bob():
 #            cdo_cat_files(end_path, list_member, member_str)
 #
 #    # 2. Verify the time integrity for each year
-#    list_new = os.listdir(end_path) ; list_new.sort()
+    list_new = os.listdir(end_path) ; list_new.sort()
 #
-#    # 3. Start to calculate the onset dates using U850 criterion
-#
-#    # 3.1 Claim the array which save the 10members daily BOB-area averaged U850
-#    BOB_10m_u850 = np.zeros((10, 165, 365)) # 10 members, 135 years, 365 days
-#    for i in range(10):
-#        f_member        = xr.open_dataset(end_path + list_new[i])
-#
-#        print(f_member)
-#
-#        BOB_10m_u850[i] = BOB_monsoon_onset_time_series(f_member)
-#
-#        print(f'Sucessfully calculate U850 for the whole period for member {i+1}')
-#    
-#    # 3.2 Save U850 time-series to the file
-#    ncfile  =  xr.Dataset(
-#        {
-#            "BOB_u850":    (["member", "year", "day"], BOB_10m_u850),
-#        },
-#        coords={
-#            "member": (["member"], np.linspace(1, 10, 10)),
-#            "year":   (["year"],   np.linspace(1850, 2014, 165)),
-#            "day":    (["day"],    np.linspace(1, 365, 365)),
-#        },
-#            )
-#
-#    ncfile.attrs['description'] = 'Created on 2024-2-8 on the Huaibei Server, script name is cal_CESM2_LE_BOB_SCS_monsoon_onset_dates_evaluation_240208.py. This file calculate daily value of the area-averaged U850 over BOB, given the period 1850-2014 for the 10 members. Areas 2.5-12.5, 85-100'
-#
-#    ncfile.to_netcdf('/home/sun/data/process/analysis/model_simulation_monsoon_onset/CESM2_LE_10members_1850-2014_BOB_U850_timeseries.nc')
+    # 3. Start to calculate the onset dates using U850 criterion
 
-    f0_BOB_u850 = xr.open_dataset('/home/sun/data/process/analysis/model_simulation_monsoon_onset/CESM2_LE_10members_1850-2014_BOB_U850_timeseries.nc')
+    # 3.1 Claim the array which save the 10members daily BOB-area averaged U850
+    BOB_50m_u850 = np.zeros((50, 165, 365)) # 10 members, 135 years, 365 days
+    for i in range(50):
+        f_member        = xr.open_dataset(end_path + list_new[i])
 
+        BOB_50m_u850[i] = BOB_monsoon_onset_time_series(f_member)
+
+        print(f'Sucessfully calculate U850 for the whole period for member {i+1}')
+    
+    # 3.2 Save U850 time-series to the file
+    ncfile  =  xr.Dataset(
+        {
+            "BOB_u850":    (["member", "year", "day"], BOB_50m_u850),
+        },
+        coords={
+            "member": (["member"], np.linspace(1, 50, 50)),
+            "year":   (["year"],   np.linspace(1850, 2014, 165)),
+            "day":    (["day"],    np.linspace(1, 365, 365)),
+        },
+            )
+
+    ncfile.attrs['description'] = 'Created on 2024-2-22 on the Huaibei Server, script name is cal_CESM2_LE_BOB_SCS_monsoon_onset_dates_evaluation_240208.py. This file calculate daily value of the area-averaged U850 over BOB, given the period 1850-2014 for the 50 members. Areas 5-12.5, 85-100'
+
+    ncfile.to_netcdf('/home/sun/data/process/analysis/model_simulation_monsoon_onset/CESM2_LE_50members_1850-2014_BOB_U850_timeseries2.nc')
+    f0_BOB_u850 = xr.open_dataset('/home/sun/data/process/analysis/model_simulation_monsoon_onset/CESM2_LE_50members_1850-2014_BOB_U850_timeseries2.nc')
     le_cli_u850 = np.average(f0_BOB_u850['BOB_u850'].data[:, :, :], axis=0)
-
     #print(le_cli_u850.shape)
-
     max_u850    = np.array([])
     min_u850    = np.array([])
-
     for i in range(365):
         max_u850 = np.append(max_u850, np.max(le_cli_u850[:, i]))
         min_u850 = np.append(min_u850, np.min(le_cli_u850[:, i]))
 
     # 4. Plot the climatology evolution of the BOB U850
-
     BOB_monsoon_u850_test(le_cli_u850, max_u850, min_u850)
 
     # 5. Define the date of BOBSM onset
@@ -431,48 +423,41 @@ def main_bob():
 
     # 6. Plot the onset dates for BOBSM
     plot_onset_dates_BOB(BOBSM_date, name0='BOB')
-
-    result = mk.original_test(BOBSM_date[20:]) # the best is 12
-    print(result)
-
-    return BOBSM_date
-
-    
-
-    
-
+#    result = mk.original_test(BOBSM_date[20:]) # the best is 12
+#    print(result)
+#    return BOBSM_date
+   
+   
 def main_scs():
     end_path = '/home/sun/data/download_data/CESM2_LE/day_u850/cdo/'
     list_new = os.listdir(end_path) ; list_new.sort()
+   # 5. Start to calculate the onset dates using U850 criterion
+   # 3.1 Claim the array which save the 10members daily BOB-area averaged U850
+    SCS_50m_u850 = np.zeros((50, 165, 365)) # 10 members, 135 years, 365 days
+    for i in range(50):
+        f_member        = xr.open_dataset(end_path + list_new[i])
 
-    # 5. Start to calculate the onset dates using U850 criterion
+        SCS_50m_u850[i] = SCS_monsoon_onset_time_series(f_member)
 
-    # 3.1 Claim the array which save the 10members daily BOB-area averaged U850
-#    SCS_10m_u850 = np.zeros((10, 165, 365)) # 10 members, 135 years, 365 days
-#    for i in range(10):
-#        f_member        = xr.open_dataset(end_path + list_new[i])
-#
-#        SCS_10m_u850[i] = SCS_monsoon_onset_time_series(f_member)
-#
-#        print(f'Sucessfully calculate U850 for the whole period for member {i+1}')
-#    
-#    # 3.2 Save U850 time-series to the file
-#    ncfile  =  xr.Dataset(
-#        {
-#            "SCS_u850":    (["member", "year", "day"], SCS_10m_u850),
-#        },
-#        coords={
-#            "member": (["member"], np.linspace(1, 10, 10)),
-#            "year":   (["year"],   np.linspace(1850, 2014, 165)),
-#            "day":    (["day"],    np.linspace(1, 365, 365)),
-#        },
-#            )
-#
-#    ncfile.attrs['description'] = 'Created on 2024-2-10 on the Huaibei Server, script name is cal_CESM2_LE_BOB_SCS_monsoon_onset_dates_evaluation_240208.py. This file calculate daily value of the area-averaged U850 over SCS, given the period 1850-2014 for the 10 members'
-#
-#    ncfile.to_netcdf('/home/sun/data/process/analysis/model_simulation_monsoon_onset/CESM2_LE_10members_1850-2014_SCS_U850_timeseries.nc')
+        print(f'Sucessfully calculate U850 for the whole period for member {i+1}')
     
-    f0_SCS_u850 = xr.open_dataset('/home/sun/data/process/analysis/model_simulation_monsoon_onset/CESM2_LE_10members_1850-2014_SCS_U850_timeseries.nc')
+    # 3.2 Save U850 time-series to the file
+    ncfile  =  xr.Dataset(
+        {
+            "SCS_u850":    (["member", "year", "day"], SCS_50m_u850),
+        },
+        coords={
+            "member": (["member"], np.linspace(1, 50, 50)),
+            "year":   (["year"],   np.linspace(1850, 2014, 165)),
+            "day":    (["day"],    np.linspace(1, 365, 365)),
+        },
+            )
+
+    ncfile.attrs['description'] = 'Created on 2024-2-22 on the Huaibei Server, script name is cal_CESM2_LE_BOB_SCS_monsoon_onset_dates_evaluation_240208.py. This file calculate daily value of the area-averaged U850 over SCS, given the period 1850-2014 for the 50 members'
+
+    ncfile.to_netcdf('/home/sun/data/process/analysis/model_simulation_monsoon_onset/CESM2_LE_50members_1850-2014_SCS_U850_timeseries.nc')
+    
+    f0_SCS_u850 = xr.open_dataset('/home/sun/data/process/analysis/model_simulation_monsoon_onset/CESM2_LE_50members_1850-2014_SCS_U850_timeseries.nc')
 
     le_cli_u850 = np.average(f0_SCS_u850['SCS_u850'].data[:, :, :], axis=0)
 
@@ -494,18 +479,18 @@ def main_scs():
     for yy in range(165):
         SCSSM_date[yy] = judge_the_onset_date(le_cli_u850[yy])
 
-    SCSSM_date[SCSSM_date>170] = 165
+    #SCSSM_date[SCSSM_date>170] = 165
 
     # 6. Plot the onset dates for BOBSM
     plot_onset_dates_SCS(SCSSM_date, 'SCS')
 
 #    result = mk.original_test(SCSSM_date[14:])
 #    print(result)
-    return SCSSM_date
+#    return SCSSM_date
 
 
 if __name__ == '__main__':
     date_bob = main_bob()
-    date_scs = main_scs()
-
-    plot_onset_dates_SCS(date_scs - date_bob, 'SCS - BOB')
+#    date_scs = main_scs()
+#
+#    plot_onset_dates_SCS(date_scs - date_bob, 'SCS - BOB')

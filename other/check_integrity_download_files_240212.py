@@ -10,6 +10,8 @@ import xarray as xr
 def read_all_files(inpath):
     all_files = os.listdir(inpath) ; all_files.sort()
 
+#    print(all_files)
+
     all_files_filter = []
     for ffff in all_files:
         if ".nc" in ffff:
@@ -27,7 +29,9 @@ def main():
 #        '/home/sun/data/download_data/CESM2_LE/day_PRECT/raw/',
 #        '/home/sun/data/download_data/CESM2_LE/day_PRECT/cdo/',
 #        '/home/sun/data/download_data/CESM2_LE/day_u850/raw/',
-        '/home/sun/data/download_data/CESM2_LE/day_PRECT/raw/'
+#        '/home/sun/data/download_data/CESM2_LE/day_PRECT/raw/',
+        '/home/sun/data/download_data/CESM2_LE/day_PRECT/cdo/', 
+        '/home/sun/data/download_data/CESM2_LE/day_u850/cdo/'
     ]
 
 #    pathlist2 = [
