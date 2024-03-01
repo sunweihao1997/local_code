@@ -17,8 +17,8 @@ If there could be some improvement, I thought it can detect the experiment autom
 '''
 import os
 
-data_path = '/data/AerChemMIP/LLNL_download/subset/'
-end_path  = '/data/AerChemMIP/LLNL_download/postprocess/'
+data_path = '/Volumes/Untitled/AerChemMIP/LLNL_download/subset/'
+end_path  = '/Volumes/Untitled/AerChemMIP/LLNL_download/postprocess/'
 files_all = os.listdir(data_path)
 
 from cdo import *
