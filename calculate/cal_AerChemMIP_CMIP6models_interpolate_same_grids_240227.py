@@ -6,11 +6,11 @@ import os
 import xarray as xr
 import numpy as np
 
-data_path    = '/Volumes/Untitled/AerChemMIP/post_process/'
+data_path    = '/data/AerChemMIP/LLNL_download/postprocess/'
 
-interp_path  = '/Volumes/Untitled/AerChemMIP/post_process_samegrids/'
+interp_path  = '/data/AerChemMIP/LLNL_download/postprocess_samegrids/'
 
-models_label = ['UKESM1-0-LL', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'IPSL-CM5A2', 'EC-Earth3-AerChem', 'CNRM-ESM', 'CESM2-WACCM', 'BCC-ESM1']
+models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'CESM2-WACCM', 'BCC-ESM1']
 
 def group_files_by_model(list_all, keyword):
     same_group = []
@@ -82,8 +82,9 @@ def main():
     new_lon = np.linspace(0, 360, 241)
 
     for fff in files_all:
+        print(f'Now it is dealing with {fff}')
         ff = xr.open_dataset(data_path + fff)
-        unify_lat_lon(ff, new_lat, new_lon, fff)
+        #unify_lat_lon(ff, new_lat, new_lon, fff)
 
         print(f'Successfully interpolate the file {fff}')
 
