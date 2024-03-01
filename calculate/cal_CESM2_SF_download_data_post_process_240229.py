@@ -5,8 +5,11 @@ This script is to deal with the downloaded CESM2 SF experiment to show the long-
 import xarray as xr
 import numpy as np
 import os
+from cdo import *
+cdo = Cdo()
 
 data_path = '/home/sun/data/download_data/CESM2_SF/mon_PRECT/'
+out_path  = '/home/sun/data/download_data/CESM2_SF/mon_PRECT/cdo/'
 
 files_all = os.listdir(data_path)
 #print(len(files_all))
@@ -66,13 +69,17 @@ def cdo_files(lists):
                 continue
 
         if len(mini_group) == 1:
-            print(mini_group)
+            print(f'Single file list {mini_group}')
             lists.remove(mini_group[0])
             continue
         else:
-            print(mini_group)
+            #print(mini_group)
+            mini_group.sort()
+            cdo.cat(input = [(data_path + x) for x in mini_group], output = out_path + mini_group[0][:-16] + 'nc')
+
+            print('Successfully cat the {}'.format(mini_group[0][:-16]))
             for file1 in mini_group:
-                print('Now it is removing the {}'.format(file1))
+                #print('Now it is removing the {}'.format(file1))
                 lists.remove(file1)
 
 
@@ -82,6 +89,7 @@ def main():
 
     #aaer_mean = calculate_members_mean(list_aaer, 'PRECT')
     #print(list_aaer[0].split('.'))
+    #print(list_aaer[0][:-16])
 
     cdo_files(files_all)
 
