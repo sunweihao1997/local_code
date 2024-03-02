@@ -13,7 +13,7 @@ import os
 import scipy.stats as stats
 import pymannkendall as mk
 
-data_path = '/data/AerChemMIP/LLNL_download/postprocess_samegrids/'
+data_path = '/data/AerChemMIP/LLNL_download/postprocess/'
 files_all = os.listdir(data_path) ; files_all.sort()
 
 def check_ssp_timescale():
@@ -111,7 +111,7 @@ def cal_ssp370NTCF_evolution(extent, year_scope, mon_scope):
 
     return model_pr_array
 
-def paint_evolution_monthly_precip(hist, ssp, sspntcf, left_string, right_string):
+def paint_evolution_monthly_precip(hist, ssp, sspntcf, left_string, right_string, mon_name, area_name):
 
     historical_avg       = np.average(hist, axis=1)
     ssp370_avg           = np.average(ssp, axis=1)
@@ -170,20 +170,48 @@ def paint_evolution_monthly_precip(hist, ssp, sspntcf, left_string, right_string
     ax.text(1980, 0.65, "MK-trend p-value: "+str(round(result_ssp370ntcf.p, 3)), fontdict=font, zorder=10)
     #plt.text(2, 0.65, r'$\cos(2 \pi t) \exp(-t)$', fontdict=font)
 
-    plt.savefig("/data/paint/June_SCS_mon_precip_deviation_trend_historical_SSP370.png", dpi=700)
+    plt.savefig(f"/data/paint/{mon_name}_{area_name}_mon_precip_deviation_trend_historical_SSP370.png", dpi=700)
 
 if __name__ == '__main__':
+    # May BOB
+    extent = [5, 20, 85, 100]
+    mon    = 5
+    hist_model_may   = cal_historical_evolution(extent, np.linspace(1980, 2014, 35), mon)
+    ssp370_model_may = cal_ssp370_evolution(extent, np.linspace(2015, 2050, 36), mon)
+    ssp370ntcf_model_may = cal_ssp370NTCF_evolution(extent, np.linspace(2015, 2050, 36), mon)
+
+    paint_evolution_monthly_precip(np.swapaxes(hist_model_may,0,1) * 86400, np.swapaxes(ssp370_model_may,0,1) * 86400, np.swapaxes(ssp370ntcf_model_may,0,1) * 86400, 'May', '(5-20N, 85-100E)', 'May', 'BOB')
+
+    # May SCS
+    extent = [5, 20, 110, 120]
+    mon    = 5
+    hist_model_may   = cal_historical_evolution(extent, np.linspace(1980, 2014, 35), mon)
+    ssp370_model_may = cal_ssp370_evolution(extent, np.linspace(2015, 2050, 36), mon)
+    ssp370ntcf_model_may = cal_ssp370NTCF_evolution(extent, np.linspace(2015, 2050, 36), mon)
+
+    paint_evolution_monthly_precip(np.swapaxes(hist_model_may,0,1) * 86400, np.swapaxes(ssp370_model_may,0,1) * 86400, np.swapaxes(ssp370ntcf_model_may,0,1) * 86400, 'May', '(5-20N, 110-120E)', 'May', 'SCS')
+
+    # June BOB
+    extent = [5, 20, 85, 100]
+    mon    = 6
+    hist_model_may   = cal_historical_evolution(extent, np.linspace(1980, 2014, 35), mon)
+    ssp370_model_may = cal_ssp370_evolution(extent, np.linspace(2015, 2050, 36), mon)
+    ssp370ntcf_model_may = cal_ssp370NTCF_evolution(extent, np.linspace(2015, 2050, 36), mon)
+
+    paint_evolution_monthly_precip(np.swapaxes(hist_model_may,0,1) * 86400, np.swapaxes(ssp370_model_may,0,1) * 86400, np.swapaxes(ssp370ntcf_model_may,0,1) * 86400, 'June', '(5-20N, 85-100E)', 'June', 'BOB')
+
+    # June SCS
     extent = [5, 20, 110, 120]
     mon    = 6
     hist_model_may   = cal_historical_evolution(extent, np.linspace(1980, 2014, 35), mon)
     ssp370_model_may = cal_ssp370_evolution(extent, np.linspace(2015, 2050, 36), mon)
     ssp370ntcf_model_may = cal_ssp370NTCF_evolution(extent, np.linspace(2015, 2050, 36), mon)
 
-    paint_evolution_monthly_precip(np.swapaxes(hist_model_may,0,1) * 86400, np.swapaxes(ssp370_model_may,0,1) * 86400, np.swapaxes(ssp370ntcf_model_may,0,1) * 86400, 'June', '(5-20N, 110-120E)')
+    paint_evolution_monthly_precip(np.swapaxes(hist_model_may,0,1) * 86400, np.swapaxes(ssp370_model_may,0,1) * 86400, np.swapaxes(ssp370ntcf_model_may,0,1) * 86400, 'June', '(5-20N, 110-120E)', 'June', 'SCS')
 
-    # statistical test
-    t_stat, p_value = stats.ttest_ind(np.average(ssp370_model_may, axis=0), np.average(ssp370ntcf_model_may, axis=0))
-
-    print("t-statistic:", t_stat)
-    print("p-value:", p_value)
-    #check_ssp_timescale() #SSP start from 2015
+#    # statistical test
+#    t_stat, p_value = stats.ttest_ind(np.average(ssp370_model_may, axis=0), np.average(ssp370ntcf_model_may, axis=0))
+#
+#    print("t-statistic:", t_stat)
+#    print("p-value:", p_value)
+#    #check_ssp_timescale() #SSP start from 2015
