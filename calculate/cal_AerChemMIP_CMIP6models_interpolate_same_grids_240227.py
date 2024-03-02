@@ -83,10 +83,13 @@ def main():
 
     for fff in files_all:
         print(f'Now it is dealing with {fff}')
-        ff = xr.open_dataset(data_path + fff)
-        #unify_lat_lon(ff, new_lat, new_lon, fff)
+        if fff[0] == '.':
+            continue
+        else:
+            ff = xr.open_dataset(data_path + fff)
+            unify_lat_lon(ff, new_lat, new_lon, fff)
 
-        print(f'Successfully interpolate the file {fff}')
+            print(f'Successfully interpolate the file {fff}')
 
 #    print(new_lat)
 #    print(new_lon)

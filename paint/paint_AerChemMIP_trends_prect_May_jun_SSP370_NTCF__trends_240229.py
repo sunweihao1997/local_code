@@ -11,7 +11,7 @@ from matplotlib.path import Path
 import matplotlib.patches as patches
 import scipy.stats as stats
 
-data_path = '/data/AerChemMIP/post_process_samegrids/'
+data_path = '/data/AerChemMIP/LLNL_download/postprocess_samegrids/'
 data_name = 'CMIP6_model_SSP370_SSP370NTCF_month56_precipitation_trends_2015-2050.nc'
 
 f0        = xr.open_dataset(data_path + data_name)
@@ -55,7 +55,7 @@ def paint_pentad_circulation(prect, p_value, figname):
             # 添加赤道线
             ax.plot([40,150],[0,0],'k--')
 
-            im  =  ax.contourf(lon, lat, prect[j], np.linspace(-0.07, 0.07, 15), cmap='coolwarm', alpha=1, extend='both')
+            im  =  ax.contourf(lon, lat, 10* prect[j], np.linspace(-0.5, 0.5, 11), cmap='coolwarm', alpha=1, extend='both')
 
             sp  =  ax.contourf(lon, lat, p_value[j], levels=[0., 0.1], colors='none', hatches=['..'])
 
@@ -106,7 +106,7 @@ def paint_pentad_circulation_diff(prect, p_value, figname):
     # 添加赤道线
     ax.plot([40,150],[0,0],'k--')
 
-    im  =  ax.contourf(lon, lat, prect[0] - prect[2], np.linspace(-0.07, 0.07, 15), cmap='coolwarm', alpha=1, extend='both')
+    im  =  ax.contourf(lon, lat, 10*(prect[0] - prect[2]), np.linspace(-0.5, 0.5, 11), cmap='coolwarm', alpha=1, extend='both')
 
 #    sp  =  ax.contourf(lon, lat, p_value[j], levels=[0., 0.1], colors='none', hatches=['..'])
 

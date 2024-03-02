@@ -10,9 +10,9 @@ import os
 #os.system('rm -rf /data/AerChemMIP/post_process_samegrids/CMIP6_model_SSP370NTCF_monthly_precipitation_1985-2014.nc')
 #os.system('rm -rf /data/AerChemMIP/post_process_samegrids/CMIP6_model_SSP370-SSP370NTCF_monthly_precipitation_1985-2014.nc')
 #
-src_path = '/data/AerChemMIP/post_process_samegrids/'
+src_path = '/data/AerChemMIP/LLNL_download/postprocess_samegrids/'
 
-models_label = ['UKESM1-0-LL', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'IPSL-CM5A2', 'EC-Earth3-AerChem', 'CNRM-ESM', 'CESM2-WACCM', 'BCC-ESM1']
+models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'CESM2-WACCM', 'BCC-ESM1']
 
 files_all = os.listdir(src_path)
 
@@ -94,7 +94,7 @@ ncfile2.attrs['Mother'] = 'local-code: cal_CMIP6_ssp370_ssp370NTCF_model_average
 #
 
 ncfile2.to_netcdf(src_path + 'CMIP6_model_SSP370NTCF_monthly_precipitation_2015-2050.nc')
-
+print(ncfile2)
 ncfile1_May = ncfile1.sel(time=ncfile1.time.dt.month.isin([5, ])) ; ncfile2_May = ncfile2.sel(time=ncfile2.time.dt.month.isin([5, ]))
 ncfile1_Jun = ncfile1.sel(time=ncfile1.time.dt.month.isin([6, ])) ; ncfile2_Jun = ncfile2.sel(time=ncfile2.time.dt.month.isin([6, ]))
 

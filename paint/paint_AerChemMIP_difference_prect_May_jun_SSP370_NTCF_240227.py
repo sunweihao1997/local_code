@@ -11,17 +11,17 @@ from matplotlib.path import Path
 import matplotlib.patches as patches
 import scipy.stats as stats
 
-data_path = '/data/AerChemMIP/post_process_samegrids/'
-ssp370_f  = 'CMIP6_model_SSP370_monthly_precipitation_2031-2050.nc'
-sspntcf_f = 'CMIP6_model_SSP370NTCF_monthly_precipitation_2031-2050.nc'
+data_path = '/data/AerChemMIP/LLNL_download/postprocess_samegrids/'
+ssp370_f  = 'CMIP6_model_SSP370_monthly_precipitation_2015-2050.nc'
+sspntcf_f = 'CMIP6_model_SSP370NTCF_monthly_precipitation_2015-2050.nc'
 
 f_ref     = xr.open_dataset(data_path + ssp370_f)
 
 May_ssp   = xr.open_dataset(data_path + ssp370_f).sel(time=f_ref.time.dt.month.isin([5, ]))  ; Jun_ssp   =  xr.open_dataset(data_path + ssp370_f).sel(time=f_ref.time.dt.month.isin([6, ]))
 May_NTCF  = xr.open_dataset(data_path + sspntcf_f).sel(time=f_ref.time.dt.month.isin([5, ])) ; Jun_NTCF  =  xr.open_dataset(data_path + sspntcf_f).sel(time=f_ref.time.dt.month.isin([6, ]))
 
-May_diff  = np.average(May_ssp['pr'].data, axis=0) - np.average(May_NTCF['pr'].data, axis=0)
-Jun_diff  = np.average(Jun_ssp['pr'].data, axis=0) - np.average(Jun_NTCF['pr'].data, axis=0)
+May_diff  = np.average(May_ssp['pr'].data[-20:], axis=0) - np.average(May_NTCF['pr'].data[-20:], axis=0)
+Jun_diff  = np.average(Jun_ssp['pr'].data[-20:], axis=0) - np.average(Jun_NTCF['pr'].data[-20:], axis=0)
 
 lat       = f_ref.lat.data
 lon       = f_ref.lon.data
