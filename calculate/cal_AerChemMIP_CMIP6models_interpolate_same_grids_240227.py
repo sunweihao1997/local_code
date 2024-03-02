@@ -6,9 +6,9 @@ import os
 import xarray as xr
 import numpy as np
 
-data_path    = '/data/AerChemMIP/LLNL_download/postprocess/'
+data_path    = '/Volumes/Untitled/AerChemMIP/LLNL_download/postprocess/'
 
-interp_path  = '/data/AerChemMIP/LLNL_download/postprocess_samegrids/'
+interp_path  = '/Volumes/Untitled/AerChemMIP/LLNL_download/postprocess_samegrids/'
 
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'CESM2-WACCM', 'BCC-ESM1']
 
