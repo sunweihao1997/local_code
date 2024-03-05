@@ -17,8 +17,8 @@ If there could be some improvement, I thought it can detect the experiment autom
 '''
 import os
 
-data_path = '/Volumes/Untitled/AerChemMIP/'
-end_path  = '/Volumes/Untitled/AerChemMIP/post_process/'
+data_path = '/Volumes/Untitled/AerChemMIP/LLNL_download/subset/'
+end_path  = '/Volumes/Untitled/AerChemMIP/LLNL_download/postprocess/'
 files_all = os.listdir(data_path)
 
 from cdo import *
@@ -100,7 +100,6 @@ def show_group_names(list2):
 
 def cdo_inputfiles(datalists, new_name):
     cdo.cat(input = [(data_path + x) for x in datalists],output = end_path + new_name)
-
 
 def ec_earth_data():
 
@@ -312,114 +311,9 @@ def ukesm_data():
         print(Model_name + 'provide no SSP370NTCFCH4 experiment!')
     print('=================================================================================================')
 
-def Noresm_data():
+def gfdl_data():
 
-    Model_name         = 'NorESM2-LM'
-
-    # -------------- Historical ----------------
-    ecearth_historical = return_same_model(historical_file, Model_name)
-
-    ecearth_variantid  = show_group_names(ecearth_historical)
-
-    print(f'{Model_name} historical variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_historical)}')
-
-    # Now cdo cat them into one file for each variant member
-    for vid in ecearth_variantid:
-        # 1. Sort out the same group
-        ecearth_historical_group = []
-        for fff in ecearth_historical:
-            if vid in fff:
-                ecearth_historical_group.append(fff)
-            else:
-                continue
-        print(f'It is now deal with {Model_name} historical {vid}, this subset includes {len(ecearth_historical_group)}')
-        ecearth_historical_group.sort()
-
-        # 2. Put them into cdo post-procss
-        cdo_inputfiles(ecearth_historical_group, Model_name + '_' + 'historical_' + vid + '.nc')
-    print('=================================================================================================')
-
-    # -------------- SSP370 ----------------
-    ecearth_ssp370     = return_same_model(ssp370, Model_name)
-
-    ecearth_variantid  = show_group_names(ecearth_ssp370) ; print(f'The variant-id for SSP370 is {ecearth_variantid}')
-
-    print(f'{Model_name} ssp370 variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370)}')
-
-    # Now cdo cat them into one file for each variant member
-    if len(ecearth_variantid) != 0:
-        for vid in ecearth_variantid:
-            # 1. Sort out the same group
-            ecearth_ssp370_group = []
-            for fff in ecearth_ssp370:
-                if vid in fff:
-                    ecearth_ssp370_group.append(fff)
-                else:
-                    continue
-            print(f'It is now deal with {Model_name} SSP370 {vid}, this subset includes {len(ecearth_ssp370_group)}')
-            ecearth_ssp370_group.sort()
-
-            # 2. Put them into cdo post-procss
-            cdo_inputfiles(ecearth_ssp370_group, Model_name + '_' + 'SSP370_' + vid + '.nc')
-    else:
-        print(Model_name + ' provide no SSP370 experiment!')
-    print('=================================================================================================')
-
-    # -------------- SSP370NTCF ----------------
-    ecearth_ssp370NTCF     = return_same_model(ssp370_NTCF, Model_name)
-
-    ecearth_variantid      = show_group_names(ecearth_ssp370NTCF) ; print(f'The variant-id for SSP370NTCF is {ecearth_variantid}')
-
-    print(f'{Model_name} ssp370NTCF variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370NTCF)}')
-
-    # Now cdo cat them into one file for each variant member
-    if len(ecearth_variantid) != 0:
-        for vid in ecearth_variantid:
-            # 1. Sort out the same group
-            ecearth_ssp370NTCF_group = []
-            for fff in ecearth_ssp370NTCF:
-                if vid in fff:
-                    ecearth_ssp370NTCF_group.append(fff)
-                else:
-                    continue
-            print(f'It is now deal with {Model_name} SSP370NTCF {vid}, this subset includes {len(ecearth_ssp370NTCF_group)}')
-            ecearth_ssp370NTCF_group.sort()
-
-            # 2. Put them into cdo post-procss
-            cdo_inputfiles(ecearth_ssp370NTCF_group, Model_name + '_' + 'SSP370NTCF_' + vid + '.nc')
-    else:
-        print(Model_name + 'provide no SSP370NTCF experiment!')
-    print('=================================================================================================')
-
-    # -------------- SSP370NTCFCH4 ----------------
-    ecearth_ssp370NTCFCH4     = return_same_model(ssp370_NTCFCH4, Model_name)
-
-    ecearth_variantid         = show_group_names(ecearth_ssp370NTCFCH4) ; print(f'The variant-id for SSP370NTCFCH4 is {ecearth_variantid}')
-
-    print(f'{Model_name} ssp370NTCFCH4 variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370NTCFCH4)}')
-
-    # Now cdo cat them into one file for each variant member
-    if len(ecearth_variantid) != 0:
-        for vid in ecearth_variantid:
-            # 1. Sort out the same group
-            ecearth_ssp370NTCFCH4_group = []
-            for fff in ecearth_ssp370NTCFCH4:
-                if vid in fff:
-                    ecearth_ssp370NTCFCH4_group.append(fff)
-                else:
-                    continue
-            print(f'It is now deal with {Model_name} SSP370NTCFCH4 {vid}, this subset includes {len(ecearth_ssp370NTCFCH4_group)}')
-            ecearth_ssp370NTCFCH4_group.sort()
-
-            # 2. Put them into cdo post-procss
-            cdo_inputfiles(ecearth_ssp370NTCFCH4_group, Model_name + '_' + 'SSP370NTCFCH4_' + vid + '.nc')
-    else:
-        print(Model_name + 'provide no SSP370NTCFCH4 experiment!')
-    print('=================================================================================================')
-
-def mpiesm_data():
-
-    Model_name         = 'MPI-ESM-1-2-HAM'
+    Model_name         = 'GFDL-ESM4'
 
     # -------------- Historical ----------------
     ecearth_historical = return_same_model(historical_file, Model_name)
@@ -522,9 +416,9 @@ def mpiesm_data():
         print(Model_name + 'provide no SSP370NTCFCH4 experiment!')
     print('=================================================================================================')
 
-def ipsl_data():
+def mri_data():
 
-    Model_name         = 'IPSL-CM5A2'
+    Model_name         = 'MRI-ESM2'
 
     # -------------- Historical ----------------
     ecearth_historical = return_same_model(historical_file, Model_name)
@@ -627,9 +521,9 @@ def ipsl_data():
         print(Model_name + 'provide no SSP370NTCFCH4 experiment!')
     print('=================================================================================================')
 
-def cnrm_data():
+def giss_data():
 
-    Model_name         = 'CNRM-ESM'
+    Model_name         = 'GISS-E2-1-G'
 
     # -------------- Historical ----------------
     ecearth_historical = return_same_model(historical_file, Model_name)
@@ -837,6 +731,111 @@ def cesm_data():
         print(Model_name + 'provide no SSP370NTCFCH4 experiment!')
     print('=================================================================================================')
 
+def mpiesm_data():
+
+    Model_name         = 'MPI-ESM-1-2-HAM'
+
+    # -------------- Historical ----------------
+    ecearth_historical = return_same_model(historical_file, Model_name)
+
+    ecearth_variantid  = show_group_names(ecearth_historical)
+
+    print(f'{Model_name} historical variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_historical)}')
+
+    # Now cdo cat them into one file for each variant member
+    for vid in ecearth_variantid:
+        # 1. Sort out the same group
+        ecearth_historical_group = []
+        for fff in ecearth_historical:
+            if vid in fff:
+                ecearth_historical_group.append(fff)
+            else:
+                continue
+        print(f'It is now deal with {Model_name} historical {vid}, this subset includes {len(ecearth_historical_group)}')
+        ecearth_historical_group.sort()
+
+        # 2. Put them into cdo post-procss
+        cdo_inputfiles(ecearth_historical_group, Model_name + '_' + 'historical_' + vid + '.nc')
+    print('=================================================================================================')
+
+    # -------------- SSP370 ----------------
+    ecearth_ssp370     = return_same_model(ssp370, Model_name)
+
+    ecearth_variantid  = show_group_names(ecearth_ssp370) ; print(f'The variant-id for SSP370 is {ecearth_variantid}')
+
+    print(f'{Model_name} ssp370 variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370)}')
+
+    # Now cdo cat them into one file for each variant member
+    if len(ecearth_variantid) != 0:
+        for vid in ecearth_variantid:
+            # 1. Sort out the same group
+            ecearth_ssp370_group = []
+            for fff in ecearth_ssp370:
+                if vid in fff:
+                    ecearth_ssp370_group.append(fff)
+                else:
+                    continue
+            print(f'It is now deal with {Model_name} SSP370 {vid}, this subset includes {len(ecearth_ssp370_group)}')
+            ecearth_ssp370_group.sort()
+
+            # 2. Put them into cdo post-procss
+            cdo_inputfiles(ecearth_ssp370_group, Model_name + '_' + 'SSP370_' + vid + '.nc')
+    else:
+        print(Model_name + ' provide no SSP370 experiment!')
+    print('=================================================================================================')
+
+    # -------------- SSP370NTCF ----------------
+    ecearth_ssp370NTCF     = return_same_model(ssp370_NTCF, Model_name)
+
+    ecearth_variantid      = show_group_names(ecearth_ssp370NTCF) ; print(f'The variant-id for SSP370NTCF is {ecearth_variantid}')
+
+    print(f'{Model_name} ssp370NTCF variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370NTCF)}')
+
+    # Now cdo cat them into one file for each variant member
+    if len(ecearth_variantid) != 0:
+        for vid in ecearth_variantid:
+            # 1. Sort out the same group
+            ecearth_ssp370NTCF_group = []
+            for fff in ecearth_ssp370NTCF:
+                if vid in fff:
+                    ecearth_ssp370NTCF_group.append(fff)
+                else:
+                    continue
+            print(f'It is now deal with {Model_name} SSP370NTCF {vid}, this subset includes {len(ecearth_ssp370NTCF_group)}')
+            ecearth_ssp370NTCF_group.sort()
+
+            # 2. Put them into cdo post-procss
+            cdo_inputfiles(ecearth_ssp370NTCF_group, Model_name + '_' + 'SSP370NTCF_' + vid + '.nc')
+    else:
+        print(Model_name + 'provide no SSP370NTCF experiment!')
+    print('=================================================================================================')
+
+    # -------------- SSP370NTCFCH4 ----------------
+    ecearth_ssp370NTCFCH4     = return_same_model(ssp370_NTCFCH4, Model_name)
+
+    ecearth_variantid         = show_group_names(ecearth_ssp370NTCFCH4) ; print(f'The variant-id for SSP370NTCFCH4 is {ecearth_variantid}')
+
+    print(f'{Model_name} ssp370NTCFCH4 variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370NTCFCH4)}')
+
+    # Now cdo cat them into one file for each variant member
+    if len(ecearth_variantid) != 0:
+        for vid in ecearth_variantid:
+            # 1. Sort out the same group
+            ecearth_ssp370NTCFCH4_group = []
+            for fff in ecearth_ssp370NTCFCH4:
+                if vid in fff:
+                    ecearth_ssp370NTCFCH4_group.append(fff)
+                else:
+                    continue
+            print(f'It is now deal with {Model_name} SSP370NTCFCH4 {vid}, this subset includes {len(ecearth_ssp370NTCFCH4_group)}')
+            ecearth_ssp370NTCFCH4_group.sort()
+
+            # 2. Put them into cdo post-procss
+            cdo_inputfiles(ecearth_ssp370NTCFCH4_group, Model_name + '_' + 'SSP370NTCFCH4_' + vid + '.nc')
+    else:
+        print(Model_name + 'provide no SSP370NTCFCH4 experiment!')
+    print('=================================================================================================')
+
 def bcc_data():
 
     Model_name         = 'BCC-ESM1'
@@ -942,15 +941,335 @@ def bcc_data():
         print(Model_name + 'provide no SSP370NTCFCH4 experiment!')
     print('=================================================================================================')
 
+def miroc6_data():
+
+    Model_name         = 'MIROC6'
+
+    # -------------- Historical ----------------
+    ecearth_historical = return_same_model(historical_file, Model_name)
+
+    ecearth_variantid  = show_group_names(ecearth_historical)
+
+    print(f'{Model_name} historical variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_historical)}')
+
+    # Now cdo cat them into one file for each variant member
+    for vid in ecearth_variantid:
+        # 1. Sort out the same group
+        ecearth_historical_group = []
+        for fff in ecearth_historical:
+            if vid in fff:
+                ecearth_historical_group.append(fff)
+            else:
+                continue
+        print(f'It is now deal with {Model_name} historical {vid}, this subset includes {len(ecearth_historical_group)}')
+        ecearth_historical_group.sort()
+
+        # 2. Put them into cdo post-procss
+        cdo_inputfiles(ecearth_historical_group, Model_name + '_' + 'historical_' + vid + '.nc')
+    print('=================================================================================================')
+
+    # -------------- SSP370 ----------------
+    ecearth_ssp370     = return_same_model(ssp370, Model_name)
+
+    ecearth_variantid  = show_group_names(ecearth_ssp370) ; print(f'The variant-id for SSP370 is {ecearth_variantid}')
+
+    print(f'{Model_name} ssp370 variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370)}')
+
+    # Now cdo cat them into one file for each variant member
+    if len(ecearth_variantid) != 0:
+        for vid in ecearth_variantid:
+            # 1. Sort out the same group
+            ecearth_ssp370_group = []
+            for fff in ecearth_ssp370:
+                if vid in fff:
+                    ecearth_ssp370_group.append(fff)
+                else:
+                    continue
+            print(f'It is now deal with {Model_name} SSP370 {vid}, this subset includes {len(ecearth_ssp370_group)}')
+            ecearth_ssp370_group.sort()
+
+            # 2. Put them into cdo post-procss
+            cdo_inputfiles(ecearth_ssp370_group, Model_name + '_' + 'SSP370_' + vid + '.nc')
+    else:
+        print(Model_name + ' provide no SSP370 experiment!')
+    print('=================================================================================================')
+
+    # -------------- SSP370NTCF ----------------
+    ecearth_ssp370NTCF     = return_same_model(ssp370_NTCF, Model_name)
+
+    ecearth_variantid      = show_group_names(ecearth_ssp370NTCF) ; print(f'The variant-id for SSP370NTCF is {ecearth_variantid}')
+
+    print(f'{Model_name} ssp370NTCF variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370NTCF)}')
+
+    # Now cdo cat them into one file for each variant member
+    if len(ecearth_variantid) != 0:
+        for vid in ecearth_variantid:
+            # 1. Sort out the same group
+            ecearth_ssp370NTCF_group = []
+            for fff in ecearth_ssp370NTCF:
+                if vid in fff:
+                    ecearth_ssp370NTCF_group.append(fff)
+                else:
+                    continue
+            print(f'It is now deal with {Model_name} SSP370NTCF {vid}, this subset includes {len(ecearth_ssp370NTCF_group)}')
+            ecearth_ssp370NTCF_group.sort()
+
+            # 2. Put them into cdo post-procss
+            cdo_inputfiles(ecearth_ssp370NTCF_group, Model_name + '_' + 'SSP370NTCF_' + vid + '.nc')
+    else:
+        print(Model_name + 'provide no SSP370NTCF experiment!')
+    print('=================================================================================================')
+
+    # -------------- SSP370NTCFCH4 ----------------
+    ecearth_ssp370NTCFCH4     = return_same_model(ssp370_NTCFCH4, Model_name)
+
+    ecearth_variantid         = show_group_names(ecearth_ssp370NTCFCH4) ; print(f'The variant-id for SSP370NTCFCH4 is {ecearth_variantid}')
+
+    print(f'{Model_name} ssp370NTCFCH4 variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370NTCFCH4)}')
+
+    # Now cdo cat them into one file for each variant member
+    if len(ecearth_variantid) != 0:
+        for vid in ecearth_variantid:
+            # 1. Sort out the same group
+            ecearth_ssp370NTCFCH4_group = []
+            for fff in ecearth_ssp370NTCFCH4:
+                if vid in fff:
+                    ecearth_ssp370NTCFCH4_group.append(fff)
+                else:
+                    continue
+            print(f'It is now deal with {Model_name} SSP370NTCFCH4 {vid}, this subset includes {len(ecearth_ssp370NTCFCH4_group)}')
+            ecearth_ssp370NTCFCH4_group.sort()
+
+            # 2. Put them into cdo post-procss
+            cdo_inputfiles(ecearth_ssp370NTCFCH4_group, Model_name + '_' + 'SSP370NTCFCH4_' + vid + '.nc')
+    else:
+        print(Model_name + 'provide no SSP370NTCFCH4 experiment!')
+    print('=================================================================================================')
+
+def noresm_data():
+
+    Model_name         = 'NorESM2-LM'
+
+    # -------------- Historical ----------------
+    ecearth_historical = return_same_model(historical_file, Model_name)
+
+    ecearth_variantid  = show_group_names(ecearth_historical)
+
+    print(f'{Model_name} historical variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_historical)}')
+
+    # Now cdo cat them into one file for each variant member
+    for vid in ecearth_variantid:
+        # 1. Sort out the same group
+        ecearth_historical_group = []
+        for fff in ecearth_historical:
+            if vid in fff:
+                ecearth_historical_group.append(fff)
+            else:
+                continue
+        print(f'It is now deal with {Model_name} historical {vid}, this subset includes {len(ecearth_historical_group)}')
+        ecearth_historical_group.sort()
+
+        # 2. Put them into cdo post-procss
+        cdo_inputfiles(ecearth_historical_group, Model_name + '_' + 'historical_' + vid + '.nc')
+    print('=================================================================================================')
+
+    # -------------- SSP370 ----------------
+    ecearth_ssp370     = return_same_model(ssp370, Model_name)
+
+    ecearth_variantid  = show_group_names(ecearth_ssp370) ; print(f'The variant-id for SSP370 is {ecearth_variantid}')
+
+    print(f'{Model_name} ssp370 variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370)}')
+
+    # Now cdo cat them into one file for each variant member
+    if len(ecearth_variantid) != 0:
+        for vid in ecearth_variantid:
+            # 1. Sort out the same group
+            ecearth_ssp370_group = []
+            for fff in ecearth_ssp370:
+                if vid in fff:
+                    ecearth_ssp370_group.append(fff)
+                else:
+                    continue
+            print(f'It is now deal with {Model_name} SSP370 {vid}, this subset includes {len(ecearth_ssp370_group)}')
+            ecearth_ssp370_group.sort()
+
+            # 2. Put them into cdo post-procss
+            cdo_inputfiles(ecearth_ssp370_group, Model_name + '_' + 'SSP370_' + vid + '.nc')
+    else:
+        print(Model_name + ' provide no SSP370 experiment!')
+    print('=================================================================================================')
+
+    # -------------- SSP370NTCF ----------------
+    ecearth_ssp370NTCF     = return_same_model(ssp370_NTCF, Model_name)
+
+    ecearth_variantid      = show_group_names(ecearth_ssp370NTCF) ; print(f'The variant-id for SSP370NTCF is {ecearth_variantid}')
+
+    print(f'{Model_name} ssp370NTCF variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370NTCF)}')
+
+    # Now cdo cat them into one file for each variant member
+    if len(ecearth_variantid) != 0:
+        for vid in ecearth_variantid:
+            # 1. Sort out the same group
+            ecearth_ssp370NTCF_group = []
+            for fff in ecearth_ssp370NTCF:
+                if vid in fff:
+                    ecearth_ssp370NTCF_group.append(fff)
+                else:
+                    continue
+            print(f'It is now deal with {Model_name} SSP370NTCF {vid}, this subset includes {len(ecearth_ssp370NTCF_group)}')
+            ecearth_ssp370NTCF_group.sort()
+
+            # 2. Put them into cdo post-procss
+            cdo_inputfiles(ecearth_ssp370NTCF_group, Model_name + '_' + 'SSP370NTCF_' + vid + '.nc')
+    else:
+        print(Model_name + 'provide no SSP370NTCF experiment!')
+    print('=================================================================================================')
+
+    # -------------- SSP370NTCFCH4 ----------------
+    ecearth_ssp370NTCFCH4     = return_same_model(ssp370_NTCFCH4, Model_name)
+
+    ecearth_variantid         = show_group_names(ecearth_ssp370NTCFCH4) ; print(f'The variant-id for SSP370NTCFCH4 is {ecearth_variantid}')
+
+    print(f'{Model_name} ssp370NTCFCH4 variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370NTCFCH4)}')
+
+    # Now cdo cat them into one file for each variant member
+    if len(ecearth_variantid) != 0:
+        for vid in ecearth_variantid:
+            # 1. Sort out the same group
+            ecearth_ssp370NTCFCH4_group = []
+            for fff in ecearth_ssp370NTCFCH4:
+                if vid in fff:
+                    ecearth_ssp370NTCFCH4_group.append(fff)
+                else:
+                    continue
+            print(f'It is now deal with {Model_name} SSP370NTCFCH4 {vid}, this subset includes {len(ecearth_ssp370NTCFCH4_group)}')
+            ecearth_ssp370NTCFCH4_group.sort()
+
+            # 2. Put them into cdo post-procss
+            cdo_inputfiles(ecearth_ssp370NTCFCH4_group, Model_name + '_' + 'SSP370NTCFCH4_' + vid + '.nc')
+    else:
+        print(Model_name + 'provide no SSP370NTCFCH4 experiment!')
+    print('=================================================================================================')
+
+def cnrm_data():
+
+    Model_name         = 'CNRM-ESM'
+
+    # -------------- Historical ----------------
+    ecearth_historical = return_same_model(historical_file, Model_name)
+
+    ecearth_variantid  = show_group_names(ecearth_historical)
+
+    print(f'{Model_name} historical variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_historical)}')
+
+    # Now cdo cat them into one file for each variant member
+    for vid in ecearth_variantid:
+        # 1. Sort out the same group
+        ecearth_historical_group = []
+        for fff in ecearth_historical:
+            if vid in fff:
+                ecearth_historical_group.append(fff)
+            else:
+                continue
+        print(f'It is now deal with {Model_name} historical {vid}, this subset includes {len(ecearth_historical_group)}')
+        ecearth_historical_group.sort()
+
+        # 2. Put them into cdo post-procss
+        cdo_inputfiles(ecearth_historical_group, Model_name + '_' + 'historical_' + vid + '.nc')
+    print('=================================================================================================')
+
+    # -------------- SSP370 ----------------
+    ecearth_ssp370     = return_same_model(ssp370, Model_name)
+
+    ecearth_variantid  = show_group_names(ecearth_ssp370) ; print(f'The variant-id for SSP370 is {ecearth_variantid}')
+
+    print(f'{Model_name} ssp370 variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370)}')
+
+    # Now cdo cat them into one file for each variant member
+    if len(ecearth_variantid) != 0:
+        for vid in ecearth_variantid:
+            # 1. Sort out the same group
+            ecearth_ssp370_group = []
+            for fff in ecearth_ssp370:
+                if vid in fff:
+                    ecearth_ssp370_group.append(fff)
+                else:
+                    continue
+            print(f'It is now deal with {Model_name} SSP370 {vid}, this subset includes {len(ecearth_ssp370_group)}')
+            ecearth_ssp370_group.sort()
+
+            # 2. Put them into cdo post-procss
+            cdo_inputfiles(ecearth_ssp370_group, Model_name + '_' + 'SSP370_' + vid + '.nc')
+    else:
+        print(Model_name + ' provide no SSP370 experiment!')
+    print('=================================================================================================')
+
+    # -------------- SSP370NTCF ----------------
+    ecearth_ssp370NTCF     = return_same_model(ssp370_NTCF, Model_name)
+
+    ecearth_variantid      = show_group_names(ecearth_ssp370NTCF) ; print(f'The variant-id for SSP370NTCF is {ecearth_variantid}')
+
+    print(f'{Model_name} ssp370NTCF variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370NTCF)}')
+
+    # Now cdo cat them into one file for each variant member
+    if len(ecearth_variantid) != 0:
+        for vid in ecearth_variantid:
+            # 1. Sort out the same group
+            ecearth_ssp370NTCF_group = []
+            for fff in ecearth_ssp370NTCF:
+                if vid in fff:
+                    ecearth_ssp370NTCF_group.append(fff)
+                else:
+                    continue
+            print(f'It is now deal with {Model_name} SSP370NTCF {vid}, this subset includes {len(ecearth_ssp370NTCF_group)}')
+            ecearth_ssp370NTCF_group.sort()
+
+            # 2. Put them into cdo post-procss
+            cdo_inputfiles(ecearth_ssp370NTCF_group, Model_name + '_' + 'SSP370NTCF_' + vid + '.nc')
+    else:
+        print(Model_name + 'provide no SSP370NTCF experiment!')
+    print('=================================================================================================')
+
+    # -------------- SSP370NTCFCH4 ----------------
+    ecearth_ssp370NTCFCH4     = return_same_model(ssp370_NTCFCH4, Model_name)
+
+    ecearth_variantid         = show_group_names(ecearth_ssp370NTCFCH4) ; print(f'The variant-id for SSP370NTCFCH4 is {ecearth_variantid}')
+
+    print(f'{Model_name} ssp370NTCFCH4 variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370NTCFCH4)}')
+
+    # Now cdo cat them into one file for each variant member
+    if len(ecearth_variantid) != 0:
+        for vid in ecearth_variantid:
+            # 1. Sort out the same group
+            ecearth_ssp370NTCFCH4_group = []
+            for fff in ecearth_ssp370NTCFCH4:
+                if vid in fff:
+                    ecearth_ssp370NTCFCH4_group.append(fff)
+                else:
+                    continue
+            print(f'It is now deal with {Model_name} SSP370NTCFCH4 {vid}, this subset includes {len(ecearth_ssp370NTCFCH4_group)}')
+            ecearth_ssp370NTCFCH4_group.sort()
+
+            # 2. Put them into cdo post-procss
+            cdo_inputfiles(ecearth_ssp370NTCFCH4_group, Model_name + '_' + 'SSP370NTCFCH4_' + vid + '.nc')
+    else:
+        print(Model_name + 'provide no SSP370NTCFCH4 experiment!')
+    print('=================================================================================================')
+
+
+
 def main():
 #    ec_earth_data()
-#    ukesm_data()
-#    Noresm_data()
-#    mpiesm_data()
-#    ipsl_data()
-#    cnrm_data()
+#    gfdl_data()
+#    giss_data()
+#    mri_data()
 #    cesm_data()
-    bcc_data()
+#    bcc_data()
+#    ukesm_data()
+    mpiesm_data()
+    miroc6_data()
+    noresm_data()
+    cnrm_data()
 
 if __name__ == "__main__":
     main()

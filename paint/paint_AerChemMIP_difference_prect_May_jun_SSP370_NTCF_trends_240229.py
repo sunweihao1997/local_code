@@ -11,7 +11,7 @@ from matplotlib.path import Path
 import matplotlib.patches as patches
 import scipy.stats as stats
 
-data_path = '/data/AerChemMIP/post_process_samegrids/'
+data_path = '/data/AerChemMIP/LLNL_download/model_average/'
 ssp370_f  = 'CMIP6_model_SSP370_monthly_precipitation_2031-2050.nc'
 sspntcf_f = 'CMIP6_model_SSP370NTCF_monthly_precipitation_2031-2050.nc'
 

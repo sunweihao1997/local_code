@@ -6,13 +6,14 @@ import xarray as xr
 import numpy as np
 import os
 
-#os.system('rm -rf /data/AerChemMIP/post_process_samegrids/CMIP6_model_SSP370_monthly_precipitation_1985-2014.nc')
-#os.system('rm -rf /data/AerChemMIP/post_process_samegrids/CMIP6_model_SSP370NTCF_monthly_precipitation_1985-2014.nc')
-#os.system('rm -rf /data/AerChemMIP/post_process_samegrids/CMIP6_model_SSP370-SSP370NTCF_monthly_precipitation_1985-2014.nc')
 #
-src_path = '/data/AerChemMIP/post_process_samegrids/'
+src_path = '/data/AerChemMIP/LLNL_download/postprocess_samegrids/'
+out_path = '/data/AerChemMIP/LLNL_download/model_average/'
 
-models_label = ['UKESM1-0-LL', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'IPSL-CM5A2', 'EC-Earth3-AerChem', 'CNRM-ESM', 'CESM2-WACCM', 'BCC-ESM1']
+models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'MIROC6']
+#models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G',  'MIROC6', 'CNRM-ESM']
+#models_label = ['EC-Earth3-AerChem', 'GISS-E2-1-G',]
+#models_label = ['GISS-E2-1-G',]
 
 files_all = os.listdir(src_path)
 
@@ -21,9 +22,11 @@ ssp370_files      = []
 ssp370NTCF_files  = []
 
 for ffff in files_all:
-    if 'SSP370' in ffff and 'NTCF' not in ffff and 'CMIP6' not in ffff:
+    name_list = ffff.split("_")
+    modelname = name_list[0]
+    if 'SSP370' in ffff and 'NTCF' not in ffff and 'CMIP6' not in ffff and modelname in models_label:
         ssp370_files.append(ffff)
-    elif 'SSP370NTCF' in ffff and 'CMIP6' not in ffff:
+    elif 'SSP370NTCF' in ffff and 'CMIP6' not in ffff and modelname in models_label:
         ssp370NTCF_files.append(ffff)
 
 #!!! Notice that the IPSL starts from 1950 !!!
@@ -32,18 +35,19 @@ for ffff in files_all:
 ssp370_pr_avg      =  np.zeros((36 * 12, 121, 241)) # 2015-2050, 36year
 ssp370ntcf_pr_avg  =  np.zeros((36 * 12, 121, 241)) # 2015-2050, 36year
 
-model_numbers_ssp370      =  len(ssp370_files)
-model_numbers_ssp370NTCF  =  len(ssp370NTCF_files)
+model_numbers_ssp370      =  len(ssp370_files) ; print(model_numbers_ssp370)
+model_numbers_ssp370NTCF  =  len(ssp370NTCF_files)  ; print(model_numbers_ssp370NTCF)
 
 for ff in ssp370_files:
     f0 = xr.open_dataset(src_path + ff)
 
     f0_select = f0.sel(time=f0.time.dt.year.isin(np.linspace(2015, 2050, 36)))
-#    print(f0_select)
+    #print(f0_select)
+
 
     #print(f0_select['pr'].attrs['units']) # All of them are kg m-2 s-1
     #print(f'for the {ff} the time length is {len(f0_select.time.data)}') # All of them are 360 length
-    ssp370_pr_avg += f0_select['pr'].data * 86400 / model_numbers_ssp370
+    ssp370_pr_avg += (f0_select['pr'].data * 86400 / model_numbers_ssp370)
 
 for ff in ssp370NTCF_files:
     f0 = xr.open_dataset(src_path + ff)
@@ -52,7 +56,7 @@ for ff in ssp370NTCF_files:
 
     #print(f0_select['pr'].attrs['units']) # All of them are kg m-2 s-1
     #print(f'for the {ff} the time length is {len(f0_select.time.data)}') # All of them are 360 length
-    ssp370ntcf_pr_avg += f0_select['pr'].data * 86400 / model_numbers_ssp370NTCF
+    ssp370ntcf_pr_avg += (f0_select['pr'].data * 86400 / model_numbers_ssp370NTCF)
 
 
 # Write to ncfile
@@ -73,7 +77,7 @@ ncfile1.attrs['description'] = 'Created on 2024-2-29. This file save the CMIP6 S
 ncfile1.attrs['Mother'] = 'local-code: cal_CMIP6_ssp370_ssp370NTCF_model_average_prect_2015-2050_240229.py'
 #
 
-ncfile1.to_netcdf(src_path + 'CMIP6_model_SSP370_monthly_precipitation_2015-2050.nc')
+ncfile1.to_netcdf(out_path + 'CMIP6_model_SSP370_monthly_precipitation_2015-2050.nc')
 
 
 ncfile2  =  xr.Dataset(
@@ -93,8 +97,8 @@ ncfile2.attrs['description'] = 'Created on 2024-2-29. This file save the CMIP6 S
 ncfile2.attrs['Mother'] = 'local-code: cal_CMIP6_ssp370_ssp370NTCF_model_average_prect_2015-2050_240229.py'
 #
 
-ncfile2.to_netcdf(src_path + 'CMIP6_model_SSP370NTCF_monthly_precipitation_2015-2050.nc')
-
+ncfile2.to_netcdf(out_path + 'CMIP6_model_SSP370NTCF_monthly_precipitation_2015-2050.nc')
+#print(ncfile2)
 ncfile1_May = ncfile1.sel(time=ncfile1.time.dt.month.isin([5, ])) ; ncfile2_May = ncfile2.sel(time=ncfile2.time.dt.month.isin([5, ]))
 ncfile1_Jun = ncfile1.sel(time=ncfile1.time.dt.month.isin([6, ])) ; ncfile2_Jun = ncfile2.sel(time=ncfile2.time.dt.month.isin([6, ]))
 
@@ -119,4 +123,4 @@ ncfile.attrs['description'] = 'Created on 2024-2-29. This file save the CMIP6 SS
 ncfile.attrs['Mother'] = 'local-code: cal_CMIP6_ssp370_ssp370NTCF_model_average_prect_2015-2050_240229.py'
 #
 
-ncfile.to_netcdf(src_path + 'CMIP6_model_SSP370_SSP370NTCF_month56_precipitation_2015-2050.nc')
+ncfile.to_netcdf(out_path + 'CMIP6_model_SSP370_SSP370NTCF_month56_precipitation_2015-2050.nc')

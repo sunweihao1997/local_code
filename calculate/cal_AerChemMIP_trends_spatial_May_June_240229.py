@@ -12,7 +12,7 @@ import matplotlib.patches as patches
 import scipy.stats as stats
 import pymannkendall as mk
 
-data_path = '/data/AerChemMIP/post_process_samegrids/'
+data_path = '/data/AerChemMIP/LLNL_download/model_average/'
 data_name = 'CMIP6_model_SSP370_SSP370NTCF_month56_precipitation_2015-2050.nc'
 
 f0        = xr.open_dataset(data_path + data_name)
