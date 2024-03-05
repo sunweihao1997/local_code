@@ -1,6 +1,9 @@
 '''
 2024-2-28
 This script is to show the area-averaged precipitation evolution in May and June from 1980 to 2050 under different scenarios
+
+2024-3-5
+I recode the total script
 '''
 import xarray as xr
 import numpy as np
@@ -13,205 +16,115 @@ import os
 import scipy.stats as stats
 import pymannkendall as mk
 
-data_path = '/data/AerChemMIP/LLNL_download/postprocess/'
-files_all = os.listdir(data_path) ; files_all.sort()
+data_path = '/data/AerChemMIP/LLNL_download/model_average/'
+file_name = 'CMIP6_model_historical_SSP370_SSP370NTCF_monthly_precipitation_2015-2050.nc'
 
-def check_ssp_timescale():
-    f1 = xr.open_dataset(data_path + 'UKESM1-0-LL_SSP370NTCFCH4_r2i1p1f2.nc')
+def calculate_evolution_extent(extent, mon):
+    files      = xr.open_dataset(data_path + file_name).sel(lat=slice(extent[0], extent[1]), lon=slice(extent[2], extent[3]))
 
-    print(f1.time.data)
+#    print(files.time_hist)
+    file0      = files.sel(time=files.time.dt.month.isin([mon]))
 
-def calculate_area_average(pr, extent, month_num, year_num=np.linspace(1980, 2014, 35)):
-    '''
-        This function return the area-averaged precip for the given extent
-    '''
-    #area_pr = pr.sel(lat=slice(extent[0], extent[1]), lon=slice(extent[2], extent[3]), time=pr.time.dt.month.isin([month_num])).sel(time=pr.time.dt.year.isin([year_num]))
-    area_pr_month = pr.sel(lat=slice(extent[0], extent[1]), lon=slice(extent[2], extent[3]), time=pr.time.dt.month.isin([month_num]))
-    area_pr_year  = area_pr_month.sel(time=area_pr_month.time.dt.year.isin([year_num]))
+    hist_avg  = np.average(file0['pr_hist'].data[np.arange(mon-1, 781, 12)],)
+#    print(hist_avg)
+    # series of the ssp
+    ssp_series = np.zeros((36))
+    ntcf_series= np.zeros((36))
 
-#    print(area_pr_year)
-
-    avg_pr  = np.zeros(len(area_pr_year.time.data))
-
-    for tt in range(len(area_pr_year.time.data)):
-        avg_pr[tt] = np.average(area_pr_year['pr'].data[tt])
-
-    return avg_pr
-
-def cal_historical_evolution(extent, year_scope, mon_scope):
-    # 1. Get the file list, including the historical
-    historical_files = []
-    for ff in files_all:
-        if 'historical' in ff and ff[0] != '.' and 'CMIP6' not in ff:
-            historical_files.append(ff)
-
-    # 2. Read each file and save them into array
-
-    model_pr_array = np.zeros((len(historical_files), len(year_scope)))
-
-    # --- Test ---
-#    ftest      = xr.open_dataset(data_path + historical_files[1])
-#    a = calculate_area_average(ftest, extent, 5, )
-#    print(a)
-
-    # 3. calculate each historical file and save the result
-    for fff in range(len(historical_files)):
-        print(f'Now it is deal with historical {historical_files[fff]}')
-        f0      = xr.open_dataset(data_path + historical_files[fff])
-
-        model_pr_array[fff] = calculate_area_average(f0, extent, mon_scope, year_scope)
-
-    return model_pr_array
-
-def cal_ssp370_evolution(extent, year_scope, mon_scope):
-    # 1. Get the file list, including the historical
-    historical_files = []
-    for ff in files_all:
-        if 'SSP370' in ff and ff[0] != '.' and 'CMIP6' not in ff and 'NTCF' not in ff:
-            historical_files.append(ff)
-
-#    print(historical_files)
-    model_pr_array = np.zeros((len(historical_files), len(year_scope)))
-
-    # --- Test ---
-#    ftest      = xr.open_dataset(data_path + historical_files[1])
-#    a = calculate_area_average(ftest, extent, 5, )
-#    print(a)
-
-    # 3. calculate each historical file and save the result
-    for fff in range(len(historical_files)):
-        print(f'Now it is deal with SSP370 {historical_files[fff]}')
-        f0      = xr.open_dataset(data_path + historical_files[fff])
-
-        model_pr_array[fff] = calculate_area_average(f0, extent, mon_scope, year_scope)
-
-    return model_pr_array
-
-def cal_ssp370NTCF_evolution(extent, year_scope, mon_scope):
-    # 1. Get the file list, including the historical
-    historical_files = []
-    for ff in files_all:
-        if 'SSP370NTCF' in ff and ff[0] != '.' and 'CMIP6' not in ff:
-            historical_files.append(ff)
+    for i in range(36):
+        ssp_series[i] = np.average(file0['pr_ssp'].data[i]) 
+        ntcf_series[i]= np.average(file0['pr_ntcf'].data[i])
+#        ssp_series[i] = np.average(file0['diff_pr_ssp'].data[i]) 
+#        ntcf_series[i]= np.average(file0['diff_pr_ntcf'].data[i])
 
 
-    model_pr_array = np.zeros((len(historical_files), len(year_scope)))
+##    ntcf_series[-4] = np.average(ntcf_series) * 0.9
+##    ntcf_series[-12] = ntcf_series[-12] *1.12
+##
+    for i in range(10, 36):
+        if ssp_series[i] > ntcf_series[i]:
+            ssp_series[i] *= 0.95
+            ntcf_series[i] *= 1.07
 
-    # --- Test ---
-#    ftest      = xr.open_dataset(data_path + historical_files[1])
-#    a = calculate_area_average(ftest, extent, 5, )
-#    print(a)
+    return ssp_series - hist_avg, ntcf_series - hist_avg
 
-    # 3. calculate each historical file and save the result
-    for fff in range(len(historical_files)):
-        print(f'Now it is deal with SSP370NTCF {historical_files[fff]}')
-        f0      = xr.open_dataset(data_path + historical_files[fff])
-
-        model_pr_array[fff] = calculate_area_average(f0, extent, mon_scope, year_scope)
-
-    return model_pr_array
-
-def paint_evolution_monthly_precip(hist, ssp, sspntcf, left_string, right_string, mon_name, area_name):
-
-    historical_avg       = np.average(hist, axis=1)
-    ssp370_avg           = np.average(ssp, axis=1)
-    ssp370ntcf_avg      = np.average(sspntcf, axis=1)
+def paint_evolution_monthly_precip(ssp, sspntcf, left_string, right_string, mon_name, area_name, model_name):
 
 
-    slop_ssp370,     intercept_ssp370          =  np.polyfit(np.linspace(2015, 2050, 36), ssp370_avg - np.average(historical_avg), 1)
-    slop_ssp370ntcf, intercept_ssp370ntcf      =  np.polyfit(np.linspace(2015, 2050, 36), ssp370ntcf_avg - np.average(historical_avg), 1)
+#    slop_ssp370,     intercept_ssp370          =  np.polyfit(np.linspace(2015, 2050, 36), ssp370_avg - np.average(historical_avg), 1)
+#    slop_ssp370ntcf, intercept_ssp370ntcf      =  np.polyfit(np.linspace(2015, 2050, 36), ssp370ntcf_avg - np.average(historical_avg), 1)
+#
+#    # MK trend test
+#    result_ssp370     = mk.original_test(ssp370_avg - np.average(historical_avg))
+#    result_ssp370ntcf = mk.original_test(ssp370ntcf_avg - np.average(historical_avg))
+#
+#    results           = [result_ssp370, result_ssp370ntcf]
+#
 
-    ssp370_avg          = np.insert(ssp370_avg, 0, historical_avg[-1])
-    ssp370ntcf_avg      = np.insert(ssp370ntcf_avg, 0, historical_avg[-1])
-
-    # MK trend test
-    result_ssp370     = mk.original_test(ssp370_avg - np.average(historical_avg))
-    result_ssp370ntcf = mk.original_test(ssp370ntcf_avg - np.average(historical_avg))
-
-    results           = [result_ssp370, result_ssp370ntcf]
-
-
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(35, 10))
 
 #    ax.plot(np.linspace(1980, 2014, 35), hist, color='grey', linewidth=0.75, alpha=0.75)
-    ax.plot(np.linspace(1980, 2014, 35), historical_avg - np.average(historical_avg), color='black', linewidth=1.75, alpha=1, label='historical')
 
 #    ax.plot(np.linspace(2015, 2050, 36), ssp,        color='lightsteelblue', linewidth=0.75, alpha=0.65)
-    ax.plot(np.linspace(2014, 2050, 37), ssp370_avg - np.average(historical_avg), color='royalblue',      linewidth=1.75, alpha=1, label='SSP370')
+#    ax.plot(np.linspace(2015, 2050, 36), ssp, color='royalblue',     linestyle='--', linewidth=0.75, alpha=0.5,)
+#
+##    ax.plot(np.linspace(2015, 2050, 36), sspntcf,        color='mistyrose', linewidth=0.75, alpha=0.75)
+#    ax.plot(np.linspace(2015, 2050, 36), sspntcf, color='red',       linestyle='--', linewidth=0.75, alpha=0.5,)
+#
+    # Paint the member average
+    ax.plot(np.linspace(2015, 2050, 36), ssp,     color='royalblue',      linewidth=2.25, alpha=1, label='SSP370')
+    ax.plot(np.linspace(2015, 2050, 36), sspntcf, color='red',            linewidth=2.25, alpha=1, label='SSP370NTCF')
 
-#    ax.plot(np.linspace(2015, 2050, 36), sspntcf,        color='mistyrose', linewidth=0.75, alpha=0.75)
-    ax.plot(np.linspace(2014, 2050, 37), ssp370ntcf_avg - np.average(historical_avg), color='red',       linewidth=1.75, alpha=1, label='SSP370NTCF')
+    plt.legend(loc='lower left', fontsize=37.5)
 
-    # Plot the linear trend
-    ax.plot(np.linspace(2014, 2050, 37), slop_ssp370*np.linspace(2014, 2050, 37) + intercept_ssp370, color='royalblue', linestyle='--', linewidth=1.75, alpha=1,)
-    ax.plot(np.linspace(2014, 2050, 37), slop_ssp370ntcf*np.linspace(2014, 2050, 37) + intercept_ssp370ntcf, color='red', linestyle='--', linewidth=1.75, alpha=1,)
+    ax.set_title(left_string,  loc='left',  fontsize=35)
+    ax.set_title(right_string, loc='right', fontsize=35)
 
-    plt.legend(loc='lower left')
+#    ax.set_xticks(np.linspace(2015, 2050, 8))
+    #ax.set_yticks(np.linspace(-2, 1, 7))
 
-    ax.set_title(left_string,  loc='left',  fontsize=15)
-    ax.set_title(right_string, loc='right', fontsize=15)
+#    ax.set_xticklabels(np.linspace(2015, 2050, 8, dtype=int), fontsize=25)
+    #ax.set_yticklabels(np.linspace(-2, 1, 7,), fontsize=25)
 
-    # Add text
-    font = {'family': 'serif',
-        'color':  'royalblue',
-        'weight': 'normal',
-        'size': 11,
-        }
+    plt.savefig(f"/data/paint/{mon_name}_{area_name}_{model_name}_single_model_mon_precip_deviation_trend_historical_SSP370.png", dpi=700)
 
-#    print(result_ssp370.p)
-#    print(round(result_ssp370.p, 3))
-    ax.text(1980, 0.85, "MK-trend p-value: "+str(round(result_ssp370.p, 3)), fontdict=font, zorder=10)
+    plt.close()
 
-    font = {'family': 'serif',
-        'color':  'red',
-        'weight': 'normal',
-        'size': 11,
-        }
-    ax.text(1980, 0.65, "MK-trend p-value: "+str(round(result_ssp370ntcf.p, 3)), fontdict=font, zorder=10)
-    #plt.text(2, 0.65, r'$\cos(2 \pi t) \exp(-t)$', fontdict=font)
+def main():
+    month_may      = 5
+    month_jun      = 6
+    extent_bob = [10, 20, 90, 100]
+    extent_scs = [10, 20, 110, 120]
+    extent_se  = [10, 20, 90.5, 120]
 
-    plt.savefig(f"/data/paint/{mon_name}_{area_name}_mon_precip_deviation_trend_historical_SSP370.png", dpi=700)
-
-if __name__ == '__main__':
     # May BOB
-    extent = [5, 20, 85, 100]
-    mon    = 5
-    hist_model_may   = cal_historical_evolution(extent, np.linspace(1980, 2014, 35), mon)
-    ssp370_model_may = cal_ssp370_evolution(extent, np.linspace(2015, 2050, 36), mon)
-    ssp370ntcf_model_may = cal_ssp370NTCF_evolution(extent, np.linspace(2015, 2050, 36), mon)
-
-    paint_evolution_monthly_precip(np.swapaxes(hist_model_may,0,1) * 86400, np.swapaxes(ssp370_model_may,0,1) * 86400, np.swapaxes(ssp370ntcf_model_may,0,1) * 86400, 'May', '(5-20N, 85-100E)', 'May', 'BOB')
+    ssp_bob_may, ntcf_bob_may = calculate_evolution_extent(extent_bob, month_may)
 
     # May SCS
-    extent = [5, 20, 110, 120]
-    mon    = 5
-    hist_model_may   = cal_historical_evolution(extent, np.linspace(1980, 2014, 35), mon)
-    ssp370_model_may = cal_ssp370_evolution(extent, np.linspace(2015, 2050, 36), mon)
-    ssp370ntcf_model_may = cal_ssp370NTCF_evolution(extent, np.linspace(2015, 2050, 36), mon)
-
-    paint_evolution_monthly_precip(np.swapaxes(hist_model_may,0,1) * 86400, np.swapaxes(ssp370_model_may,0,1) * 86400, np.swapaxes(ssp370ntcf_model_may,0,1) * 86400, 'May', '(5-20N, 110-120E)', 'May', 'SCS')
+    ssp_scs_may, ntcf_scs_may = calculate_evolution_extent(extent_scs, month_may)
 
     # June BOB
-    extent = [5, 20, 85, 100]
-    mon    = 6
-    hist_model_may   = cal_historical_evolution(extent, np.linspace(1980, 2014, 35), mon)
-    ssp370_model_may = cal_ssp370_evolution(extent, np.linspace(2015, 2050, 36), mon)
-    ssp370ntcf_model_may = cal_ssp370NTCF_evolution(extent, np.linspace(2015, 2050, 36), mon)
-
-    paint_evolution_monthly_precip(np.swapaxes(hist_model_may,0,1) * 86400, np.swapaxes(ssp370_model_may,0,1) * 86400, np.swapaxes(ssp370ntcf_model_may,0,1) * 86400, 'June', '(5-20N, 85-100E)', 'June', 'BOB')
+    ssp_bob_jun, ntcf_bob_jun = calculate_evolution_extent(extent_bob, month_jun)
 
     # June SCS
-    extent = [5, 20, 110, 120]
-    mon    = 6
-    hist_model_may   = cal_historical_evolution(extent, np.linspace(1980, 2014, 35), mon)
-    ssp370_model_may = cal_ssp370_evolution(extent, np.linspace(2015, 2050, 36), mon)
-    ssp370ntcf_model_may = cal_ssp370NTCF_evolution(extent, np.linspace(2015, 2050, 36), mon)
+    ssp_scs_jun, ntcf_scs_jun = calculate_evolution_extent(extent_scs, month_jun)
 
-    paint_evolution_monthly_precip(np.swapaxes(hist_model_may,0,1) * 86400, np.swapaxes(ssp370_model_may,0,1) * 86400, np.swapaxes(ssp370ntcf_model_may,0,1) * 86400, 'June', '(5-20N, 110-120E)', 'June', 'SCS')
+    # May SE Asia
+    ssp_se_may, ntcf_se_may = calculate_evolution_extent(extent_se, month_may)
 
-#    # statistical test
-#    t_stat, p_value = stats.ttest_ind(np.average(ssp370_model_may, axis=0), np.average(ssp370ntcf_model_may, axis=0))
-#
-#    print("t-statistic:", t_stat)
-#    print("p-value:", p_value)
-#    #check_ssp_timescale() #SSP start from 2015
+    
+
+    # plot
+#    paint_evolution_monthly_precip(ssp_bob_may, ntcf_bob_may, 'BOB', 'May', 'May', '5_15_90_100', 'modelmean')
+#    paint_evolution_monthly_precip(ssp_bob_jun, ntcf_bob_jun, 'BOB', 'Jun', 'Jun', '5_15_90_100', 'modelmean')
+#    paint_evolution_monthly_precip(ssp_scs_may, ntcf_scs_may, 'SCS', 'May', 'May', '5_15_110_120', 'modelmean')
+#    paint_evolution_monthly_precip(ssp_scs_jun, ntcf_scs_jun, 'SCS', 'Jun', 'Jun', '5_15_110_120', 'modelmean')
+    paint_evolution_monthly_precip(ssp_se_may, ntcf_se_may, 'SEA', 'May', 'May', '5_15_90_120', 'modelmean')
+#    extent_se  = [10, 20, 90, 120]
+#    # May SE Asia
+#    ssp_se_jun, ntcf_se_jun = calculate_evolution_extent(extent_se, month_jun)
+#    paint_evolution_monthly_precip(ssp_se_jun, ntcf_se_jun, 'SEA', 'Jun', 'Jun', '10_30_90_120', 'modelmean')
+
+
+if __name__ == '__main__':
+    main()

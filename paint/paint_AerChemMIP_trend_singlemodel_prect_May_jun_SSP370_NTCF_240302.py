@@ -15,11 +15,10 @@ import matplotlib.patches as patches
 import scipy.stats as stats
 import os
 
-data_path = 'c/'
+data_path = '/data/AerChemMIP/LLNL_download/postprocess_samegrids/'
 
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'CESM2-WACCM', 'BCC-ESM1', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'MIROC6', 'CNRM-ESM']
 #models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'CESM2-WACCM', 'BCC-ESM1',]
-#models_label = ['GISS-E2-1-G',]
 model_number = len(models_label)
 exps_label   = ['historical', 'SSP370', 'SSP370NTCF']
 #exps_label   = ['SSP370', 'SSP370NTCF']
@@ -89,6 +88,17 @@ def cal_single_models_diff(model_name, exp_name, month):
 
     return model_avg
 
+def calculate_trends(prect):
+    trends = np.zeros((prect.shape[1], prect.shape[2]))
+
+    for i in range(prect.shape[1]):
+        for j in range(prect.shape[2]):
+            slope, intercept  =  np.polyfit(np.linspace(2015, 2050, 36), prect[:, i, j], 1)
+
+            trends[i, j] = slope
+
+    return trends * 10
+
 def paint_pentad_circulation(hist_average, prect, p_value, mon):
     '''This function paint pentad circulation based on b1850 experiment'''
     #  ----- import  ----------
@@ -109,7 +119,7 @@ def paint_pentad_circulation(hist_average, prect, p_value, mon):
     spec1   =  fig1.add_gridspec(nrows=model_number,ncols=3)
 
     j  =  0
-    contour_level = np.linspace(-2.5, 2.5, 21)
+    contour_level = np.linspace(-1, 1., 21)
     #print(len(prect))
     # ------       paint    ------------
     for row in range(model_number):
@@ -122,7 +132,7 @@ def paint_pentad_circulation(hist_average, prect, p_value, mon):
         # 添加赤道线
         ax.plot([40,150],[0,0],'k--')
         #print(len(prect[row]))
-        im  =  ax.contourf(lon, lat, np.average(prect[row][1][-20:], axis=0) - hist_average, contour_level, cmap='coolwarm', alpha=1, extend='both')
+        im  =  ax.contourf(lon, lat, calculate_trends(prect[row][1]), contour_level, cmap='coolwarm', alpha=1, extend='both')
 
         #sp  =  ax.contourf(lon, lat, p_value[col], levels=[0., 0.05], colors='none', hatches=['..'])
 
@@ -142,7 +152,7 @@ def paint_pentad_circulation(hist_average, prect, p_value, mon):
         # 添加赤道线
         ax.plot([40,150],[0,0],'k--')
 
-        im  =  ax.contourf(lon, lat, np.average(prect[row][2][-20:], axis=0) - hist_average, contour_level, cmap='coolwarm', alpha=1, extend='both')
+        im  =  ax.contourf(lon, lat, calculate_trends(prect[row][2]), contour_level, cmap='coolwarm', alpha=1, extend='both')
 
         #sp  =  ax.contourf(lon, lat, p_value[col], levels=[0., 0.05], colors='none', hatches=['..'])
 
@@ -162,7 +172,7 @@ def paint_pentad_circulation(hist_average, prect, p_value, mon):
         # 添加赤道线
         ax.plot([40,150],[0,0],'k--')
 
-        im  =  ax.contourf(lon, lat, (np.average(prect[row][1][-20:], axis=0) - hist_average) - (np.average(prect[row][2][-20:], axis=0) - hist_average), contour_level, cmap='coolwarm', alpha=1, extend='both')
+        im  =  ax.contourf(lon, lat, calculate_trends(prect[row][1]) - calculate_trends(prect[row][2]), contour_level, cmap='coolwarm', alpha=1, extend='both')
 
         #sp  =  ax.contourf(lon, lat, p_value[col], levels=[0., 0.05], colors='none', hatches=['..'])
 
@@ -178,7 +188,7 @@ def paint_pentad_circulation(hist_average, prect, p_value, mon):
     cb  =  fig1.colorbar(im, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
     cb.ax.tick_params(labelsize=10)
 
-    plt.savefig("/data/paint/spatial_{}_SSP370-SSP370NTCF_precip_multiple_model.png".format(mon))
+    plt.savefig("/data/paint/spatial_{}_trends_SSP370-SSP370NTCF_precip_multiple_model.png".format(mon))
 
     plt.close()
 
@@ -187,7 +197,7 @@ def main():
 #
 #    p_value = [p_value_may, p_value_Jun]
 #    paint_pentad_circulation(prect0, p_value)
-    # ========================== June ================================
+# ========================= June ===================================
     seven_model_three_exp = []
     month = 6
     for modell in models_label:
@@ -209,7 +219,7 @@ def main():
     #print(seven_model_three_exp[0][1].shape)
     paint_pentad_circulation(hist_avg, seven_model_three_exp, 0, month)
 
-    # ========================= May ====================================
+    # ===================== May ======================================
     seven_model_three_exp = []
     month = 5
     for modell in models_label:

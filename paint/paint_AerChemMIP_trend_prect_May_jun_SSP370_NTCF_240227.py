@@ -25,7 +25,8 @@ Jun_diff  = file0.sel(time=file0.time.dt.month.isin([6]))
 p_value_may = np.zeros((121, 241))
 p_value_Jun = np.zeros((121, 241))
 
-print(p_value_Jun.shape)
+trend_diff_may   = np.zeros((121, 241))
+trend_diff_jun   = np.zeros((121, 241))
 
 for i in range(len(lat)):
     for j in range(len(lon)):
@@ -37,7 +38,20 @@ for i in range(len(lat)):
 
         p_value_Jun[i, j] = p_value
 
-def paint_pentad_circulation(prect, p_value):
+for i in range(len(lat)):
+    for j in range(len(lon)):
+        k1, interp1 = np.polyfit(np.linspace(2015, 2050, 36), May_diff['pr_ssp'].data[:, i, j], 1)
+        k2, interp2 = np.polyfit(np.linspace(2015, 2050, 36), May_diff['pr_ntcf'].data[:, i, j], 1)
+
+        trend_diff_may[i, j] = k1 - k2
+
+        k1, interp1 = np.polyfit(np.linspace(2015, 2050, 36), Jun_diff['pr_ssp'].data[:, i, j], 1)
+        k2, interp2 = np.polyfit(np.linspace(2015, 2050, 36), Jun_diff['pr_ntcf'].data[:, i, j], 1)
+
+        trend_diff_jun[i, j] = k1 - k2
+
+
+def paint_pentad_circulation(prect, p_value, level0=np.linspace(-0.5, 0.5, 11), figname="/data/paint/modelgroup1_spatial_SSP370-SSP370NTCF_precip.png"):
     '''This function paint pentad circulation based on b1850 experiment'''
     #  ----- import  ----------
     from matplotlib import cm
@@ -70,9 +84,10 @@ def paint_pentad_circulation(prect, p_value):
         # 添加赤道线
         ax.plot([40,150],[0,0],'k--')
 
-        im  =  ax.contourf(lon, lat, prect[col], np.linspace(-1.5, 1.5, 13), cmap='coolwarm_r', alpha=1, extend='both')
+        im  =  ax.contourf(lon, lat, prect[col], level0, cmap='coolwarm_r', alpha=1, extend='both')
 
-        sp  =  ax.contourf(lon, lat, p_value[col], levels=[0., 0.05], colors='none', hatches=['..'])
+        if p_value != None:
+            sp  =  ax.contourf(lon, lat, p_value[col], levels=[0., 0.05], colors='none', hatches=['..'])
 
         # 海岸线
         ax.coastlines(resolution='10m',lw=1.65)
@@ -86,13 +101,14 @@ def paint_pentad_circulation(prect, p_value):
     cb  =  fig1.colorbar(im, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
     cb.ax.tick_params(labelsize=20)
 
-    plt.savefig("/data/paint/modelgroup_segment_adjust_spatial_SSP370-SSP370NTCF_precip.png")
+    plt.savefig(figname)
+
+    plt.close()
 
 def main():
-    prect0 = [np.average(May_diff['pr_ssp'].data[-20:], axis=0) - np.average(May_diff['pr_ntcf'].data[-20:], axis=0), np.average(Jun_diff['pr_ssp'].data[-20:], axis=0) - np.average(Jun_diff['pr_ntcf'].data[-20:], axis=0)]
+    prect0 = [trend_diff_may * 10, trend_diff_jun * 10]
+    paint_pentad_circulation(prect0, None, np.linspace(-0.5, 0.5, 11), "/data/paint/modelgroup1_spatialtrends_SSP370-SSP370NTCF_precip.png")
 
-    p_value = [p_value_may, p_value_Jun]
-    paint_pentad_circulation(prect0, p_value)
 
 if __name__ == '__main__':
     main()

@@ -10,7 +10,7 @@ data_path    = '/Volumes/Untitled/AerChemMIP/LLNL_download/postprocess/'
 
 interp_path  = '/Volumes/Untitled/AerChemMIP/LLNL_download/postprocess_samegrids/'
 
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'CESM2-WACCM', 'BCC-ESM1']
+models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'CESM2-WACCM', 'BCC-ESM1', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'MIROC6', 'CNRM-ESM']
 
 def group_files_by_model(list_all, keyword):
     same_group = []
@@ -41,7 +41,7 @@ def unify_lat_lon(f0, new_lat, new_lon, filename):
     old_lon   = f0['lon'].data
     time_data = f0['time'].data
 
-    f0_interp = f0.interp(lat = new_lat, lon=new_lon)
+    f0_interp = f0.interp(lat = new_lat, lon=new_lon, method='slinear')
 
     f0_interp.to_netcdf(interp_path + filename)
 
