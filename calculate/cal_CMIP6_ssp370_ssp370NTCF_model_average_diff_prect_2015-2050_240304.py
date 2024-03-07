@@ -13,7 +13,7 @@ import os
 src_path = '/data/AerChemMIP/LLNL_download/postprocess_samegrids/'
 out_path = '/data/AerChemMIP/LLNL_download/model_average/'
 
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'MRI-ESM2', 'GISS-E2-1-G', 'MIROC6', 'MPI-ESM-1-2-HAM', 'NorESM2-LM']
+models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL','GISS-E2-1-G', 'MIROC6', 'MPI-ESM-1-2-HAM', 'NorESM2-LM', 'GFDL-ESM4',]
 #models_label = ['EC-Earth3-AerChem', 'GFDL-ESM4', 'GISS-E2-1-G', 'MIROC6', 'MPI-ESM-1-2-HAM',]
 #models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G',  'MIROC6', 'CNRM-ESM']
 #models_label = ['EC-Earth3-AerChem', 'GISS-E2-1-G',]
@@ -121,6 +121,8 @@ for i in range(model_number):
 #    hist_ssp370_models[i] = ssp370_pr_diff_hist
 #    hist_ssp370ntcf_models[i] = ssp370ntcf_pr_diff_hist
 
+# =================== Calculate the models deviation =========================
+
 # Write to ncfile
 ncfile1  =  xr.Dataset(
     {
@@ -129,12 +131,15 @@ ncfile1  =  xr.Dataset(
 #        'diff_pr_ssp':  (["time", "lat", "lon"], np.average(hist_ssp370_models, axis=0)),
 #        'diff_pr_ntcf': (["time", "lat", "lon"], np.average(hist_ssp370ntcf_models, axis=0)),
         'pr_hist': (["time_hist", "lat", "lon"], np.average(hist_models, axis=0)),
+        'allmodel_pr_ssp':   (["model", "time", "lat", "lon"], ssp370_models),
+        'allmodel_pr_ntcf':  (["model", "time", "lat", "lon"], ssp370ntcf_models),
     },
     coords={
         "time": (["time"], f0_select.time.data),
         "time_hist": (["time_hist"], f0_select_hist.time.data),
         "lat":  (["lat"],  f0_select.lat.data),
         "lon":  (["lon"],  f0_select.lon.data),
+        "model":(["model"], models_label)
     },
     )
 
