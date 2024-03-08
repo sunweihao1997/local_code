@@ -14,10 +14,11 @@ def read_all_files(inpath):
 
     all_files_filter = []
     for ffff in all_files:
-        if ".nc" in ffff:
+        if ".nc" in ffff and ffff[0] != '.':
             all_files_filter.append(ffff)
 
     for ffff in all_files_filter:
+        print(f'Now it is reading {ffff}')
         f = xr.open_dataset(inpath + ffff)
 
         print('Successfully read {}'.format(ffff))
@@ -30,8 +31,9 @@ def main():
 #        '/home/sun/data/download_data/CESM2_LE/day_PRECT/cdo/',
 #        '/home/sun/data/download_data/CESM2_LE/day_u850/raw/',
 #        '/home/sun/data/download_data/CESM2_LE/day_PRECT/raw/',
-        '/home/sun/data/download_data/CESM2_LE/day_PRECT/cdo/', 
-        '/home/sun/data/download_data/CESM2_LE/day_u850/cdo/'
+#        '/home/sun/data/download_data/CESM2_LE/day_PRECT/cdo/', 
+#        '/home/sun/data/download_data/CESM2_LE/day_u850/cdo/'
+        '/data/AerChemMIP/LLNL_download/daily/precipitation/',
     ]
 
 #    pathlist2 = [
