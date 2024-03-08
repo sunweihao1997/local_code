@@ -130,8 +130,8 @@ def plot_May_prect(series, name0):
     plt.plot(x, y1, 'grey', linewidth=0.8)
     plt.plot(x, y2, 'orange', linewidth=1.5)
     
-    plt.plot([1890, 1910], [np.average(series[40:60]), np.average(series[40:60])], 'b--', alpha=0.75)
-    plt.plot([1995, 2014], [np.average(series[-20:]), np.average(series[-20:])], 'r--', alpha=0.75)
+#    plt.plot([1890, 1910], [np.average(series[40:60]), np.average(series[40:60])], 'b--', alpha=0.75)
+#    plt.plot([1995, 2014], [np.average(series[-20:]), np.average(series[-20:])], 'r--', alpha=0.75)
 
     plt.title('May Prect over {}'.format(name0), loc='left', fontdict=font)
     plt.title('CESM2-LE', loc='right', fontdict=font)

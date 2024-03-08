@@ -18,6 +18,7 @@ def read_all_files(inpath):
             all_files_filter.append(ffff)
 
     for ffff in all_files_filter:
+        print('Now it is reading {}'.format(ffff))
         f = xr.open_dataset(inpath + ffff)
 
         print('Successfully read {}'.format(ffff))
@@ -30,8 +31,9 @@ def main():
 #        '/home/sun/data/download_data/CESM2_LE/day_PRECT/cdo/',
 #        '/home/sun/data/download_data/CESM2_LE/day_u850/raw/',
 #        '/home/sun/data/download_data/CESM2_LE/day_PRECT/raw/',
-        '/home/sun/data/download_data/CESM2_LE/day_PRECT/cdo/', 
-        '/home/sun/data/download_data/CESM2_LE/day_u850/cdo/'
+#        '/home/sun/data/download_data/CESM2_LE/day_PRECT/cdo/', 
+#        '/home/sun/data/download_data/CESM2_LE/day_u850/cdo/'
+        '/home/sun/data/download_data/AerChemMIP/SSP370NTCFCH4/',
     ]
 
 #    pathlist2 = [
