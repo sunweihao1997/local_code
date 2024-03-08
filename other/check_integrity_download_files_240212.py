@@ -14,7 +14,7 @@ def read_all_files(inpath):
 
     all_files_filter = []
     for ffff in all_files:
-        if ".nc" in ffff:
+        if ".nc" in ffff and ffff[0] != '.':
             all_files_filter.append(ffff)
 
     for ffff in all_files_filter:
