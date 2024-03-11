@@ -1,16 +1,21 @@
 '''
 2024-2-27
 This script is trying to Unify the resolutions of different climate models using interpolation.
+
+2024-3-11 modified:
+change target to the daily precipitation 
 '''
 import os
 import xarray as xr
 import numpy as np
 
-data_path    = '/Volumes/Untitled/AerChemMIP/LLNL_download/postprocess/'
+data_path    = '/data/AerChemMIP/LLNL_download/daily/precipitation_postprocess/'
 
-interp_path  = '/Volumes/Untitled/AerChemMIP/LLNL_download/postprocess_samegrids/'
+interp_path  = '/data/AerChemMIP/LLNL_download/daily/precipitation_postprocess_samegrid/'
 
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'CESM2-WACCM', 'BCC-ESM1', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'MIROC6', 'CNRM-ESM']
+#models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'CESM2-WACCM', 'BCC-ESM1', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'MIROC6', 'CNRM-ESM']
+models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'MIROC6', ]
+
 
 def group_files_by_model(list_all, keyword):
     same_group = []
