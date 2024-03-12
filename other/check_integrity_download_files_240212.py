@@ -33,7 +33,8 @@ def main():
 #        '/home/sun/data/download_data/CESM2_LE/day_PRECT/raw/',
 #        '/home/sun/data/download_data/CESM2_LE/day_PRECT/cdo/', 
 #        '/home/sun/data/download_data/CESM2_LE/day_u850/cdo/'
-        '/home/sun/data/download_data/AerChemMIP/SSP370NTCFCH4/',
+#        '/home/sun/data/download_data/AerChemMIP/SSP370NTCFCH4/',
+        '/home/sun/data/download_data/AerChemMIP/day_prect/'
     ]
 
 #    pathlist2 = [
