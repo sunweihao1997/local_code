@@ -17,8 +17,8 @@ If there could be some improvement, I thought it can detect the experiment autom
 '''
 import os
 
-data_path = '/Volumes/Untitled/AerChemMIP/LLNL_download/subset/'
-end_path  = '/Volumes/Untitled/AerChemMIP/LLNL_download/postprocess/'
+data_path = '/home/sun/data/download_data/AerChemMIP/day_prect/'
+end_path  = '/home/sun/data/download_data/AerChemMIP/day_prect/cdocat/'
 files_all = os.listdir(data_path)
 
 from cdo import *
@@ -1259,17 +1259,17 @@ def cnrm_data():
 
 
 def main():
-#    ec_earth_data()
-#    gfdl_data()
-#    giss_data()
+    ec_earth_data()
+    gfdl_data()
+    giss_data()
 #    mri_data()
 #    cesm_data()
 #    bcc_data()
-#    ukesm_data()
+    ukesm_data()
     mpiesm_data()
     miroc6_data()
     noresm_data()
-    cnrm_data()
+#    cnrm_data()
 
 if __name__ == "__main__":
     main()
