@@ -20,8 +20,8 @@ If there could be some improvement, I thought it can detect the experiment autom
 '''
 import os
 
-data_path = '/Volumes/Untitled/AerChemMIP/LLNL_download/daily/precipitation/'
-end_path  = '/Volumes/Untitled/AerChemMIP/LLNL_download/daily/precipitation_postprocess/'
+data_path = '/home/sun/data/download_data/AerChemMIP/day_prect/'
+end_path  = '/home/sun/data/download_data/AerChemMIP/day_prect/cdocat/'
 files_all = os.listdir(data_path)
 
 from cdo import *
@@ -1259,20 +1259,126 @@ def cnrm_data():
         print(Model_name + 'provide no SSP370NTCFCH4 experiment!')
     print('=================================================================================================')
 
+def ipsl_data():
+
+    Model_name         = 'IPSL'
+
+    # -------------- Historical ----------------
+    ecearth_historical = return_same_model(historical_file, Model_name)
+
+    ecearth_variantid  = show_group_names(ecearth_historical)
+
+    print(f'{Model_name} historical variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_historical)}')
+
+    # Now cdo cat them into one file for each variant member
+    for vid in ecearth_variantid:
+        # 1. Sort out the same group
+        ecearth_historical_group = []
+        for fff in ecearth_historical:
+            if vid in fff:
+                ecearth_historical_group.append(fff)
+            else:
+                continue
+        print(f'It is now deal with {Model_name} historical {vid}, this subset includes {len(ecearth_historical_group)}')
+        ecearth_historical_group.sort()
+
+        # 2. Put them into cdo post-procss
+        cdo_inputfiles(ecearth_historical_group, Model_name + '_' + 'historical_' + vid + '.nc')
+    print('=================================================================================================')
+
+    # -------------- SSP370 ----------------
+    ecearth_ssp370     = return_same_model(ssp370, Model_name)
+
+    ecearth_variantid  = show_group_names(ecearth_ssp370) ; print(f'The variant-id for SSP370 is {ecearth_variantid}')
+
+    print(f'{Model_name} ssp370 variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370)}')
+
+    # Now cdo cat them into one file for each variant member
+    if len(ecearth_variantid) != 0:
+        for vid in ecearth_variantid:
+            # 1. Sort out the same group
+            ecearth_ssp370_group = []
+            for fff in ecearth_ssp370:
+                if vid in fff:
+                    ecearth_ssp370_group.append(fff)
+                else:
+                    continue
+            print(f'It is now deal with {Model_name} SSP370 {vid}, this subset includes {len(ecearth_ssp370_group)}')
+            ecearth_ssp370_group.sort()
+
+            # 2. Put them into cdo post-procss
+            cdo_inputfiles(ecearth_ssp370_group, Model_name + '_' + 'SSP370_' + vid + '.nc')
+    else:
+        print(Model_name + ' provide no SSP370 experiment!')
+    print('=================================================================================================')
+
+    # -------------- SSP370NTCF ----------------
+    ecearth_ssp370NTCF     = return_same_model(ssp370_NTCF, Model_name)
+
+    ecearth_variantid      = show_group_names(ecearth_ssp370NTCF) ; print(f'The variant-id for SSP370NTCF is {ecearth_variantid}')
+
+    print(f'{Model_name} ssp370NTCF variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370NTCF)}')
+
+    # Now cdo cat them into one file for each variant member
+    if len(ecearth_variantid) != 0:
+        for vid in ecearth_variantid:
+            # 1. Sort out the same group
+            ecearth_ssp370NTCF_group = []
+            for fff in ecearth_ssp370NTCF:
+                if vid in fff:
+                    ecearth_ssp370NTCF_group.append(fff)
+                else:
+                    continue
+            print(f'It is now deal with {Model_name} SSP370NTCF {vid}, this subset includes {len(ecearth_ssp370NTCF_group)}')
+            ecearth_ssp370NTCF_group.sort()
+
+            # 2. Put them into cdo post-procss
+            cdo_inputfiles(ecearth_ssp370NTCF_group, Model_name + '_' + 'SSP370NTCF_' + vid + '.nc')
+    else:
+        print(Model_name + 'provide no SSP370NTCF experiment!')
+    print('=================================================================================================')
+
+    # -------------- SSP370NTCFCH4 ----------------
+    ecearth_ssp370NTCFCH4     = return_same_model(ssp370_NTCFCH4, Model_name)
+
+    ecearth_variantid         = show_group_names(ecearth_ssp370NTCFCH4) ; print(f'The variant-id for SSP370NTCFCH4 is {ecearth_variantid}')
+
+    print(f'{Model_name} ssp370NTCFCH4 variantid number is {len(ecearth_variantid)}, if there is no problem the number should be {165 * (len(ecearth_variantid))}, while the total number is {len(ecearth_ssp370NTCFCH4)}')
+
+    # Now cdo cat them into one file for each variant member
+    if len(ecearth_variantid) != 0:
+        for vid in ecearth_variantid:
+            # 1. Sort out the same group
+            ecearth_ssp370NTCFCH4_group = []
+            for fff in ecearth_ssp370NTCFCH4:
+                if vid in fff:
+                    ecearth_ssp370NTCFCH4_group.append(fff)
+                else:
+                    continue
+            print(f'It is now deal with {Model_name} SSP370NTCFCH4 {vid}, this subset includes {len(ecearth_ssp370NTCFCH4_group)}')
+            ecearth_ssp370NTCFCH4_group.sort()
+
+            # 2. Put them into cdo post-procss
+            cdo_inputfiles(ecearth_ssp370NTCFCH4_group, Model_name + '_' + 'SSP370NTCFCH4_' + vid + '.nc')
+    else:
+        print(Model_name + 'provide no SSP370NTCFCH4 experiment!')
+    print('=================================================================================================')
+
 
 
 def main():
-    ec_earth_data()
-    gfdl_data()
-    giss_data()
+#    ec_earth_data()
+#    gfdl_data()
+#    giss_data()
 #    mri_data()
 #    cesm_data()
 #    bcc_data()
-    ukesm_data()
-    mpiesm_data()
-    miroc6_data()
-    noresm_data()
+#    ukesm_data()
+#    mpiesm_data()
+#    miroc6_data()
+#    noresm_data()
 #    cnrm_data()
+    ipsl_data()
 
 if __name__ == "__main__":
     main()

@@ -4,18 +4,23 @@ This script is trying to Unify the resolutions of different climate models using
 
 2024-3-11 modified:
 change target to the daily precipitation 
+
+2024-3-13 modified:
+Due to the large size of the EC-Earth, I change the time slice for only 1950-2014
+
 '''
 import os
 import xarray as xr
 import numpy as np
 
-data_path    = '/data/AerChemMIP/LLNL_download/daily/precipitation_postprocess/'
+data_path    = '/home/sun/data/download_data/AerChemMIP/day_prect/cdocat/'
 
-interp_path  = '/data/AerChemMIP/LLNL_download/daily/precipitation_postprocess_samegrid/'
+interp_path  = '/home/sun/data/download_data/AerChemMIP/day_prect/cdo_cat_samegrid_linear/'
 
 #models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'CESM2-WACCM', 'BCC-ESM1', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'MIROC6', 'CNRM-ESM']
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'MIROC6', ]
 
+year_range = np.linspace(1950, 2014, 2014 - 1950 + 1)
 
 def group_files_by_model(list_all, keyword):
     same_group = []
@@ -46,7 +51,7 @@ def unify_lat_lon(f0, new_lat, new_lon, filename):
     old_lon   = f0['lon'].data
     time_data = f0['time'].data
 
-    f0_interp = f0.interp(lat = new_lat, lon=new_lon, method='slinear')
+    f0_interp = f0.interp(lat = new_lat, lon=new_lon,)
 
     f0_interp.to_netcdf(interp_path + filename)
 
@@ -83,15 +88,23 @@ def main():
 
     # 3. Interpolate
     # 1.5 x 1.5 resolution
-    new_lat = np.linspace(-90, 90, 121)
-    new_lon = np.linspace(0, 360, 241)
+    new_lat = np.linspace(-90, 90, 91)
+    new_lon = np.linspace(0, 360, 181)
 
     for fff in files_all:
-        print(f'Now it is dealing with {fff}')
         if fff[0] == '.':
             continue
         else:
-            ff = xr.open_dataset(data_path + fff)
+            ff0 = xr.open_dataset(data_path + fff)
+            if 'historical' in fff:
+                ff  = ff0.sel(time=ff0.time.dt.year.isin(year_range))
+            else:
+                ff  = ff0
+
+            del ff0
+
+            print(f'Now it is dealing with {fff}')
+
             unify_lat_lon(ff, new_lat, new_lon, fff)
 
             print(f'Successfully interpolate the file {fff}')

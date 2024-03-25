@@ -1,8 +1,7 @@
 '''
-2024-3-11
-This script is to calculate the spatial onset dates based on BinWang (2002) criterion
+2024-3-17
+This script is to calculate the spatial withdraw dates based on BinWang (2002) criterion
 
-cititation: Onset of the summer monsoon over the Indochina Peninsula: Climatology and interannual variations
 
 '''
 import xarray as xr
@@ -42,15 +41,18 @@ def return_1year_data(f0, year_num):
 
     return f0_year
 
-def judge_monsoon_onset(pr_series, start=90, threshold=5, thresholdday=10):
+def judge_monsoon_onset(pr_series, start=359, threshold=5, thresholdday=10):
     '''
         The input is series of precipitation, start from the 90th day
     '''
-    for i in range(0, 220):
+    for i in range(0, 180):
 #        if pr_series[start + i] -  np.average(pr_series[0:30])< threshold:
 #            continue
-        if np.average(pr_series[start + i : start + i +5]) - np.average(pr_series[0:30]) < threshold :
+        if (np.average(pr_series[start - i - 5 : start - i]) - np.average(pr_series[0:30])) < threshold:
             continue
+
+#        elif (np.average(pr_series[start - i - 5 -5: start - i - 5]) - np.average(pr_series[0:30]) > threshold):
+#            continue 
 #        elif np.sum(pr_series[start +i : start + i + 20] > threshold) < 5:
 #            continue
 #        elif (np.average(pr_series[start + i : start + i +5]) - np.average(pr_series[0:30])) < 4.:
@@ -59,7 +61,7 @@ def judge_monsoon_onset(pr_series, start=90, threshold=5, thresholdday=10):
         else:
             break
 
-    return start + i
+    return start - i 
             
 def generate_onset_array(f0,):
 
@@ -96,9 +98,9 @@ onset_ntcf = np.nanmean(onset_array_ntcf, axis=0)
 
 ncfile  =  xr.Dataset(
     {
-        "onset_hist":     (["lat", "lon"], onset_hist),       
-        "onset_ssp3":     (["lat", "lon"], onset_ssp3),       
-        "onset_ntcf":     (["lat", "lon"], onset_ntcf),       
+        "withdraw_hist":     (["lat", "lon"], onset_hist),       
+        "withdraw_ssp3":     (["lat", "lon"], onset_ssp3),       
+        "withdraw_ntcf":     (["lat", "lon"], onset_ntcf),       
     },
     coords={
         "lat":  (["lat"],  f0.lat.data),
@@ -107,7 +109,7 @@ ncfile  =  xr.Dataset(
     )
 
 
-ncfile.to_netcdf('/home/sun/data/process/analysis/AerChem/' + 'modelmean_onset_day_threshold4.nc')
+ncfile.to_netcdf('/home/sun/data/process/analysis/AerChem/' + 'modelmean_withdraw_day_threshold4_reverse.nc')
 
 #f0 = xr.open_dataset('/home/sun/data/process/analysis/AerChem/multiple_model_climate_prect_daily.nc').sel(lat=slice(10, 30), lon=slice(105, 120))
 

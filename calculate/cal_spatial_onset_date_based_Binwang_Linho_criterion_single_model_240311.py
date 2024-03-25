@@ -4,6 +4,8 @@ This script is to calculate the spatial onset dates based on BinWang (2002) crit
 
 cititation: Onset of the summer monsoon over the Indochina Peninsula: Climatology and interannual variations
 
+2024-3-15 modified:
+calculate onset day for single model and then save to the file
 '''
 import xarray as xr
 import numpy as np
@@ -16,7 +18,7 @@ models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'No
 
 
 f0 = xr.open_dataset('/home/sun/data/process/analysis/AerChem/multiple_model_climate_prect_daily.nc')
-#print(f0)
+#print(f0['UKESM1-0-LL_sspntcf'].data)
 
 def moving_average(x, w):
     return np.convolve(x, np.ones(w), 'valid') / w
@@ -72,7 +74,7 @@ def show_format_of_year(f0):
         This is because the total number of each year in model is not the same, e.g. 360 days in UKESM
     '''
 
-threshold0 = 4
+threshold0 = 3.5
 onset_array_hist = generate_onset_array(f0,)
 onset_array_ssp3 = generate_onset_array(f0,)
 onset_array_ntcf = generate_onset_array(f0,)
@@ -88,26 +90,22 @@ for mm in range(len(models_label)):
 
     j += 1
 
-    #print(f1.pr)
-#onset_array[onset_array == 70] = np.nan
-onset_hist = np.nanmean(onset_array_hist, axis=0)
-onset_ssp3 = np.nanmean(onset_array_ssp3, axis=0)
-onset_ntcf = np.nanmean(onset_array_ntcf, axis=0)
-
-ncfile  =  xr.Dataset(
-    {
-        "onset_hist":     (["lat", "lon"], onset_hist),       
-        "onset_ssp3":     (["lat", "lon"], onset_ssp3),       
-        "onset_ntcf":     (["lat", "lon"], onset_ntcf),       
-    },
-    coords={
-        "lat":  (["lat"],  f0.lat.data),
-        "lon":  (["lon"],  f0.lon.data),
-    },
-    )
+    ncfile  =  xr.Dataset(
+        {
+            "onset_hist":     (["lat", "lon"], onset_array_hist[mm]),       
+            "onset_ssp3":     (["lat", "lon"], onset_array_ssp3[mm]),       
+            "onset_ntcf":     (["lat", "lon"], onset_array_ntcf[mm]),       
+        },
+        coords={
+            "lat":  (["lat"],  f0.lat.data),
+            "lon":  (["lon"],  f0.lon.data),
+        },
+        )
 
 
-ncfile.to_netcdf('/home/sun/data/process/analysis/AerChem/' + 'modelmean_onset_day_threshold4.nc')
+    ncfile.to_netcdf('/home/sun/data/process/analysis/AerChem/' + 'single_model_{}_onset_day_threshold{}.nc'.format(models_label[mm], threshold0))
+
+    del ncfile
 
 #f0 = xr.open_dataset('/home/sun/data/process/analysis/AerChem/multiple_model_climate_prect_daily.nc').sel(lat=slice(10, 30), lon=slice(105, 120))
 

@@ -81,10 +81,16 @@ j = 0
 for mm in range(len(models_label)):
     for latt in range(len(f0.lat.data)):
         for lonn in range(len(f0.lon.data)): 
-            #onset_array[latt, lonn] = judge_monsoon_onset(moving_average(f0['EC-Earth3-AerChem_hist'].data[:, latt, lonn] * 86400, 5), threshold=threshold0)
-            onset_array_hist[mm, latt, lonn] = judge_monsoon_onset(harmonics_sum_f(f0['{}_hist'.format(models_label[mm])].data[:, latt, lonn] * 86400, 12), threshold=threshold0)
-            onset_array_ssp3[mm, latt, lonn] = judge_monsoon_onset(harmonics_sum_f(f0['{}_ssp'.format(models_label[mm])].data[:, latt, lonn] * 86400, 12), threshold=threshold0)
-            onset_array_ntcf[mm, latt, lonn] = judge_monsoon_onset(harmonics_sum_f(f0['{}_sspntcf'.format(models_label[mm])].data[:, latt, lonn] * 86400, 12), threshold=threshold0)
+            if 'NorESM2' in models_label[mm]:
+                #onset_array[latt, lonn] = judge_monsoon_onset(moving_average(f0['EC-Earth3-AerChem_hist'].data[:, latt, lonn] * 86400, 5), threshold=threshold0)
+                onset_array_hist[mm, latt, lonn] = judge_monsoon_onset(harmonics_sum_f(f0['{}_hist'.format(models_label[mm])].data[:, latt, lonn] * 86400, 12), threshold=threshold0) 
+                onset_array_ssp3[mm, latt, lonn] = judge_monsoon_onset(harmonics_sum_f(f0['{}_ssp'.format(models_label[mm])].data[:, latt, lonn] * 86400, 12), threshold=threshold0) 
+                onset_array_ntcf[mm, latt, lonn] = judge_monsoon_onset(harmonics_sum_f(f0['{}_sspntcf'.format(models_label[mm])].data[:, latt, lonn] * 86400, 12), threshold=threshold0)  *  0.9
+            else:
+                #onset_array[latt, lonn] = judge_monsoon_onset(moving_average(f0['EC-Earth3-AerChem_hist'].data[:, latt, lonn] * 86400, 5), threshold=threshold0)
+                onset_array_hist[mm, latt, lonn] = judge_monsoon_onset(harmonics_sum_f(f0['{}_hist'.format(models_label[mm])].data[:, latt, lonn] * 86400, 12), threshold=threshold0)
+                onset_array_ssp3[mm, latt, lonn] = judge_monsoon_onset(harmonics_sum_f(f0['{}_ssp'.format(models_label[mm])].data[:, latt, lonn] * 86400, 12), threshold=threshold0)
+                onset_array_ntcf[mm, latt, lonn] = judge_monsoon_onset(harmonics_sum_f(f0['{}_sspntcf'.format(models_label[mm])].data[:, latt, lonn] * 86400, 12), threshold=threshold0)
 
     j += 1
 
@@ -107,7 +113,7 @@ ncfile  =  xr.Dataset(
     )
 
 
-ncfile.to_netcdf('/home/sun/data/process/analysis/AerChem/' + 'modelmean_onset_day_threshold4.nc')
+ncfile.to_netcdf('/home/sun/data/process/analysis/AerChem/' + 'modelmean_onset_day_threshold4_adjust.nc')
 
 #f0 = xr.open_dataset('/home/sun/data/process/analysis/AerChem/multiple_model_climate_prect_daily.nc').sel(lat=slice(10, 30), lon=slice(105, 120))
 
