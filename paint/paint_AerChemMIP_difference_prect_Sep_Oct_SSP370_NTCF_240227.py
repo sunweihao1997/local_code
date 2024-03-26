@@ -19,8 +19,8 @@ file0     = xr.open_dataset(data_path + diff_f)
 lat       = file0.lat.data
 lon       = file0.lon.data
 
-May_diff  = file0.sel(time=file0.time.dt.month.isin([5]))
-Jun_diff  = file0.sel(time=file0.time.dt.month.isin([6]))
+May_diff  = file0.sel(time=file0.time.dt.month.isin([9]))
+Jun_diff  = file0.sel(time=file0.time.dt.month.isin([10]))
 
 p_value_may = np.zeros((121, 241))
 p_value_Jun = np.zeros((121, 241))
@@ -58,7 +58,7 @@ def paint_pentad_circulation(prect, p_value):
 
     j  =  0
 
-    left_title = ['May', 'Jun'] ; right_title = 'SSP370 - SSP370NTCF'
+    left_title = ['Sep', 'Oct'] ; right_title = 'SSP370 - SSP370NTCF'
     # ------       paint    ------------
     for col in range(2):
         row = 0
@@ -86,7 +86,7 @@ def paint_pentad_circulation(prect, p_value):
     cb  =  fig1.colorbar(im, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
     cb.ax.tick_params(labelsize=20)
 
-    plt.savefig("/data/paint/modelgroup_segment_adjust_spatial_SSP370-SSP370NTCF_precip.png")
+    plt.savefig("/data/paint/modelgroup_segment_adjust_spatial_Sep_Oct_SSP370-SSP370NTCF_precip.png")
 
 def main():
     prect0 = [np.average(May_diff['pr_ssp'].data[-20:], axis=0) - np.average(May_diff['pr_ntcf'].data[-20:], axis=0), np.average(Jun_diff['pr_ssp'].data[-20:], axis=0) - np.average(Jun_diff['pr_ntcf'].data[-20:], axis=0)]

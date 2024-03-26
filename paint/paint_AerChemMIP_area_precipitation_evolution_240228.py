@@ -17,7 +17,7 @@ import scipy.stats as stats
 import pymannkendall as mk
 
 data_path = '/data/AerChemMIP/LLNL_download/model_average/'
-file_name = 'CMIP6_model_historical_SSP370_SSP370NTCF_monthly_precipitation_2015-2050.nc'
+file_name = 'CMIP6_model_historical_SSP370_SSP370NTCF_monthly_precipitation_2015-2050_new.nc'
 
 def calculate_evolution_extent(extent, mon):
     files      = xr.open_dataset(data_path + file_name).sel(lat=slice(extent[0], extent[1]), lon=slice(extent[2], extent[3]))
@@ -46,7 +46,7 @@ def calculate_evolution_extent(extent, mon):
 #        ssp_series[i] = np.average(file0['diff_pr_ssp'].data[i]) 
 #        ntcf_series[i]= np.average(file0['diff_pr_ntcf'].data[i])
 
-    print(ssp_series_std)
+#    print(ssp_series_std)
 ##    ntcf_series[-4] = np.average(ntcf_series) * 0.9
 ##    ntcf_series[-12] = ntcf_series[-12] *1.12
 ##
@@ -106,12 +106,13 @@ def paint_evolution_monthly_precip(ssp, sspntcf, ssp_std, ntcf_std, left_string,
 def main():
     month_may      = 5
     month_jun      = 6
-    extent_bob = [5, 20, 90, 100]
+    extent_bob = [5, 20, 90, 105]
     extent_scs = [10, 20, 110, 120]
     extent_se  = [0, 25, 90., 120]
+    extent_se  = [10, 20, 90., 120]
 
     # May BOB
-#    ssp_bob_may, ntcf_bob_may = calculate_evolution_extent(extent_bob, month_may)
+#    ssp_bob_may, ntcf_bob_may, bobstd5, bobstd6 = calculate_evolution_extent(extent_bob, month_may)
 #
 #    # May SCS
 #    ssp_scs_may, ntcf_scs_may = calculate_evolution_extent(extent_scs, month_may)
@@ -125,22 +126,21 @@ def main():
     # May SE Asia
     ssp_se_may, ntcf_se_may, sspstd5, ntcfstd5 = calculate_evolution_extent(extent_se, month_may)
 
-    extent_se  = [0, 25, 90., 120]
     ssp_se_jun, ntcf_se_jun, sspstd6, ntcfstd6 = calculate_evolution_extent(extent_se, month_jun)
 
     
 
     # plot
-#    paint_evolution_monthly_precip(ssp_bob_may, ntcf_bob_may, 'BOB', 'May', 'May', '5_15_90_100', 'modelmean')
-#    paint_evolution_monthly_precip(ssp_bob_jun, ntcf_bob_jun, 'BOB', 'Jun', 'Jun', '5_15_90_100', 'modelmean')
+#    paint_evolution_monthly_precip(ssp_bob_may, ntcf_bob_may, 'BOB', 'May', 'May', '5_20_90_105', 'modelmean')
+#    paint_evolution_monthly_precip(ssp_bob_jun, ntcf_bob_jun, 'BOB', 'Jun', 'Jun', '5_20_90_105', 'modelmean')
 #    paint_evolution_monthly_precip(ssp_scs_may, ntcf_scs_may, 'SCS', 'May', 'May', '5_15_110_120', 'modelmean')
 #    paint_evolution_monthly_precip(ssp_scs_jun, ntcf_scs_jun, 'SCS', 'Jun', 'Jun', '5_15_110_120', 'modelmean')
-#    paint_evolution_monthly_precip(0.5 * (ssp_se_may + ssp_se_jun), 0.5 * (ntcf_se_may + ntcf_se_jun), 0.4*sspstd5+0.6*sspstd6, 0.4*ntcfstd5+0.6*ntcfstd6, '(5-25N, 90-120E)', 'May+June', 'May+June', '5_25_90_120', 'modelmean')
-    paint_evolution_monthly_precip(ssp_se_may, ntcf_se_may, 0.5*(sspstd5), 0.5*(ntcfstd5), '(0-25N, 90-120E)', 'May', 'May', '0_25_90_120', 'modelmean')
+    paint_evolution_monthly_precip(0.5 * (ssp_se_may + ssp_se_jun), 0.5 * (ntcf_se_may + ntcf_se_jun), 0.5*sspstd5+0.5*sspstd6, 0.5*ntcfstd5+0.5*ntcfstd6, '(5-20N, 90-120E)', 'May+June', 'May+June', '5_20_90_120', 'modelmean')
+#    paint_evolution_monthly_precip(ssp_se_may, ntcf_se_may, 0.5*(sspstd5), 0.5*(ntcfstd5), '(10-20N, 90-120E)', 'May', 'May', '10_20_90_120', 'modelmean')
 #    extent_se  = [10, 20, 90, 120]
 #    # May SE Asia
 #    ssp_se_jun, ntcf_se_jun = calculate_evolution_extent(extent_se, month_jun)
-    paint_evolution_monthly_precip(ssp_se_jun, ntcf_se_jun, 0.5*sspstd6, 0.5*ntcfstd6, '(0-25N, 90-120E)', 'Jun', 'Jun', '0_25_90_120', 'modelmean')
+#    paint_evolution_monthly_precip(ssp_se_jun, ntcf_se_jun, 0.5*sspstd6, 0.5*ntcfstd6, '(10-20N, 90-120E)', 'Jun', 'Jun', '10_20_90_120', 'modelmean')
 
 
 if __name__ == '__main__':
