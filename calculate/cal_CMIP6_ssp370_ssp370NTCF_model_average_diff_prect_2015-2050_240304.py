@@ -13,7 +13,7 @@ import os
 src_path = '/data/AerChemMIP/LLNL_download/postprocess_samegrids/'
 out_path = '/data/AerChemMIP/LLNL_download/model_average/'
 
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'MIROC6', 'MPI-ESM-1-2-HAM', 'GFDL-ESM4', 'MRI-ESM2']
+models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'MIROC6', 'MPI-ESM-1-2-HAM', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G',]
 #models_label = ['EC-Earth3-AerChem', 'GFDL-ESM4', 'GISS-E2-1-G', 'MIROC6', 'MPI-ESM-1-2-HAM',]
 #models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G',  'MIROC6', 'CNRM-ESM']
 #models_label = ['EC-Earth3-AerChem', 'GISS-E2-1-G',]
