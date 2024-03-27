@@ -12,7 +12,7 @@ import os
 import sys
 import cftime
 
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','NorESM2-LM', 'MPI-ESM-1-2-HAM', 'MIROC6', ]
+models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', ]
 
 path_src = '/home/sun/data/download_data/AerChemMIP/day_prect/cdo_cat_samegrid/'
 
@@ -157,8 +157,8 @@ def main():
         print('Now the dealing with {} has all completed!'.format(modelname))
         print('=============================================================')
         
-    dataset_allmodel.attrs['description'] = 'Created on 2024-3-14. This file includes the daily precipitation for single model, covering historical, SSP370 and SSP270lowNTCF experiments. All the variables is climatological, which is 1980-2014 for hist and 2031-2050 for SSP370'
-    dataset_allmodel.to_netcdf('/home/sun/data/process/analysis/AerChem/multiple_model_climate_prect_daily.nc')
+    dataset_allmodel.attrs['description'] = 'Created on 2024-3-14. This file includes the daily precipitation for single model, covering historical, SSP370 and SSP270lowNTCF experiments. All the variables is climatological, which is 1980-2014 for hist and 2031-2050 for SSP370. The new means it dropped the NorESM.'
+    dataset_allmodel.to_netcdf('/home/sun/data/process/analysis/AerChem/multiple_model_climate_prect_daily_new.nc')
         
 
         
