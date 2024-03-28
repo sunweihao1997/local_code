@@ -11,11 +11,11 @@ from scipy.fft import fft, ifft
 
 import matplotlib.pyplot as plt
 
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'MIROC6', ]
+models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'MPI-ESM-1-2-HAM', 'MIROC6', ]
 #models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'MPI-ESM-1-2-HAM', 'MIROC6', ]
 
 
-f0 = xr.open_dataset('/home/sun/data/process/analysis/AerChem/multiple_model_climate_prect_daily.nc')
+f0 = xr.open_dataset('/home/sun/data/process/analysis/AerChem/multiple_model_climate_prect_daily_new.nc')
 #print(f0)
 
 def moving_average(x, w):
@@ -49,7 +49,7 @@ def judge_monsoon_onset(pr_series, start=90, threshold=5, thresholdday=10):
     for i in range(0, 220):
 #        if pr_series[start + i] -  np.average(pr_series[0:30])< threshold:
 #            continue
-        if np.average(pr_series[start + i : start + i +5]) - np.average(pr_series[0:30]) < threshold :
+        if np.average(pr_series[start + i - 2 : start + i + 3]) - np.average(pr_series[0:30]) < threshold :
             continue
 #        elif np.sum(pr_series[start +i : start + i + 20] > threshold) < 5:
 #            continue
@@ -106,8 +106,8 @@ ncfile  =  xr.Dataset(
     },
     )
 
-
-ncfile.to_netcdf('/home/sun/data/process/analysis/AerChem/' + 'modelmean_onset_day_threshold4.nc')
+ncfile.attrs['description'] = 'The new means it dropped NorESM'
+ncfile.to_netcdf('/home/sun/data/process/analysis/AerChem/' + 'modelmean_onset_day_threshold4_new.nc')
 
 #f0 = xr.open_dataset('/home/sun/data/process/analysis/AerChem/multiple_model_climate_prect_daily.nc').sel(lat=slice(10, 30), lon=slice(105, 120))
 

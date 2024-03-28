@@ -105,17 +105,17 @@ f0_tp     = f_p.sel(lon=slice(80, 105),     lat=slice(27.5, 37.5))
 f0_se     = f_p.sel(lon=slice(110, 122.5),  lat=slice(22.5, 33))
 
 
-ia_precip = [cal_pentad_climate_weighted(f0_ia, 'hist_pentad_modelmean', f0_ia.lat.data, f0_ia.lon.data), cal_pentad_climate_weighted(f0_ia, 'ssp3_pentad_modelmean', f0_ia.lat.data, f0_ia.lon.data), cal_pentad_climate_weighted(f0_ia, 'ntcf_pentad_modelmean', f0_ia.lat.data, f0_ia.lon.data)]
-ic_precip = [cal_pentad_climate_weighted(f0_ic, 'hist_pentad_modelmean', f0_ic.lat.data, f0_ic.lon.data), cal_pentad_climate_weighted(f0_ic, 'ssp3_pentad_modelmean', f0_ic.lat.data, f0_ic.lon.data), cal_pentad_climate_weighted(f0_ic, 'ntcf_pentad_modelmean', f0_ic.lat.data, f0_ic.lon.data)]
-sc_precip = [cal_pentad_climate_weighted(f0_sc, 'hist_pentad_modelmean', f0_sc.lat.data, f0_sc.lon.data), cal_pentad_climate_weighted(f0_sc, 'ssp3_pentad_modelmean', f0_sc.lat.data, f0_sc.lon.data), cal_pentad_climate_weighted(f0_sc, 'ntcf_pentad_modelmean', f0_sc.lat.data, f0_sc.lon.data)]
-tp_precip = [cal_pentad_climate_weighted(f0_tp, 'hist_pentad_modelmean', f0_tp.lat.data, f0_tp.lon.data), cal_pentad_climate_weighted(f0_tp, 'ssp3_pentad_modelmean', f0_tp.lat.data, f0_tp.lon.data), cal_pentad_climate_weighted(f0_tp, 'ntcf_pentad_modelmean', f0_tp.lat.data, f0_tp.lon.data)]
-se_precip = [cal_pentad_climate_weighted(f0_se, 'hist_pentad_modelmean', f0_se.lat.data, f0_se.lon.data), cal_pentad_climate_weighted(f0_se, 'ssp3_pentad_modelmean', f0_se.lat.data, f0_se.lon.data), cal_pentad_climate_weighted(f0_se, 'ntcf_pentad_modelmean', f0_se.lat.data, f0_se.lon.data)]
+#ia_precip = [cal_pentad_climate_weighted(f0_ia, 'ssp3_pentad_modelmean', f0_ia.lat.data, f0_ia.lon.data), cal_pentad_climate_weighted(f0_ia, 'ntcf_pentad_modelmean', f0_ia.lat.data, f0_ia.lon.data)]
+#ic_precip = [cal_pentad_climate_weighted(f0_ic, 'ssp3_pentad_modelmean', f0_ic.lat.data, f0_ic.lon.data), cal_pentad_climate_weighted(f0_ic, 'ntcf_pentad_modelmean', f0_ic.lat.data, f0_ic.lon.data)]
+#sc_precip = [cal_pentad_climate_weighted(f0_sc, 'ssp3_pentad_modelmean', f0_sc.lat.data, f0_sc.lon.data), cal_pentad_climate_weighted(f0_sc, 'ntcf_pentad_modelmean', f0_sc.lat.data, f0_sc.lon.data)]
+#tp_precip = [cal_pentad_climate_weighted(f0_tp, 'ssp3_pentad_modelmean', f0_tp.lat.data, f0_tp.lon.data), cal_pentad_climate_weighted(f0_tp, 'ntcf_pentad_modelmean', f0_tp.lat.data, f0_tp.lon.data)]
+#se_precip = [cal_pentad_climate_weighted(f0_se, 'ssp3_pentad_modelmean', f0_se.lat.data, f0_se.lon.data), cal_pentad_climate_weighted(f0_se, 'ntcf_pentad_modelmean', f0_se.lat.data, f0_se.lon.data)]
 
-#ia_precip = [cal_pentad_climate(f0_ia, 'ssp3_pentad_modelmean',), cal_pentad_climate(f0_ia, 'ntcf_pentad_modelmean',)]
-#ic_precip = [cal_pentad_climate(f0_ic, 'ssp3_pentad_modelmean',), cal_pentad_climate(f0_ic, 'ntcf_pentad_modelmean',)]
-#sc_precip = [cal_pentad_climate(f0_sc, 'ssp3_pentad_modelmean',), cal_pentad_climate(f0_sc, 'ntcf_pentad_modelmean',)]
-#tp_precip = [cal_pentad_climate(f0_tp, 'ssp3_pentad_modelmean',), cal_pentad_climate(f0_tp, 'ntcf_pentad_modelmean',)]
-#se_precip = [cal_pentad_climate(f0_se, 'ssp3_pentad_modelmean',), cal_pentad_climate(f0_se, 'ntcf_pentad_modelmean',)]
+ia_precip = [cal_pentad_climate(f0_ia, 'ssp3_pentad_modelmean',), cal_pentad_climate(f0_ia, 'ntcf_pentad_modelmean',)]
+ic_precip = [cal_pentad_climate(f0_ic, 'ssp3_pentad_modelmean',), cal_pentad_climate(f0_ic, 'ntcf_pentad_modelmean',)]
+sc_precip = [cal_pentad_climate(f0_sc, 'ssp3_pentad_modelmean',), cal_pentad_climate(f0_sc, 'ntcf_pentad_modelmean',)]
+tp_precip = [cal_pentad_climate(f0_tp, 'ssp3_pentad_modelmean',), cal_pentad_climate(f0_tp, 'ntcf_pentad_modelmean',)]
+se_precip = [cal_pentad_climate(f0_se, 'ssp3_pentad_modelmean',), cal_pentad_climate(f0_se, 'ntcf_pentad_modelmean',)]
 #print(ia_precip[0])
 
 # ------------ paint from chatGPT ------------------
@@ -126,12 +126,12 @@ import plotly.graph_objects as go
 
 # ----------- Indian --------------
 # 创建柱状图
-bar1 = go.Bar(x=np.linspace(1, 73, 73), y=(ia_precip[0 + 1] - ia_precip[0]) * 86400, name='SSP370')
-bar2 = go.Bar(x=np.linspace(1, 73, 73), y=(ia_precip[1 + 1] - ia_precip[0]) * 86400, name='SSP370lowNTCF')
+bar1 = go.Bar(x=np.linspace(1, 73, 73), y=ia_precip[0] * 86400, name='SSP370')
+bar2 = go.Bar(x=np.linspace(1, 73, 73), y=ia_precip[1] * 86400, name='SSP370lowNTCF')
 
 # 创建曲线图
-line1 = go.Scatter(x=np.linspace(1, 73, 73), y=(ia_precip[0 + 1] - ia_precip[0]) * 86400, mode='lines', line=dict(color='blue'), name='SSP370')
-line2 = go.Scatter(x=np.linspace(1, 73, 73), y=(ia_precip[1 + 1] - ia_precip[0]) * 86400, mode='lines', line=dict(color='red'),  name='SSP370lowNTCF')
+line1 = go.Scatter(x=np.linspace(1, 73, 73), y=ia_precip[0] * 86400, mode='lines', line=dict(color='blue'), name='SSP370')
+line2 = go.Scatter(x=np.linspace(1, 73, 73), y=ia_precip[1] * 86400, mode='lines', line=dict(color='red'),  name='SSP370lowNTCF')
 
 # 将柱状图和曲线图组合在一起
 fig = go.Figure(data=[bar1, bar2, line1, line2])
@@ -146,12 +146,12 @@ del fig
 
 # ----------- Indochina --------------
 # 创建柱状图
-bar1 = go.Bar(x=np.linspace(1, 73, 73), y=(ic_precip[0 + 1] - ic_precip[0]) * 86400, name='SSP370')
-bar2 = go.Bar(x=np.linspace(1, 73, 73), y=(ic_precip[1 + 1] - ic_precip[0]) * 86400, name='SSP370lowNTCF')
+bar1 = go.Bar(x=np.linspace(1, 73, 73), y=ic_precip[0] * 86400, name='SSP370')
+bar2 = go.Bar(x=np.linspace(1, 73, 73), y=ic_precip[1] * 86400, name='SSP370lowNTCF')
 
 # 创建曲线图
-line1 = go.Scatter(x=np.linspace(1, 73, 73), y=(ic_precip[0 + 1] - ic_precip[0]) * 86400, mode='lines', line=dict(color='blue'), name='SSP370')
-line2 = go.Scatter(x=np.linspace(1, 73, 73), y=(ic_precip[1 + 1] - ic_precip[0]) * 86400, mode='lines', line=dict(color='red'),  name='SSP370lowNTCF')
+line1 = go.Scatter(x=np.linspace(1, 73, 73), y=ic_precip[0] * 86400, mode='lines', line=dict(color='blue'), name='SSP370')
+line2 = go.Scatter(x=np.linspace(1, 73, 73), y=ic_precip[1] * 86400, mode='lines', line=dict(color='red'),  name='SSP370lowNTCF')
 
 # 将柱状图和曲线图组合在一起
 fig = go.Figure(data=[bar1, bar2, line1, line2])
@@ -164,12 +164,12 @@ fig.write_image("/home/sun/paint/AerMIP/pentad_evolution_indochina.png")
 
 # ----------- SCS --------------
 # 创建柱状图
-bar1 = go.Bar(x=np.linspace(1, 73, 73), y=(sc_precip[0 + 1] - sc_precip[0]) * 86400, name='SSP370')
-bar2 = go.Bar(x=np.linspace(1, 73, 73), y=(sc_precip[1 + 1] - sc_precip[0]) * 86400, name='SSP370lowNTCF')
+bar1 = go.Bar(x=np.linspace(1, 73, 73), y=sc_precip[0] * 86400, name='SSP370')
+bar2 = go.Bar(x=np.linspace(1, 73, 73), y=sc_precip[1] * 86400, name='SSP370lowNTCF')
 
 # 创建曲线图
-line1 = go.Scatter(x=np.linspace(1, 73, 73), y=(sc_precip[0 + 1] - sc_precip[0]) * 86400, mode='lines', line=dict(color='blue'), name='SSP370')
-line2 = go.Scatter(x=np.linspace(1, 73, 73), y=(sc_precip[1 + 1] - sc_precip[0]) * 86400, mode='lines', line=dict(color='red'),  name='SSP370lowNTCF')
+line1 = go.Scatter(x=np.linspace(1, 73, 73), y=sc_precip[0] * 86400, mode='lines', line=dict(color='blue'), name='SSP370')
+line2 = go.Scatter(x=np.linspace(1, 73, 73), y=sc_precip[1] * 86400, mode='lines', line=dict(color='red'),  name='SSP370lowNTCF')
 
 # 将柱状图和曲线图组合在一起
 fig = go.Figure(data=[bar1, bar2, line1, line2])
@@ -182,12 +182,12 @@ fig.write_image("/home/sun/paint/AerMIP/pentad_evolution_scs.png")
 
 # ----------- tp --------------
 # 创建柱状图
-bar1 = go.Bar(x=np.linspace(1, 73, 73), y=(tp_precip[0 + 1] - tp_precip[0]) * 86400, name='SSP370')
-bar2 = go.Bar(x=np.linspace(1, 73, 73), y=(tp_precip[1 + 1] - tp_precip[0]) * 86400, name='SSP370lowNTCF')
+bar1 = go.Bar(x=np.linspace(1, 73, 73), y=tp_precip[0] * 86400, name='SSP370')
+bar2 = go.Bar(x=np.linspace(1, 73, 73), y=tp_precip[1] * 86400, name='SSP370lowNTCF')
 
 # 创建曲线图
-line1 = go.Scatter(x=np.linspace(1, 73, 73), y=(tp_precip[0 + 1] - tp_precip[0]) * 86400, mode='lines', line=dict(color='blue'), name='SSP370')
-line2 = go.Scatter(x=np.linspace(1, 73, 73), y=(tp_precip[1 + 1] - tp_precip[0]) * 86400, mode='lines', line=dict(color='red'),  name='SSP370lowNTCF')
+line1 = go.Scatter(x=np.linspace(1, 73, 73), y=tp_precip[0] * 86400, mode='lines', line=dict(color='blue'), name='SSP370')
+line2 = go.Scatter(x=np.linspace(1, 73, 73), y=tp_precip[1] * 86400, mode='lines', line=dict(color='red'),  name='SSP370lowNTCF')
 
 # 将柱状图和曲线图组合在一起
 fig = go.Figure(data=[bar1, bar2, line1, line2])
@@ -200,12 +200,12 @@ fig.write_image("/home/sun/paint/AerMIP/pentad_evolution_tp.png")
 
 # ----------- EA --------------
 # 创建柱状图
-bar1 = go.Bar(x=np.linspace(1, 73, 73), y=(se_precip[0 + 1] - se_precip[0]) * 86400, name='SSP370')
-bar2 = go.Bar(x=np.linspace(1, 73, 73), y=(se_precip[1 + 1] - se_precip[0]) * 86400, name='SSP370lowNTCF')
+bar1 = go.Bar(x=np.linspace(1, 73, 73), y=se_precip[0] * 86400, name='SSP370')
+bar2 = go.Bar(x=np.linspace(1, 73, 73), y=se_precip[1] * 86400, name='SSP370lowNTCF')
 
 # 创建曲线图
-line1 = go.Scatter(x=np.linspace(1, 73, 73), y=(se_precip[0 + 1] - se_precip[0]) * 86400, mode='lines', line=dict(color='blue'), name='SSP370')
-line2 = go.Scatter(x=np.linspace(1, 73, 73), y=(se_precip[1 + 1] - se_precip[0]) * 86400, mode='lines', line=dict(color='red'),  name='SSP370lowNTCF')
+line1 = go.Scatter(x=np.linspace(1, 73, 73), y=se_precip[0] * 86400, mode='lines', line=dict(color='blue'), name='SSP370')
+line2 = go.Scatter(x=np.linspace(1, 73, 73), y=se_precip[1] * 86400, mode='lines', line=dict(color='red'),  name='SSP370lowNTCF')
 
 # 将柱状图和曲线图组合在一起
 fig = go.Figure(data=[bar1, bar2, line1, line2])

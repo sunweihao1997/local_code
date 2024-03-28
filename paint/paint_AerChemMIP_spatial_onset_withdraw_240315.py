@@ -23,7 +23,7 @@ newcmp = ListedColormap(newcolors)
 #newcmp.set_under('white')
 #newcmp.set_over('white')
 
-f1  =  xr.open_dataset('/home/sun/data/process/analysis/AerChem/modelmean_onset_day_threshold4.nc')
+f1  =  xr.open_dataset('/home/sun/data/process/analysis/AerChem/modelmean_onset_day_threshold4_new.nc')
 f0  =  xr.open_dataset('/home/sun/data/process/analysis/AerChem/modelmean_withdraw_day_threshold4_reverse.nc')
 
 fig, ax = plt.subplots(subplot_kw={'projection': ccrs.PlateCarree()}, figsize=(20, 15))

@@ -48,7 +48,7 @@ def judge_monsoon_onset(pr_series, start=359, threshold=5, thresholdday=10):
     for i in range(0, 180):
 #        if pr_series[start + i] -  np.average(pr_series[0:30])< threshold:
 #            continue
-        if (np.average(pr_series[start - i - 5 : start - i]) - np.average(pr_series[0:30])) < threshold:
+        if (np.average(pr_series[start - i - 2 : start - i + 3]) - np.average(pr_series[0:30])) < threshold:
             continue
 
 #        elif (np.average(pr_series[start - i - 5 -5: start - i - 5]) - np.average(pr_series[0:30]) > threshold):
