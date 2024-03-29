@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from matplotlib.path import Path
 import matplotlib.patches as patches
 import scipy.stats as stats 
+from scipy.interpolate import griddata
 
 file_name = 'modelmean_total_precip_rainy_season_diff_SSP370_SSP370lowNTCF.nc'
 file_path = '/home/sun/data/process/analysis/AerChem/'
@@ -18,6 +19,41 @@ file0     = xr.open_dataset(file_path + file_name)
 
 lat       = file0.lat.data
 lon       = file0.lon.data
+
+# Here I need to intepolate to fill the nan in the china | (100, 25), 10, 8
+#print(lat[58]) ; print(lat[62])
+#print(lon[50]) ; print(lon[55])
+
+# ====================================================
+def interp_data(data):
+    n_rows, n_cols = data.shape
+    # 找到非零和零的索引位置
+    nonzero_indices = np.where(~np.isnan(data))
+    zero_indices = np.where(np.isnan(data))
+
+    # 对非零的点进行插值，准备数据点（X，Y）和值（Z）
+    points = np.array(nonzero_indices).T
+    values = data[nonzero_indices]
+
+    # 准备需要插值的点的坐标
+    grid_x, grid_y = np.mgrid[0:n_rows, 0:n_cols]
+
+    # 执行插值
+    data_interpolated = griddata(points, values, (grid_x, grid_y), method='cubic')
+
+    # 将插值结果填回原始数组（对于边界外的插值可能为nan，可选择处理或保留）
+    data[zero_indices] = np.round(data_interpolated[zero_indices])
+
+    return data
+
+total0 = file0['rain_change_total_modelmean'].data
+inten0 = file0['rain_change_intensity_modelmean'].data
+
+#print(total0[58:62, 50:55])
+total0[58:62, 50:55] = interp_data(total0[58:62, 50:55])
+inten0[58:62, 50:55] = interp_data(inten0[58:62, 50:55])
+#print(np.average(total0[58:62, 50:55]))
+
 
 def paint_diff_precip(total, intensity):
     '''
@@ -38,9 +74,12 @@ def paint_diff_precip(total, intensity):
 
     set_cartopy_tick(ax=ax1,extent=extent,xticks=np.linspace(50,150,6,dtype=int),yticks=np.linspace(-10,50,7,dtype=int),nx=1,ny=1,labelsize=25)
 
-    im  =  ax1.contourf(lon, lat, total, np.linspace(-140, 140, 15), cmap='coolwarm_r', alpha=1, extend='both')
+    im  =  ax1.contourf(lon, lat, total, np.linspace(-200, 200, 21), cmap='coolwarm_r', alpha=1, extend='both')
 
-    fig.colorbar(im, ax=ax1, location='right', anchor=(0, 0.3), shrink=0.7)
+    rect_indian = patches.Rectangle((100, 25), 10, 8, linewidth=3, edgecolor='r', facecolor='none')
+    ax1.add_patch(rect_indian)
+
+    fig.colorbar(im, ax=ax1, location='right', anchor=(0, 0.5), shrink=0.7)
 
     ax1.coastlines(resolution='10m',lw=1.65)
 
@@ -51,7 +90,7 @@ def paint_diff_precip(total, intensity):
     # ---- intensity ----
     im2  =  ax2.contourf(lon, lat, intensity, np.linspace(-1, 1, 21), cmap='coolwarm_r', alpha=1, extend='both')
 
-    fig.colorbar(im2, ax=ax2, location='right', anchor=(0, 0.3), shrink=0.7)
+    fig.colorbar(im2, ax=ax2, location='right', anchor=(0, 0.5), shrink=0.7)
 
     set_cartopy_tick(ax=ax2,extent=extent,xticks=np.linspace(50,150,6,dtype=int),yticks=np.linspace(-10,50,7,dtype=int),nx=1,ny=1,labelsize=25)
 
@@ -63,4 +102,4 @@ def paint_diff_precip(total, intensity):
     # save figure
     plt.savefig("/home/sun/paint/AerMIP/precipitation_in_rainy_season_difference_model_mean.png")
 
-paint_diff_precip(file0['rain_change_total_modelmean'].data, file0['rain_change_intensity_modelmean'].data)
+paint_diff_precip(total0, inten0)
