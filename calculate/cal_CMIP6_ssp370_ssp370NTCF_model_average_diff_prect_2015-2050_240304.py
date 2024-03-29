@@ -151,7 +151,7 @@ ncfile1['pr_hist'].attrs['units'] = 'mm day-1'
 #ncfile1['diff_pr_ssp'].attrs['units'] = 'mm day-1'
 #ncfile1['diff_pr_ntcf'].attrs['units'] = 'mm day-1'
 
-ncfile1.attrs['description'] = 'Created on 2024-3-25. This file save the CMIP6 SSP370 monthly precipitation data. The result is the multi-model average of the difference between SSP370 and SSP370NTCF. This is new edition which drop the NorESM and add the IPSL'
+ncfile1.attrs['description'] = 'Created on 2024-3-25. This file save the CMIP6 SSP370 monthly precipitation data. The result is the multi-model average of the difference between SSP370 and SSP370NTCF. This is new edition which drop the NorESM and the IPSL'
 ncfile1.attrs['Mother'] = 'local-code: cal_CMIP6_ssp370_ssp370NTCF_model_average_diff_prect_2015-2050_240304.py'
 #
 
