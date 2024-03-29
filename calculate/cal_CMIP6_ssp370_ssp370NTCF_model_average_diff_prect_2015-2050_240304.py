@@ -13,14 +13,14 @@ import os
 src_path = '/data/AerChemMIP/LLNL_download/postprocess_samegrids/'
 out_path = '/data/AerChemMIP/LLNL_download/model_average/'
 
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL','GISS-E2-1-G', 'MIROC6', 'MPI-ESM-1-2-HAM', 'NorESM2-LM', 'GFDL-ESM4', 'MRI-ESM2']
+models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'MIROC6', 'MPI-ESM-1-2-HAM', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G',]
 #models_label = ['EC-Earth3-AerChem', 'GFDL-ESM4', 'GISS-E2-1-G', 'MIROC6', 'MPI-ESM-1-2-HAM',]
 #models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G',  'MIROC6', 'CNRM-ESM']
 #models_label = ['EC-Earth3-AerChem', 'GISS-E2-1-G',]
 #models_label = ['GISS-E2-1-G',]
 #models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'MIROC6', 'MPI-ESM-1-2-HAM', ]
-good_group   =  ['EC-Earth3-AerChem', 'GISS-E2-1-G', 'MIROC6', 'MPI-ESM-1-2-HAM',]
-bad_group    =  ['BCC-ESM1', 'CESM2-WACCM', 'NorESM2-LM', 'GFDL-ESM4']
+#good_group   =  ['EC-Earth3-AerChem', 'GISS-E2-1-G', 'MIROC6', 'MPI-ESM-1-2-HAM',]
+#bad_group    =  ['BCC-ESM1', 'CESM2-WACCM', 'NorESM2-LM', 'GFDL-ESM4']
 
 files_all = os.listdir(src_path)
 
@@ -34,6 +34,8 @@ hist_ssp370ntcf_models = np.zeros((model_number, 36 * 12, 121, 241))
 
 for i in range(model_number):
     model_name = models_label[i]
+
+    print('It is {}'.format(model_name))
     #print(model_name)
 
     # screen out the target models and historical experiments
@@ -94,15 +96,15 @@ for i in range(model_number):
 
     # Save the value to the array
     
-    if model_name in good_group:
-        ssp370_models[i] = (ssp370_pr_avg) * 1.0
-        ssp370ntcf_models[i] = ssp370ntcf_pr_avg * 1.0
-    elif model_name in bad_group:
-        ssp370_models[i] = (ssp370_pr_avg) * 0.0
-        ssp370ntcf_models[i] = ssp370ntcf_pr_avg * 0.0
-    else:
-        ssp370_models[i] = (ssp370_pr_avg) * 1.0
-        ssp370ntcf_models[i] = ssp370ntcf_pr_avg * 1.0
+#    if model_name in good_group:
+#        ssp370_models[i] = (ssp370_pr_avg) * 1.0
+#        ssp370ntcf_models[i] = ssp370ntcf_pr_avg * 1.0
+#    elif model_name in bad_group:
+#        ssp370_models[i] = (ssp370_pr_avg) * 0.0
+#        ssp370ntcf_models[i] = ssp370ntcf_pr_avg * 0.0
+#    else:
+#        ssp370_models[i] = (ssp370_pr_avg) * 1.0
+#        ssp370ntcf_models[i] = ssp370ntcf_pr_avg * 1.0
 
     ssp370_models[i]     = ssp370_pr_avg
     ssp370ntcf_models[i] = ssp370ntcf_pr_avg
@@ -149,8 +151,8 @@ ncfile1['pr_hist'].attrs['units'] = 'mm day-1'
 #ncfile1['diff_pr_ssp'].attrs['units'] = 'mm day-1'
 #ncfile1['diff_pr_ntcf'].attrs['units'] = 'mm day-1'
 
-ncfile1.attrs['description'] = 'Created on 2024-3-4. This file save the CMIP6 SSP370 monthly precipitation data. The result is the multi-model average of the difference between SSP370 and SSP370NTCF'
+ncfile1.attrs['description'] = 'Created on 2024-3-25. This file save the CMIP6 SSP370 monthly precipitation data. The result is the multi-model average of the difference between SSP370 and SSP370NTCF. This is new edition which drop the NorESM and the IPSL'
 ncfile1.attrs['Mother'] = 'local-code: cal_CMIP6_ssp370_ssp370NTCF_model_average_diff_prect_2015-2050_240304.py'
 #
 
-ncfile1.to_netcdf(out_path + 'CMIP6_model_historical_SSP370_SSP370NTCF_monthly_precipitation_2015-2050.nc')
+ncfile1.to_netcdf(out_path + 'CMIP6_model_historical_SSP370_SSP370NTCF_monthly_precipitation_2015-2050_new.nc')
