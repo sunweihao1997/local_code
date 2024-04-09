@@ -6,15 +6,15 @@ Note: It is multiple variable post-process and I do not want to change the scrip
 '''
 import os
 
-data_path = '/data/AerChemMIP/LLNL_PET/relevant_variable/'
+data_path = '/Volumes/Untitled/AerChemMIP/LLNL_PET/relevant_variable/'
 
 files_all = os.listdir(data_path)
 
 variable_list  =  ['tas', 'sfcWind', 'hurs', 'hfss', 'hfls']
 
-var0           =  variable_list[0]
+var0           =  variable_list[4]
 
-end_path  = '/data/AerChemMIP/LLNL_PET/postprocess/{}/'.format(var0)
+end_path  = '/Volumes/Untitled/AerChemMIP/LLNL_PET/postprocess/{}/'.format(var0)
 
 from cdo import *
 cdo = Cdo()
