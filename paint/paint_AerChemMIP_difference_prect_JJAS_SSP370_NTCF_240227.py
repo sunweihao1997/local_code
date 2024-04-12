@@ -24,7 +24,7 @@ file0     = xr.open_dataset(data_path + diff_f)
 lat       = file0.lat.data
 lon       = file0.lon.data
 
-JJAS_f    = file0.sel(time=file0.time.dt.month.isin([5, 6, 7, 8, 9]))
+JJAS_f    = file0.sel(time=file0.time.dt.month.isin([6, 7, 8, 9]))
 
 p_value_jjas = np.zeros((121, 241))
 
@@ -83,7 +83,7 @@ def paint_pentad_circulation(prect, p_value):
     points_tp     = (80, 27.5)
     points_ea     = (110, 22.5)
 
-    left_title = 'MJJAS' ; right_title = 'SSP370 - SSP370lowNTCF'
+    left_title = 'JJAS' ; right_title = 'SSP370 - SSP370lowNTCF'
     # ------       paint    ------------
     for col in range(1):
         row = 0
@@ -103,22 +103,22 @@ def paint_pentad_circulation(prect, p_value):
 
         
 
-        # add rectangle
-
-        rect_indian = patches.Rectangle(points_indian, 17.5, 10, linewidth=3, edgecolor='r', facecolor='none')
-        ax.add_patch(rect_indian)
-
-        rect_indo    = patches.Rectangle(points_indo, 18, 16.5, linewidth=3, edgecolor='purple', facecolor='none')
-        ax.add_patch(rect_indo)
-
-        rect_scs     = patches.Rectangle(points_scs, 10, 10, linewidth=3, edgecolor='yellow', facecolor='none')
-        ax.add_patch(rect_scs)
-
-        rect_tp      = patches.Rectangle(points_tp, 25, 10, linewidth=3, edgecolor='blue', facecolor='none')
-        ax.add_patch(rect_tp)
-
-        rect_ea      = patches.Rectangle(points_ea, 12.5, 12, linewidth=3, edgecolor='green', facecolor='none')
-        ax.add_patch(rect_ea)
+#        # add rectangle
+#
+#        rect_indian = patches.Rectangle(points_indian, 17.5, 10, linewidth=3, edgecolor='r', facecolor='none')
+#        ax.add_patch(rect_indian)
+#
+#        rect_indo    = patches.Rectangle(points_indo, 18, 16.5, linewidth=3, edgecolor='purple', facecolor='none')
+#        ax.add_patch(rect_indo)
+#
+#        rect_scs     = patches.Rectangle(points_scs, 10, 10, linewidth=3, edgecolor='yellow', facecolor='none')
+#        ax.add_patch(rect_scs)
+#
+#        rect_tp      = patches.Rectangle(points_tp, 25, 10, linewidth=3, edgecolor='blue', facecolor='none')
+#        ax.add_patch(rect_tp)
+#
+#        rect_ea      = patches.Rectangle(points_ea, 12.5, 12, linewidth=3, edgecolor='green', facecolor='none')
+#        ax.add_patch(rect_ea)
         # 海岸线
         ax.coastlines(resolution='10m',lw=1.65)
 
