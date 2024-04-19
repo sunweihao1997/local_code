@@ -11,7 +11,7 @@ import os
 
 # ================ File information ==================
 data_pathin  = '/home/sun/data/download_data/AerChemMIP/day_prect/cdocat/'
-data_pathout = '/home/sun/data/process/analysis/AerChem/pr10-25/'
+data_pathout = '/home/sun/data/process/analysis/AerChem/pr10-20/'
 
 data_list    = os.listdir(data_pathin) ; data_list.sort()
 
@@ -53,7 +53,7 @@ def get_wet_day_model(f0, varname, filename):
 
         threshold = 25
 
-        wet_days[j] = np.sum(np.logical_and(prect1>10, prect1<25), axis=0)
+        wet_days[j] = np.sum(np.logical_and(prect1>10, prect1<20), axis=0)
 
         j += 1
 

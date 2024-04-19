@@ -17,8 +17,8 @@ import sys
 sys.path.append("/home/sun/local_code/module/")
 from module_sun import set_cartopy_tick
 
-data_path = '/home/sun/data/process/analysis/AerChem/'
-data_name = 'globalmonsoon_area_modelmean_hist_ssp370_ssp370ntcf_300mm.nc'
+data_path = '/data/AerChemMIP/LLNL_download/model_average//'
+data_name = 'globalmonsoon_area_modelmean_hist_ssp370_ssp370ntcf.nc'
 
 file0     = xr.open_dataset(data_path + data_name)
 

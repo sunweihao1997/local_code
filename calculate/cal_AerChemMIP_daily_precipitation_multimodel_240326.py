@@ -10,22 +10,12 @@ data_file = 'multiple_model_climate_prect_daily_new.nc'
 
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6',]
 
-hist_pentad  = np.zeros((len(models_label), 73, 91, 181))
-ssp3_pentad  = np.zeros((len(models_label), 73, 91, 181))
-ntcf_pentad  = np.zeros((len(models_label), 73, 91, 181))
+hist_pentad  = np.zeros((len(models_label), 360, 91, 181))
+ssp3_pentad  = np.zeros((len(models_label), 360, 91, 181))
+ntcf_pentad  = np.zeros((len(models_label), 360, 91, 181))
 
 f0           = xr.open_dataset(data_path + data_file)
 f0_sel1      = f0
-
-def cal_pentad_average(array):
-    pentad_array = np.zeros((73, 91, 181))
-
-    for pp in range(72):
-        pentad_array[pp] = np.average(array[pp * 5: pp * 5 + 5], axis=0)
-
-    pentad_array[72] = pentad_array[0]
-
-    return pentad_array
 
 
 
