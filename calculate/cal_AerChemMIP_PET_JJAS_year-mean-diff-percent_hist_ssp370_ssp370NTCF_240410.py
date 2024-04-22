@@ -93,7 +93,7 @@ def plot_pet(pet_hist, pet_ssp, pet_ntcf,):
     spec1   =  fig1.add_gridspec(nrows=3,ncols=1)
 
     left_title = 'JJAS'
-    right_title= ['SSP370 - Hist', 'SSP370lowNTCF - SSP370', 'SSP370 - SSP370lowNTCF']
+    right_title= ['SSP370 - Hist', 'SSP370lowNTCF - Hist', 'SSP370 - SSP370lowNTCF']
     pet        = [(pet_ssp - pet_hist) / pet_hist, (pet_ntcf - pet_hist) / pet_hist, (pet_ssp - pet_ntcf) / pet_hist]
     ct_level   = np.linspace(-10., 10., 11)
 

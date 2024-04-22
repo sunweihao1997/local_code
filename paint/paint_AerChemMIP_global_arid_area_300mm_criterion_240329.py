@@ -32,10 +32,10 @@ fig, ax1 = plt.subplots(subplot_kw={'projection': ccrs.PlateCarree()})
 
 #set_cartopy_tick(ax=ax1,extent=extent,xticks=np.linspace(50,150,6,dtype=int),yticks=np.linspace(-10,60,8,dtype=int),nx=1,ny=1,labelsize=15)
 
-im1  =  ax1.contour(lon, lat, file0['arid_hist'], [0], colors='k', alpha=1, linewidths = 1.5)
-im2  =  ax1.contour(lon, lat, file0['arid_ssp'],  [0], colors='r', alpha=1, linewidths = 1.)
-im3  =  ax1.contour(lon, lat, file0['arid_ntcf'], [0], colors='b', alpha=1, linewidths = 1.)
+im1  =  ax1.contour(lon, lat, file0['hist_area'], [0], colors='k', alpha=1, linewidths = 1.5)
+im2  =  ax1.contour(lon, lat, file0['ssp_area'],  [0], colors='r', alpha=1, linewidths = 1.)
+im3  =  ax1.contour(lon, lat, file0['ntcf_area'], [0], colors='b', alpha=1, linewidths = 1.)
 
 ax1.coastlines(resolution='110m',lw=0.9)
 
-plt.savefig('/home/sun/paint/AerMIP/global_monsoon_arid_area.png', dpi=1000)
+plt.savefig('/home/sun/paint/AerMIP/global_monsoon_area.pdf', dpi=1000)

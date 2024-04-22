@@ -6,7 +6,7 @@ import xarray as xr
 import numpy as np
 import os
 
-f1  =  xr.open_dataset('/home/sun/data/process/analysis/AerChem/heat_wave/result/EC-Earth3-AerChem_heat_wave_r1i1p1f1.nc')
+f1  =  xr.open_dataset('/home/sun/data/process/analysis/AerChem/heat_wave/result/MRI-ESM2_heat_wave_r1i1p1f1.nc')
 f2  =  xr.open_dataset('/home/sun/data/process/analysis/AerChem/heat_wave/UKESM1-0-LL_heat_wave_r2i1p1f2.nc')
 f3  =  xr.open_dataset('/home/sun/data/process/analysis/AerChem/heat_wave/UKESM1-0-LL_heat_wave_r3i1p1f2.nc')
 

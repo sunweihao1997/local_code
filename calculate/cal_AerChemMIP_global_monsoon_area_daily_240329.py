@@ -33,7 +33,7 @@ p_ssp3  =  cal_modelmean('_ssp')
 p_ntcf  =  cal_modelmean('_sspntcf')
 
 nh_summer_start = 120 ; nh_summer_end = 270 ; nh_winter_start = 300 ; nh_winter_end = 90
-sh_summer_start = 300 ; sh_summer_end = 90  ; sh_winter_start = 150 ; sh_winter_end = 240
+sh_summer_start = 300 ; sh_summer_end = 90  ; sh_winter_start = 120 ; sh_winter_end = 270
 
 # ============= Calculate the summer, winter and percentum ==============
 def calculate_summer_winter_annual(data, hemi):
@@ -77,7 +77,7 @@ arid_ssp  = np.zeros((len(lat), len(lon)))
 arid_ntcf = np.zeros((len(lat), len(lon)))
 
 def judge_monsoon_area(diff_value, percentile):
-    if diff_value > 330 and percentile > 0.55:
+    if diff_value > 300 and percentile > 0.55:
         return 1
     else:
         return 0
