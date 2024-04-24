@@ -1,20 +1,25 @@
 '''
-2024-4-14
-This script is to calculate the postprocess for some variables: tasmax tasmin
+2024-4-24
+This script is to deal with the AerChemMIP experiment data, the variable is monthly prect
 
-Note: It is multiple variable post-process and I do not want to change the script so I would deal with each variable manually
+Short Document:
+These content introduce the structure of this script
+
+1. sorted the files by the experiment name and save them separately
+2. for each model:
+    2.1 retrieve the data from each experiment directory and then see how many variant-id groups
+    2.2 Deal with the single variant-id group
+
+Note:
+For the hostorical, ssp370, ssp370NTCF, ssp370NTCFCH4 experiments, it can be directly used by changing the Model_name variable
+
+If there could be some improvement, I thought it can detect the experiment automaticly, instead of pre-process
 '''
 import os
 
-data_path = '/home/sun/data/download_data/AerChemMIP/tasmin/'
-
+data_path = '/Volumes/Untitled/AerChemMIP/tasmin_mon/'
+end_path  = '/Volumes/Untitled/AerChemMIP/tasmin_mon_postprocess/'
 files_all = os.listdir(data_path)
-
-variable_list  =  ['tasmin']
-
-var0           =  variable_list[0]
-
-end_path  = '/home/sun/data/process/model/aerchemmip-postprocess/{}/'.format(var0)
 
 from cdo import *
 cdo = Cdo()
@@ -22,11 +27,12 @@ cdo = Cdo()
 ncfiles   = []
 
 for ff in files_all:
-    if ff[:len(var0)] == var0 and ff[-2:] == 'nc':
+    if ff[:6] == 'tasmin' and ff[-2:] == 'nc':
         ncfiles.append(ff)
 
     else:
         continue
+#print(ncfiles)
 
 #print(ncfiles)
 # Sort them by their names
@@ -1256,7 +1262,7 @@ def cnrm_data():
 def main():
     ec_earth_data()
     gfdl_data()
-#    giss_data()
+    giss_data()
     mri_data()
 #    cesm_data()
 #    bcc_data()
