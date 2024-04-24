@@ -53,7 +53,8 @@ def unify_lat_lon(f0, new_lat, new_lon, filename, pathend):
 
     f0_interp = f0.interp(lat = new_lat, lon=new_lon,)
 
-    f0_interp.to_netcdf(pathend + filename)
+    #f0_interp.to_netcdf(pathend + filename)
+    return f0_interp
 
 
 def main():
