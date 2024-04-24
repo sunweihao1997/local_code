@@ -1256,7 +1256,7 @@ def cnrm_data():
 def main():
     ec_earth_data()
     gfdl_data()
-    giss_data()
+#    giss_data()
     mri_data()
 #    cesm_data()
 #    bcc_data()
