@@ -1,18 +1,14 @@
 '''
-2024-4-16
-This script is to plot the changes in the wetdays between SSP370 and SSP370lowNTCF, comparing with the historical simulation
-
-2024-4-24 test: test each model
+2024-4-24
+This script is to plot the changes in the tropical night between SSP370 and SSP370lowNTCF, comparing with the historical simulation
 '''
 import xarray as xr
 import numpy as np
 import os
 
-path_in   =  '/home/sun/data/process/analysis/AerChem/heat_wave/result_regrid/'
+path_in   =  '/home/sun/data/process/analysis/AerChem/tropical_night_regrid/'
 
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', ] # GISS provide no daily data
-
-type0        = ['hw_tasmin', 'hw_tasmax',]
 
 mask_file    = xr.open_dataset('/home/sun/data/process/analysis/other/ERA5_land_sea_mask_model-grid.nc')
 
@@ -26,12 +22,9 @@ def cal_multiple_model_avg(list0,):
     model_set = xr.Dataset()
 
     # 1.1 Claim the array to save all the model result
-    hist_hw_tasmin0 = np.zeros((len(models_label), 3, 50, 121, 241))
-    hist_hw_tasmax0 = np.zeros((len(models_label), 3, 50, 121, 241))
-    ssp_hw_tasmin0  = np.zeros((len(models_label), 3, 36, 121, 241))
-    ssp_hw_tasmax0  = np.zeros((len(models_label), 3, 36, 121, 241))
-    ntcf_hw_tasmin0 = np.zeros((len(models_label), 3, 36, 121, 241))
-    ntcf_hw_tasmax0 = np.zeros((len(models_label), 3, 36, 121, 241))
+    hist_hw_tasmin0 = np.zeros((len(models_label), 65, 121, 241))
+    ssp_hw_tasmin0  = np.zeros((len(models_label), 36, 121, 241))
+    ntcf_hw_tasmin0 = np.zeros((len(models_label), 36, 121, 241))
 
 
     # 2. for each model, calculate its average among the realization
@@ -42,114 +35,75 @@ def cal_multiple_model_avg(list0,):
 
         # 2.2 ref file provides lat/lon information
         ref_file      =  xr.open_dataset(path_in + model_subset[0])
-        lat           =  ref_file.lat.data ; lon      = ref_file.lon.data ; time0         = ref_file.time0.data ; time1       =  ref_file.time1.data ; time2       = ref_file.time2.data
+        lat           =  ref_file.lat.data ; lon      = ref_file.lon.data ; 
+        time0         =  np.linspace(1950, 2014, 65) ; time1       =  np.linspace(2015, 2050, 36) ; time2       = time1
 
-        realization_number = len(model_subset)
+        realization_number = (len(model_subset) / 3)
 
         print(f'Now it is calculating the single-model average for {model0}, which includes {realization_number}')
 
         # 3 Claim the averaged array
-        hist_hw_tasmin1 = np.zeros((3, len(time0), len(lat), len(lon)))
-        hist_hw_tasmax1 = np.zeros((3, len(time0), len(lat), len(lon)))
-        ssp_hw_tasmin1  = np.zeros((3, len(time1), len(lat), len(lon)))
-        ssp_hw_tasmax1  = np.zeros((3, len(time1), len(lat), len(lon)))
-        ntcf_hw_tasmin1 = np.zeros((3, len(time2), len(lat), len(lon)))
-        ntcf_hw_tasmax1 = np.zeros((3, len(time2), len(lat), len(lon)))
+        hist_hw_tasmin1 = np.zeros((len(time0), len(lat), len(lon)))
+        ssp_hw_tasmin1  = np.zeros((len(time1), len(lat), len(lon)))
+        ntcf_hw_tasmin1 = np.zeros((len(time2), len(lat), len(lon)))
 
-        for i in range(realization_number):
-            f_realization = xr.open_dataset(path_in + model_subset[i])
+        for ff in model_subset:
+            f1 = xr.open_dataset(path_in + ff)
 
-            hist_hw_tasmin1 += (f_realization['hist_hw_tasmin'].data / realization_number)
-            hist_hw_tasmax1 += (f_realization['hist_hw_tasmax'].data / realization_number)
-            ssp_hw_tasmin1  += (f_realization['ssp_hw_tasmin'].data  / realization_number)
-            ssp_hw_tasmax1  += (f_realization['ssp_hw_tasmax'].data  / realization_number)
-            ntcf_hw_tasmin1 += (f_realization['ntcf_hw_tasmin'].data / realization_number)
-            ntcf_hw_tasmax1 += (f_realization['ntcf_hw_tasmax'].data / realization_number)
+            if 'historical' in ff:
+                hist_hw_tasmin1 += (f1['hist_tr20'].data / realization_number)
+
+            elif 'SSP370NTCF' in ff:
+                ntcf_hw_tasmin1  += (f1['furt_tr20'].data  / realization_number)
+
+            else:
+                ssp_hw_tasmin1 += (f1['furt_tr20'].data / realization_number)
         
         # Now the single model realization-average is completed
         hist_hw_tasmin0[j]  =  hist_hw_tasmin1
-        hist_hw_tasmax0[j]  =  hist_hw_tasmax1
         ssp_hw_tasmin0[j]   =  ssp_hw_tasmin1
-        ssp_hw_tasmax0[j]   =  ssp_hw_tasmax1
         ntcf_hw_tasmin0[j]  =  ntcf_hw_tasmin1
-        ntcf_hw_tasmax0[j]  =  ntcf_hw_tasmax1
 
         j+=1
 
-    hist_hw_tasmin_multimodel = xr.DataArray(data=hist_hw_tasmin0, dims=["models", "info", "time_hist", "lat", "lon"],
+    hist_hw_tasmin_multimodel = xr.DataArray(data=hist_hw_tasmin0, dims=["models", "time_hist", "lat", "lon"],
                                     coords=dict(
                                         models=(["models"], models_label),
                                         lon=(["lon"], lon),
                                         lat=(["lat"], lat),
                                         time_hist=(["time_hist"], time0),
-                                        info=(["info"], f_realization['info'].data)
                                     ),
                                     attrs=dict(
                                         description="heatwave",
                                     ),
                                     )
-    hist_hw_tasmax_multimodel = xr.DataArray(data=hist_hw_tasmax0, dims=["models", "info", "time_hist", "lat", "lon"],
-                                    coords=dict(
-                                        models=(["models"], models_label),
-                                        lon=(["lon"], lon),
-                                        lat=(["lat"], lat),
-                                        time_hist=(["time_hist"], time0),
-                                        info=(["info"], f_realization['info'].data)
-                                    ),
-                                    attrs=dict(
-                                        description="heatwave",
-                                    ),
-                                    )
-    ssp_hw_tasmin_multimodel  = xr.DataArray(data=ssp_hw_tasmin0, dims=["models", "info", "time_furture", "lat", "lon"],
+
+    ssp_hw_tasmin_multimodel  = xr.DataArray(data=ssp_hw_tasmin0, dims=["models", "time_furture", "lat", "lon"],
                                     coords=dict(
                                         models=(["models"], models_label),
                                         lon=(["lon"], lon),
                                         lat=(["lat"], lat),
                                         time_furture=(["time_furture"], time1),
-                                        info=(["info"], f_realization['info'].data)
                                     ),
                                     attrs=dict(
                                         description="heatwave",
                                     ),
                                     )
-    ssp_hw_tasmax_multimodel  = xr.DataArray(data=ssp_hw_tasmax0, dims=["models", "info", "time_furture", "lat", "lon"],
+
+    ntcf_hw_tasmin_multimodel  = xr.DataArray(data=ntcf_hw_tasmin0, dims=["models", "time_furture", "lat", "lon"],
                                     coords=dict(
                                         models=(["models"], models_label),
                                         lon=(["lon"], lon),
                                         lat=(["lat"], lat),
                                         time_furture=(["time_furture"], time1),
-                                        info=(["info"], f_realization['info'].data)
                                     ),
                                     attrs=dict(
                                         description="heatwave",
                                     ),
                                     )
-    ntcf_hw_tasmin_multimodel  = xr.DataArray(data=ntcf_hw_tasmin0, dims=["models", "info", "time_furture", "lat", "lon"],
-                                    coords=dict(
-                                        models=(["models"], models_label),
-                                        lon=(["lon"], lon),
-                                        lat=(["lat"], lat),
-                                        time_furture=(["time_furture"], time1),
-                                        info=(["info"], f_realization['info'].data)
-                                    ),
-                                    attrs=dict(
-                                        description="heatwave",
-                                    ),
-                                    )
-    ntcf_hw_tasmax_multimodel  = xr.DataArray(data=ntcf_hw_tasmax0, dims=["models", "info", "time_furture", "lat", "lon"],
-                                    coords=dict(
-                                        models=(["models"], models_label),
-                                        lon=(["lon"], lon),
-                                        lat=(["lat"], lat),
-                                        time_furture=(["time_furture"], time1),
-                                        info=(["info"], f_realization['info'].data)
-                                    ),
-                                    attrs=dict(
-                                        description="heatwave",
-                                    ),
-                                    )
+
     
-    model_set.update({"hist_hw_tasmin_multimodel":hist_hw_tasmin_multimodel, "hist_hw_tasmax_multimodel":hist_hw_tasmax_multimodel, "ssp_hw_tasmin_multimodel":ssp_hw_tasmin_multimodel, "ssp_hw_tasmax_multimodel":ssp_hw_tasmax_multimodel, "ntcf_hw_tasmin_multimodel":ntcf_hw_tasmin_multimodel, "ntcf_hw_tasmax_multimodel":ntcf_hw_tasmax_multimodel})
+    model_set.update({"hist_hw_tasmin_multimodel":hist_hw_tasmin_multimodel, "ssp_hw_tasmin_multimodel":ssp_hw_tasmin_multimodel, "ntcf_hw_tasmin_multimodel":ntcf_hw_tasmin_multimodel})
 
             
     return model_set
@@ -245,10 +199,8 @@ def plot_change_hw_attribute(hist, ssp, sspntcf, left_string, figname, lon, lat,
     left_title = '{} (JJAS)'.format(left_string)
     right_title= ['SSP370 - Hist', 'SSP370lowNTCF - Hist', 'NTCF mitigation']
 
-    pet        = [(ssp - hist)/hist, (sspntcf - hist)/hist, (ssp - sspntcf)/hist]
+    pet        = [(ssp - hist)/hist*100, (sspntcf - hist)/hist*100, (ssp - sspntcf)/hist*100]
     # Mask the value over ocean
-    print(pet[0].shape)
-    print(mask_file['lsm'].data[0].shape)
     pet[0][mask_file['lsm'].data[0] < 0.05] = np.nan
     pet[1][mask_file['lsm'].data[0] < 0.05] = np.nan
     pet[2][mask_file['lsm'].data[0] < 0.05] = np.nan
@@ -279,9 +231,7 @@ def plot_change_hw_attribute(hist, ssp, sspntcf, left_string, figname, lon, lat,
     cb  =  fig1.colorbar(im, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
     cb.ax.tick_params(labelsize=20)
 
-    plt.savefig("/home/sun/paint/AerMIP/AerChemMIP_modelgroup_spatial_JJAS_hist_ssp370_ntcf_{}".format(figname))
-
-
+    plt.savefig("/home/sun/paint/AerMIP/AerChemMIP_modelgroup_spatial_JJAS_hist_ssp370_ntcf_{}.png".format(figname))
 
 if __name__ == '__main__':
     file_all = os.listdir(path_in)
@@ -290,14 +240,12 @@ if __name__ == '__main__':
 
     lat = np.linspace(-90, 90, 121)
     lon = np.linspace(0, 360, 241)
-
-    num0 = 0
-    
-#    a = np.nanmean(model_set['hist_hw_tasmin_multimodel'].data[num0, 1, -20:], axis=0)
-#    print(a.shape)
-#    plot_change_hw_day(np.nanmean(model_set['hist_hw_tasmin_multimodel'].data[num0, 1, -20:], axis=0), np.nanmean(model_set['ssp_hw_tasmin_multimodel'].data[num0, 1, -20:], axis=0), np.nanmean(model_set['ntcf_hw_tasmin_multimodel'].data[num0, 1, -20:], axis=0), 'Heat Wave duration (tasmin) {}'.format(models_label[num0]), 'Heat Wave duration (tasmin) {}'.format(models_label[num0]), lon, lat, np.linspace(-3., 3., 13))
 #
-#    plot_change_hw_attribute(np.nanmean(model_set['hist_hw_tasmin_multimodel'].data[num0, 2, -20:], axis=0), np.nanmean(model_set['ssp_hw_tasmin_multimodel'].data[num0, 2, -20:], axis=0), np.nanmean(model_set['ntcf_hw_tasmin_multimodel'].data[num0, 2, -20:], axis=0), 'Heat Wave intensity (tasmin) {}'.format(models_label[num0]), 'Heat Wave intensity (tasmin) {}'.format(models_label[num0]), lon, lat, np.linspace(-150., 150., 16))
-    plot_change_hw_day(np.nanmean(model_set['hist_hw_tasmax_multimodel'].data[num0, 1, -20:], axis=0), np.nanmean(model_set['ssp_hw_tasmax_multimodel'].data[num0, 1, -20:], axis=0), np.nanmean(model_set['ntcf_hw_tasmax_multimodel'].data[num0, 1, -20:], axis=0), 'Heat Wave duration (tasmax) {}'.format(models_label[num0]), 'Heat Wave duration (tasmax) {}'.format(models_label[num0]), lon, lat, np.linspace(-3., 3., 13))
-
-    plot_change_hw_attribute(np.nanmean(model_set['hist_hw_tasmax_multimodel'].data[num0, 2, -20:], axis=0), np.nanmean(model_set['ssp_hw_tasmax_multimodel'].data[num0, 2, -20:], axis=0), np.nanmean(model_set['ntcf_hw_tasmax_multimodel'].data[num0, 2, -20:], axis=0), 'Heat Wave intensity (tasmax) {}'.format(models_label[num0]), 'Heat Wave intensity (tasmax) {}'.format(models_label[num0]), lon, lat, np.linspace(-150., 150., 16))
+    plot_change_hw_day(np.nanmean(np.nanmean(model_set['hist_hw_tasmin_multimodel'].data[:, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmin_multimodel'].data[:, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmin_multimodel'].data[:, -20:], axis=0), axis=0), 'tropical night', 'tropical night', lon, lat, np.linspace(-30., 30., 13))
+#    plot_change_hw_day(np.nanmean(np.nanmean(model_set['hist_hw_tasmax_multimodel'].data[:, 0, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmax_multimodel'].data[:, 0, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmax_multimodel'].data[:, 0, -20:], axis=0), axis=0), 'Heat Wave events (tasmax)', 'Heat Wave events (tasmax)', lon, lat, np.linspace(-3., 3., 13))
+#
+#    plot_change_hw_day(np.nanmean(np.nanmean(model_set['hist_hw_tasmin_multimodel'].data[:, 1, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmin_multimodel'].data[:, 1, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmin_multimodel'].data[:, 1, -20:], axis=0), axis=0), 'Heat Wave duration (tasmin)', 'Heat Wave duration (tasmin)', lon, lat, np.linspace(-3., 3., 13))
+#    plot_change_hw_day(np.nanmean(np.nanmean(model_set['hist_hw_tasmax_multimodel'].data[:, 1, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmax_multimodel'].data[:, 1, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmax_multimodel'].data[:, 1, -20:], axis=0), axis=0), 'Heat Wave duration (tasmax)', 'Heat Wave duration (tasmax)', lon, lat, np.linspace(-3., 3., 13))
+#
+#    plot_change_hw_attribute(np.nanmean(np.nanmean(model_set['hist_hw_tasmin_multimodel'].data[:, 2, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmin_multimodel'].data[:, 2, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmin_multimodel'].data[:, 2, -20:], axis=0), axis=0), 'Heat Wave intensity (tasmin)', 'Heat Wave intensity (tasmin)', lon, lat, np.linspace(-150., 150., 16))
+#    plot_change_hw_attribute(np.nanmean(np.nanmean(model_set['hist_hw_tasmax_multimodel'].data[:, 2, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmax_multimodel'].data[:, 2, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmax_multimodel'].data[:, 2, -20:], axis=0), axis=0), 'Heat Wave intensity (tasmax)', 'Heat Wave intensity (tasmax)', lon, lat, np.linspace(-150., 150., 16))

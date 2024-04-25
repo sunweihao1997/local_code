@@ -222,6 +222,8 @@ if __name__ == '__main__':
     for sample0 in sample_lists:
         print('Now it is deal with {}'.format(sample0))
         testmin, testmax = align_the_ncfile(sample0)
+
+        #print(testmin)
         #print(testmin[1])
         cal_frequency(testmin, testmax, out_path, sample0.replace('historical', 'heat_wave'))
 

@@ -1,6 +1,6 @@
 '''
-2024-4-15
-This script is to deal with the CMIP6 wet days, intepolating them to the same grids
+2024-4-24
+This script is to deal with the tropical nights (minimum larger than 20), intepolating them to the same grids
 
 '''
 import os
@@ -10,12 +10,12 @@ import numpy as np
 #type0         = ['wet_day', 'pr10', 'pr10-25', 'pr1-10', 'pr20', 'pr25', 'pr10-20']
 
 
-data_path    = '/home/sun/data/process/analysis/AerChem/heat_wave/result/'
+data_path    = '/home/sun/data/process/analysis/AerChem/tropical_night/'
 
-interp_path  = '/home/sun/data/process/analysis/AerChem/heat_wave/result_regrid/'
+interp_path  = '/home/sun/data/process/analysis/AerChem/tropical_night_regrid/'
 
 #models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'CESM2-WACCM', 'BCC-ESM1', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'MIROC6', 'CNRM-ESM']
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'MPI-ESM-1-2-HAM', 'MIROC6', ]
+models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'MPI-ESM-1-2-HAM', 'MIROC6', ]
 
 #variable_list  =  ['tas', 'sfcWind', 'hurs', 'hfss', 'hfls']
 variable_list  =  ['wet_day',] # All of the above is wet_day
