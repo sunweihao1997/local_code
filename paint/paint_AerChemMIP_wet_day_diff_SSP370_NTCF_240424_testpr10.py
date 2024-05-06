@@ -10,7 +10,7 @@ path_in   =  '/home/sun/data/process/analysis/AerChem/'
 
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', ] # GISS provide no daily data
 
-type0        = ['pr10']
+type0        = ['pr10-20']
 
 def cal_multiple_model_avg(f0, exp_tag, timeaxis, varname='wet_day'):
     '''
@@ -75,7 +75,7 @@ def plot_change_wet_day(hist, ssp, sspntcf, left_string, figname, lon, lat, ct_l
         # 添加赤道线
         ax.plot([40,150],[0,0],'k--')
 
-        im  =  ax.contourf(lon, lat, pet[col], ct_level, cmap='coolwarm', alpha=1, extend='both')
+        im  =  ax.contourf(lon, lat, pet[col], ct_level, cmap='coolwarm_r', alpha=1, extend='both')
 
         # 海岸线
         ax.coastlines(resolution='50m',lw=1.65)
@@ -102,4 +102,4 @@ if __name__ == '__main__':
         ntcf0     =  cal_multiple_model_avg(f0, 'sspntcf', 'time_ssp', type1)
 
         # Note that the variable in the above is three-dimension while the first is the number os the year
-        plot_change_wet_day(np.nanmean(hist0[-40:], axis=0), np.nanmean(ssp0[-20:], axis=0), np.nanmean(ntcf0[-20:], axis=0), type1, type1, f0.lon.data, f0.lat.data, np.linspace(-10., 10., 21))
+        plot_change_wet_day(np.nanmean(hist0[-40:], axis=0), np.nanmean(ssp0[-20:], axis=0), np.nanmean(ntcf0[-20:], axis=0), type1, type1, f0.lon.data, f0.lat.data, np.linspace(-7., 7., 15))

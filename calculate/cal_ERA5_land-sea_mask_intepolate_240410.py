@@ -4,8 +4,8 @@ this script is to intepolate the ERA5 land-sea mask data to be consistent with t
 '''
 import xarray as xr
 
-f0 = xr.open_dataset('/data/AerChemMIP/process/ERA5_land_sea_mask_1x1.nc')
-f1 = xr.open_dataset('/data/AerChemMIP/process/CMIP6_model_historical_SSP370_SSP370NTCF_monthly_PETADV_2015-2050.nc')
+f0 = xr.open_dataset('/home/sun/data/process/analysis/other/ERA5_land_sea_mask_model-grid.nc')
+f1 = xr.open_dataset('/home/sun/data/process/analysis/AerChem/ISV/MRI-ESM2_historical_r5i1p1f1.nc')
 
 f0 = f0.interp(latitude=f1.lat.data, longitude=f1.lon.data)
-f0.to_netcdf('/data/AerChemMIP/process/ERA5_land_sea_mask_model-grid.nc')
+f0.to_netcdf('/home/sun/data/process/analysis/other/ERA5_land_sea_mask_model-grid2x2.nc')

@@ -34,7 +34,8 @@ def main():
 #        '/home/sun/data/download_data/CESM2_LE/day_PRECT/cdo/', 
 #        '/home/sun/data/download_data/CESM2_LE/day_u850/cdo/'
 #        '/home/sun/data/download_data/AerChemMIP/SSP370NTCFCH4/',
-        '/home/sun/data/download_data/AerChemMIP/day_prect/'
+#        '/home/sun/data/download_data/AerChemMIP/day_prect/',
+        '/home/sun/data/download_data/AerChemMIP/day_olr/'
     ]
 
 #    pathlist2 = [
@@ -53,4 +54,6 @@ if __name__ == '__main__':
 /home/sun/data/download_data/CESM2_LE/day_u850/raw/b.e21.BHISTcmip6.f09_g17.LE2-1231.009.cam.h1.U850.18900101-18991231.nc
 
 /home/sun/data/download_data/CESM2_LE/day_PRECT/raw/b.e21.BHISTcmip6.f09_g17.LE2-1231.006.cam.h1.PRECT.19100101-19191231.nc
+
+
 '''

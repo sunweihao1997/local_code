@@ -180,9 +180,9 @@ def plot_change_hw_day(hist, ssp, sspntcf, left_string, figname, lon, lat, ct_le
     spec1   =  fig1.add_gridspec(nrows=3,ncols=1)
 
     left_title = '{} (JJAS)'.format(left_string)
-    right_title= ['SSP370 - Hist', 'SSP370lowNTCF - Hist', 'NTCF mitigation']
+    right_title= ['Hist', 'SSP370', 'SSPlowNTCF']
 
-    pet        = [(ssp - hist), (sspntcf - hist), (ssp - sspntcf)]
+    pet        = [(hist), (ssp), (sspntcf)]
     # Mask the value over ocean
     pet[0][mask_file['lsm'].data[0] < 0.05] = np.nan
     pet[1][mask_file['lsm'].data[0] < 0.05] = np.nan
@@ -241,9 +241,9 @@ def plot_change_hw_attribute(hist, ssp, sspntcf, left_string, figname, lon, lat,
     spec1   =  fig1.add_gridspec(nrows=3,ncols=1)
 
     left_title = '{} (JJAS)'.format(left_string)
-    right_title= ['SSP370 - Hist', 'SSP370lowNTCF - Hist', 'NTCF mitigation']
+    right_title= ['Hist', 'SSP370', 'SSP370lowNTCF']
 
-    pet        = [(ssp - hist), (sspntcf - hist), (ssp - sspntcf)]
+    pet        = [(hist), (ssp), (sspntcf)]
     # Mask the value over ocean
     pet[0][mask_file['lsm'].data[0] < 0.05] = np.nan
     pet[1][mask_file['lsm'].data[0] < 0.05] = np.nan
@@ -275,7 +275,7 @@ def plot_change_hw_attribute(hist, ssp, sspntcf, left_string, figname, lon, lat,
     cb  =  fig1.colorbar(im, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
     cb.ax.tick_params(labelsize=20)
 
-    plt.savefig("/home/sun/paint/AerMIP/AerChemMIP_modelgroup_spatial_JJAS_hist_ssp370_ntcf_{}.png".format(figname))
+    plt.savefig("/home/sun/paint/AerMIP/AerChemMIP_modelgroup_spatial_JJAS_hist_ssp370_ntcf_meanstate_{}.png".format(figname))
 
 if __name__ == '__main__':
     file_all = os.listdir(path_in)
@@ -288,8 +288,8 @@ if __name__ == '__main__':
     plot_change_hw_day(np.nanmean(np.nanmean(model_set['hist_hw_tasmin_multimodel'].data[:, 0, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmin_multimodel'].data[:, 0, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmin_multimodel'].data[:, 0, -20:], axis=0), axis=0), 'Heat Wave events (tasmin)', 'Heat Wave events (tasmin)', lon, lat, np.linspace(-3., 3., 13))
     plot_change_hw_day(np.nanmean(np.nanmean(model_set['hist_hw_tasmax_multimodel'].data[:, 0, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmax_multimodel'].data[:, 0, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmax_multimodel'].data[:, 0, -20:], axis=0), axis=0), 'Heat Wave events (tasmax)', 'Heat Wave events (tasmax)', lon, lat, np.linspace(-3., 3., 13))
 
-    plot_change_hw_day(np.nanmean(np.nanmean(model_set['hist_hw_tasmin_multimodel'].data[:, 1, -5:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmin_multimodel'].data[:, 1, 25:35], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmin_multimodel'].data[:, 1, 25:35], axis=0), axis=0), 'Heat Wave duration (tasmin)', 'Heat Wave duration (tasmin)', lon, lat, np.linspace(-20., 20., 11))
-    plot_change_hw_day(np.nanmean(np.nanmean(model_set['hist_hw_tasmax_multimodel'].data[:, 1, -5:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmax_multimodel'].data[:, 1, 25:35], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmax_multimodel'].data[:, 1, 25:35], axis=0), axis=0), 'Heat Wave duration (tasmax)', 'Heat Wave duration (tasmax)', lon, lat, np.linspace(-20., 20., 11))
+    plot_change_hw_day(np.nanmean(np.nanmean(model_set['hist_hw_tasmin_multimodel'].data[:, 1, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmin_multimodel'].data[:, 1, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmin_multimodel'].data[:, 1, -20:], axis=0), axis=0), 'Heat Wave duration (tasmin)', 'Heat Wave duration (tasmin)', lon, lat, np.linspace(-20., 20., 11))
+    plot_change_hw_day(np.nanmean(np.nanmean(model_set['hist_hw_tasmax_multimodel'].data[:, 1, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmax_multimodel'].data[:, 1, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmax_multimodel'].data[:, 1, -20:], axis=0), axis=0), 'Heat Wave duration (tasmax)', 'Heat Wave duration (tasmax)', lon, lat, np.linspace(-20., 20., 11))
 
-    plot_change_hw_attribute(np.nanmean(np.nanmean(model_set['hist_hw_tasmin_multimodel'].data[:, 2, -5:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmin_multimodel'].data[:, 2, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmin_multimodel'].data[:, 2, -20:], axis=0), axis=0), 'Heat Wave intensity (tasmin)', 'Heat Wave intensity (tasmin)', lon, lat, np.linspace(-10., 10., 11))
-    plot_change_hw_attribute(np.nanmean(np.nanmean(model_set['hist_hw_tasmax_multimodel'].data[:, 2, -5:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmax_multimodel'].data[:, 2, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmax_multimodel'].data[:, 2, -20:], axis=0), axis=0), 'Heat Wave intensity (tasmax)', 'Heat Wave intensity (tasmax)', lon, lat, np.linspace(-10., 10., 11))
+    plot_change_hw_attribute(np.nanmean(np.nanmean(model_set['hist_hw_tasmin_multimodel'].data[:, 2, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmin_multimodel'].data[:, 2, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmin_multimodel'].data[:, 2, -20:], axis=0), axis=0), 'Heat Wave intensity (tasmin)', 'Heat Wave intensity (tasmin)', lon, lat, np.linspace(-10., 10., 11))
+    plot_change_hw_attribute(np.nanmean(np.nanmean(model_set['hist_hw_tasmax_multimodel'].data[:, 2, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ssp_hw_tasmax_multimodel'].data[:, 2, -20:], axis=0), axis=0), np.nanmean(np.nanmean(model_set['ntcf_hw_tasmax_multimodel'].data[:, 2, -20:], axis=0), axis=0), 'Heat Wave intensity (tasmax)', 'Heat Wave intensity (tasmax)', lon, lat, np.linspace(-10., 10., 11))

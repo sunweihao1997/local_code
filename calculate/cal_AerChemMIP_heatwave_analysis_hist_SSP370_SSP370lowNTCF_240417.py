@@ -98,7 +98,7 @@ def count_continue_hw_day_duration(array0):
 
 
 
-        return heatwave_count, (heatwave_event_days / heatwave_count), (heatwave_event_anomaly / heatwave_count) # Frequency, average duration, average intensity
+        return heatwave_count, (heatwave_event_days / heatwave_count), (heatwave_event_anomaly / heatwave_event_days) # Frequency, average duration, average intensity
 
 def cal_frequency(tasmin, tasmax, out_path, out_name):
     '''
