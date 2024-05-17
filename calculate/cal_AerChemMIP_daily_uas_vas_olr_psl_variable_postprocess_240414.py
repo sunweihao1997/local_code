@@ -8,13 +8,11 @@ import os
 
 data_path0 = '/home/sun/data/download_data/AerChemMIP/'
 
-files_all = os.listdir(data_path)
+variable_list  =  ['uas', 'vas', 'psl', 'rlut']
 
-variable_list  =  ['uas', 'vas', 'psl', 'olr']
-
-var0           =  variable_list[1]
+var0           =  variable_list[0]
 data_path  = data_path0 + 'day_' + var0 + '/'
-
+files_all = os.listdir(data_path)
 
 end_path  = '/home/sun/data/process/model/aerchemmip-postprocess/{}/'.format(var0)
 

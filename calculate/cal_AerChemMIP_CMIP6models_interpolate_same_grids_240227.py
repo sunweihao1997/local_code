@@ -15,12 +15,11 @@ import numpy as np
 
 data_path    = '/home/sun/data/download_data/AerChemMIP/day_prect/cdocat/'
 
-interp_path  = '/home/sun/data/download_data/AerChemMIP/day_prect/cdo_cat_samegrid_linear/'
+interp_path  = '/home/sun/data/download_data/AerChemMIP/day_prect/cdo_cat_samegrid_linear1.5/'
 
 #models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'CESM2-WACCM', 'BCC-ESM1', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'MIROC6', 'CNRM-ESM']
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'MIROC6', ]
 
-year_range = np.linspace(1950, 2014, 2014 - 1950 + 1)
 
 def group_files_by_model(list_all, keyword):
     same_group = []
@@ -88,18 +87,27 @@ def main():
 
     # 3. Interpolate
     # 1.5 x 1.5 resolution
-    new_lat = np.linspace(-90, 90, 91)
-    new_lon = np.linspace(0, 360, 181)
+    new_lat = np.linspace(-88.5, 88.5, 119)
+    new_lon = np.linspace(0, 358.5, 240)
+
+    complete_list = os.listdir(interp_path)
 
     for fff in files_all:
         if fff[0] == '.':
             continue
+        elif fff in complete_list:
+            continue
         else:
             ff0 = xr.open_dataset(data_path + fff)
             if 'historical' in fff:
+                year_range = np.linspace(1980, 2014, 2014 - 1980 + 1)
+                
                 ff  = ff0.sel(time=ff0.time.dt.year.isin(year_range))
             else:
-                ff  = ff0
+                year_range = np.linspace(2015, 2050, 2050 - 2015 + 1)
+
+                
+                ff  = ff0.sel(time=ff0.time.dt.year.isin(year_range))
 
             del ff0
 

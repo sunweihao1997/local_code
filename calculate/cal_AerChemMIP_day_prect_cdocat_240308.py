@@ -1367,18 +1367,18 @@ def ipsl_data():
 
 
 def main():
-#    ec_earth_data()
-#    gfdl_data()
-#    giss_data()
-#    mri_data()
+    ec_earth_data()
+    gfdl_data()
+    giss_data()
+    mri_data()
 #    cesm_data()
 #    bcc_data()
-#    ukesm_data()
-#    mpiesm_data()
-#    miroc6_data()
+    ukesm_data()
+    mpiesm_data()
+    miroc6_data()
 #    noresm_data()
 #    cnrm_data()
-    ipsl_data()
+#    ipsl_data()
 
 if __name__ == "__main__":
     main()
