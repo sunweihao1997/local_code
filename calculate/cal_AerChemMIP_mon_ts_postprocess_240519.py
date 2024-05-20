@@ -6,7 +6,7 @@ Note: It is multiple variable post-process and I do not want to change the scrip
 '''
 import os
 
-data_path = '/data/AerChemMIP/mon_ts/'
+data_path = '/Volumes/Untitled/AerChemMIP/mon_ts/'
 
 files_all = os.listdir(data_path)
 
