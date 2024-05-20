@@ -1,16 +1,16 @@
 '''
-2024-4-8
-This script is to calculate the postprocess for some variables: tas sfcwind etc
+2024-5-20
+This script is to calculate the postprocess for some variables: monthly ua
 
 Note: It is multiple variable post-process and I do not want to change the script so I would deal with each variable manually
 '''
 import os
 
-data_path = '/Volumes/Untitled/AerChemMIP/mon_rsds/'
+data_path = '/Volumes/Untitled/AerChemMIP/mon_va/'
 
 files_all = os.listdir(data_path)
 
-variable_list  =  ['rsds']
+variable_list  =  ['va']
 
 var0           =  variable_list[0]
 
