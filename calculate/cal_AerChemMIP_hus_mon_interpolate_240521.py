@@ -10,9 +10,9 @@ import numpy as np
 #type0         = ['wet_day', 'pr10', 'pr10-25', 'pr1-10', 'pr20', 'pr25', 'pr10-20']
 type0         = ['ts']
 
-data_path0    = '/home/sun/wd_disk/AerChemMIP/download/mon_va_cat/'
+data_path0    = '/home/sun/wd_disk/AerChemMIP/download/mon_hus_cat/'
 
-interp_path0  = '/home/sun/data/AerChemMIP/mon_va_samegrid/'
+interp_path0  = '/home/sun/data/AerChemMIP/mon_hus_samegrid/'
 
 complete_list = os.listdir(interp_path0)
 
