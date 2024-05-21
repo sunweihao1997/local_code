@@ -1,20 +1,20 @@
 '''
-2024-5-20
-This script is to calculate the postprocess for some variables: monthly ua
+2024-4-8
+This script is to calculate the postprocess for some variables: tas sfcwind etc
 
 Note: It is multiple variable post-process and I do not want to change the script so I would deal with each variable manually
 '''
 import os
 
-data_path = '/data/AerChemMIP/mon_ua/'
+data_path = '/Volumes/Untitled/AerChemMIP/mon_rsds/'
 
 files_all = os.listdir(data_path)
 
-variable_list  =  ['ua']
+variable_list  =  ['rsds']
 
 var0           =  variable_list[0]
 
-end_path  = '/data/AerChemMIP/process/post-process/{}/'.format(var0)
+end_path  = '/Volumes/Untitled/AerChemMIP/process/post-process/{}/'.format(var0)
 
 from cdo import *
 cdo = Cdo()

@@ -94,7 +94,16 @@ def show_group_names(list2):
     return variant_names
 
 def cdo_inputfiles(datalists, new_name):
-    cdo.cat(input = [(data_path + x) for x in datalists],output = end_path + new_name)
+    # reconstruct the command
+    filename = datalists[0]
+    filename_split = filename.split("_")
+
+    command_new = "_".join(filename_split[:5])
+
+    command_full = "cdo cat " + data_path + command_new + "* " + end_path + command_new + ".nc"
+    #print(command_full)
+    os.system(command_full)
+    #cdo.cat(input = [(data_path + x) for x in datalists],output = end_path + new_name)
 
 def ec_earth_data():
 
