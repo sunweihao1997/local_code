@@ -6,7 +6,7 @@ import xarray as xr
 
 import os
 
-path0 = "/data/AerChemMIP/process/post-process/ua/"
+path0 = "/data/AerChemMIP/process/post-process/rsdscs_samegrid/"
 
 list0 = os.listdir(path0)
 list1 = []

@@ -6,11 +6,11 @@ Note: It is multiple variable post-process and I do not want to change the scrip
 '''
 import os
 
-data_path = '/data/AerChemMIP/GISS-rsds/'
+data_path = '/data/AerChemMIP/GISS-rsdscs/'
 
 files_all = os.listdir(data_path)
 
-variable_list  =  ['rsds']
+variable_list  =  ['rsdscs']
 
 var0           =  variable_list[0]
 
