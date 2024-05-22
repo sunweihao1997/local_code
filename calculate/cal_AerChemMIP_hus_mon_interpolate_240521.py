@@ -47,7 +47,7 @@ def check_varname(f0):
     print(f0)
 
 def unify_lat_lon(f0, new_lat, new_lon, filename, pathend):
-    '''
+    '''            
         This function is to unify the lat/lon information for each inputed f0
     '''
     old_lat   = f0['lat'].data
