@@ -10,15 +10,15 @@ import numpy as np
 #type0         = ['wet_day', 'pr10', 'pr10-25', 'pr1-10', 'pr20', 'pr25', 'pr10-20']
 type0         = ['rsds']
 
-data_path0    = '/data/AerChemMIP/process/post-process/rsds/'
+data_path0    = '/home/sun/wd_disk/AerChemMIP/download/mon_psl/mon_psl_cat/'
 
-interp_path0  = '/data/AerChemMIP/process/post-process/rsds_samegrid/'
+interp_path0  = '/home/sun/data/AerChemMIP/process/psl_samegrid/'
 
 #models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'CESM2-WACCM', 'BCC-ESM1', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'MIROC6', 'CNRM-ESM']
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'MPI-ESM-1-2-HAM', 'MIROC6', ]
 
 #variable_list  =  ['tas', 'sfcWind', 'hurs', 'hfss', 'hfls']
-variable_list  =  ['ts',] # All of the above is wet_day
+variable_list  =  ['psl',] # All of the above is wet_day
 
 year_hist = np.linspace(1950, 2014, 2014 - 1950 + 1)
 year_furt = np.linspace(2015, 2050, 2050 - 2015 + 1)

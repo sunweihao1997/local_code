@@ -8,19 +8,17 @@ import xarray as xr
 import numpy as np
 
 #type0         = ['wet_day', 'pr10', 'pr10-25', 'pr1-10', 'pr20', 'pr25', 'pr10-20']
-type0         = ['ua']
+type0         = ['rsds']
 
-data_path0    = '/home/sun/wd_disk/AerChemMIP/download/mon_ua_cat/'
+data_path0    = '/home/sun/data/AerChemMIP/process/200_div_ncl/'
 
-interp_path0  = '/home/sun/data/AerChemMIP/mon_ua_samegrid/'
-
-complete_list = os.listdir(interp_path0)
+interp_path0  = '/home/sun/data/AerChemMIP/process/200_div_samegrid/'
 
 #models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'CESM2-WACCM', 'BCC-ESM1', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'MIROC6', 'CNRM-ESM']
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'MPI-ESM-1-2-HAM', 'MIROC6', ]
 
 #variable_list  =  ['tas', 'sfcWind', 'hurs', 'hfss', 'hfls']
-variable_list  =  ['ua',] # All of the above is wet_day
+variable_list  =  ['div',] # All of the above is wet_day
 
 year_hist = np.linspace(1950, 2014, 2014 - 1950 + 1)
 year_furt = np.linspace(2015, 2050, 2050 - 2015 + 1)
@@ -94,17 +92,14 @@ def main():
 
     # 3. Interpolate
     # 1.5 x 1.5 resolution
-    new_lat = np.linspace(-90, 90, 91)
-    new_lon = np.linspace(0, 358, 180)
+    new_lat = np.linspace(-88.5, 88.5, 119)
+    new_lon = np.linspace(0, 358.5, 240)
 
     for fff in files_all:
 #            print(fff)
         if fff[0] == '.':
             continue
-#        elif fff in complete_list:
-#            continue
         else:
-            print(f'Now it is dealing with {fff}')
             ff0 = xr.open_dataset(data_path0 + fff)
             #print(ff0)
             if 'historical' in fff:
@@ -114,6 +109,7 @@ def main():
 
             del ff0
 
+            print(f'Now it is dealing with {fff}')
 
             unify_lat_lon(ff, new_lat, new_lon, fff, interp_path0)
 

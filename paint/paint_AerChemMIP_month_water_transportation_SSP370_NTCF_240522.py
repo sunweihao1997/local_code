@@ -1,20 +1,25 @@
 '''
-2024-5-20
+2024-5-22
 This script is to plot the changes in MJJAS ts between SSP370 and SSP370lowNTCF, the simulation of historical is ignored
+
+two calculation is needed:
+1. calculate the modelmean
+2. calculate the divergence and divergent wind at 200 hPa
 '''
 import xarray as xr
 import numpy as np
 from scipy import stats
+from windspharm.xarray import VectorWind
 
 path_in   =  '/home/sun/data/process/analysis/AerChem/'
 
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
 
-varname      = 'div'
+varname      = 'tasmin'
 
-gen_f     = xr.open_dataset('/home/sun/data/topography/geo_1279l4_0.1x0.1.grib2_v4_unpack.nc')
-
-z         = gen_f['z'].data[0] / 9.8
+#gen_f     = xr.open_dataset('/Volumes/Untitled/AerChemMIP/geopotential/geo_1279l4_0.1x0.1.grib2_v4_unpack.nc')
+#
+#z         = gen_f['z'].data[0] / 9.8
 
 def cal_multiple_model_avg(f0, exp_tag, timeaxis,):
     '''
@@ -23,9 +28,9 @@ def cal_multiple_model_avg(f0, exp_tag, timeaxis,):
     timeaxis is 65 for historical and 36 for furture simulation
     '''
     # 1. Generate the averaged array
-    lat = f0.lat.data ; lon = f0.lon.data ; time = f0[timeaxis].data
+    lat = f0.lat.data ; lon = f0.lon.data ; time = f0[timeaxis].data ; lev = f0.plev.data
 
-    multiple_model_avg = np.zeros((len(time), len(lat), len(lon)))
+    multiple_model_avg = np.zeros((len(time), len(lev), len(lat), len(lon)))
 
     # 2. Calculation
     models_num = len(models_label)
@@ -52,7 +57,7 @@ def plot_change_wet_day(ssp, sspntcf, left_string, figname, lon, lat, parray, ct
     from matplotlib.colors import LinearSegmentedColormap
 
     import sys
-    sys.path.append("/root/local_code/module/")
+    sys.path.append("/Users/sunweihao/local_code/module/")
     from module_sun import set_cartopy_tick
 
     # -------   cartopy extent  -----
@@ -96,12 +101,12 @@ def plot_change_wet_day(ssp, sspntcf, left_string, figname, lon, lat, parray, ct
         im  =  ax.contourf(lon, lat, pet[row], ct_level, cmap=new_cmap, alpha=1, extend='both')
 
         # t 检验
-        sp  =  ax.contourf(lon, lat, parray, levels=[0., 0.01], colors='none', hatches=['.'])
+        sp  =  ax.contourf(lon, lat, parray, levels=[0., 0.05], colors='none', hatches=['..'])
 
         # 海岸线
         ax.coastlines(resolution='50m',lw=1.65)
 
-        topo  =  ax.contour(gen_f['longitude'].data, gen_f['latitude'].data, z, levels=[3000], colors='brown', linewidths=3)
+        topo  =  ax.contour(gen_f['longitude'].data, gen_f['latitude'].data, z, levels=[3000], colors='red', linewidth=4.5)
 
         ax.set_title(left_title, loc='left', fontsize=16.5)
         ax.set_title(right_title[row], loc='right', fontsize=16.5)
@@ -116,7 +121,7 @@ def plot_change_wet_day(ssp, sspntcf, left_string, figname, lon, lat, parray, ct
     cb.set_ticks(ct_level)
     cb.set_ticklabels(ct_level)
 
-    plt.savefig("/data/paint/AerChemMIP_modelgroup_spatial_MJJAS_ssp370_ntcf_{}.png".format(figname))
+    plt.savefig("/Volumes/Untitled/paint/AerChemMIP_modelgroup_spatial_MJJAS_ssp370_ntcf_{}.png".format(figname))
 
 def cal_student_ttest(array1, array2):
     '''
@@ -132,14 +137,49 @@ def cal_student_ttest(array1, array2):
     return p_value
 
 if __name__ == '__main__':
-    f0  =  xr.open_dataset('/data/AerChemMIP/process/multiple_model_climate_rsds_month_MJJAS.nc')
+    # ------- data for ua ---------
+    f0  =  xr.open_dataset('/home/sun/data/AerChemMIP/process/multiple_model_climate_ua_month_MJJAS.nc')
 
-    ssp0      =  cal_multiple_model_avg(f0, 'ssp',  'time_ssp')
-    ntcf0     =  cal_multiple_model_avg(f0, 'sspntcf', 'time_ssp')
+    ssp0_ua      =  cal_multiple_model_avg(f0, 'ssp',  'time_ssp')
+    ntcf0_ua     =  cal_multiple_model_avg(f0, 'sspntcf', 'time_ssp')
 
-    ttest     =  cal_student_ttest(ssp0, ntcf0)
+    # ------- data for va ---------
+    f1  =  xr.open_dataset('/home/sun/data/AerChemMIP/process/multiple_model_climate_va_month_MJJAS.nc')
+
+    ssp0_va      =  cal_multiple_model_avg(f1, 'ssp',  'time_ssp')
+    ntcf0_va     =  cal_multiple_model_avg(f1, 'sspntcf', 'time_ssp')
+
+    # ------- data for hus ---------
+    f2  =  xr.open_dataset('/home/sun/data/AerChemMIP/process/multiple_model_climate_hus_month_MJJAS.nc')
+
+    ssp0_hus      =  cal_multiple_model_avg(f2, 'ssp',  'time_ssp')
+    ntcf0_hus     =  cal_multiple_model_avg(f2, 'sspntcf', 'time_ssp')
+
+    # ------- add to ncfile -----
+    ncfile  =  xr.Dataset(
+    {
+        "ssp_ua":     (["lev", "lat", "lon"], np.nanmean(ssp0_ua, axis=0)),  
+        "ssp_va":     (["lev", "lat", "lon"], np.nanmean(ssp0_va, axis=0)),  
+        "ssp_hus":    (["lev", "lat", "lon"], np.nanmean(ssp0_hus, axis=0)), 
+        "ntcf_ua":    (["lev", "lat", "lon"], np.nanmean(ntcf0_ua, axis=0)),  
+        "ntcf_va":    (["lev", "lat", "lon"], np.nanmean(ntcf0_va, axis=0)),  
+        "ntcf_hus":   (["lev", "lat", "lon"], np.nanmean(ntcf0_hus, axis=0)),      
+    },
+    coords={
+        "lat":  (["lat"],  f1.lat.data),
+        "lon":  (["lon"],  f1.lon.data),
+        "lev":  (["lev"],  f1.plev.data),
+    },
+    )
+
+    print(ncfile)
 
 
-    # Note that the variable in the above is three-dimension while the first is the number os the year
-    levels    =  [-14, -12, -10, -8, -6, -4, -2, -1, 1, 2, 4, 6, 8, 10, 12, 14]
-    plot_change_wet_day(np.nanmean(ssp0, axis=0), np.nanmean(ntcf0, axis=0), 'rsds (MJJAS)', 'rsds (MJJAS)', f0.lon.data, f0.lat.data, ttest, levels)
+#    ttest     =  cal_student_ttest(ssp0, ntcf0)
+
+
+#    # Note that the variable in the above is three-dimension while the first is the number os the year
+#    levels    =  [-1, -0.8, -0.6, -0.4, -0.2, -0.1, 0.1, 0.2, 0.4, 0.6, 0.8, 1]
+#    plot_change_wet_day(np.nanmean(ssp0, axis=0), np.nanmean(ntcf0, axis=0), 'ts (MJJAS)', 'ts (MJJAS)', f0.lon.data, f0.lat.data, ttest, levels)
+#    print(ssp0.shape)
+

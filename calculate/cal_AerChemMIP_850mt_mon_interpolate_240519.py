@@ -1,6 +1,6 @@
 '''
-2024-4-15
-This script is to deal with the CMIP6 wet days, intepolating them to the same grids
+2024-5-23
+This script is to deal with the CMIP6 moisture transportation, only 850 hPa is considered
 
 '''
 import os
@@ -10,9 +10,9 @@ import numpy as np
 #type0         = ['wet_day', 'pr10', 'pr10-25', 'pr1-10', 'pr20', 'pr25', 'pr10-20']
 type0         = ['ua']
 
-data_path0    = '/home/sun/wd_disk/AerChemMIP/download/mon_ua_cat/'
+data_path0    = '/home/sun/data/AerChemMIP/process/moisture_transportation/'
 
-interp_path0  = '/home/sun/data/AerChemMIP/mon_ua_samegrid/'
+interp_path0  = '/home/sun/data/AerChemMIP/process/moisture_transportation_850samegrid/'
 
 complete_list = os.listdir(interp_path0)
 
@@ -108,9 +108,9 @@ def main():
             ff0 = xr.open_dataset(data_path0 + fff)
             #print(ff0)
             if 'historical' in fff:
-                ff  = ff0.sel(time=ff0.time.dt.year.isin(year_hist))
+                ff  = ff0.sel(time=ff0.time.dt.year.isin(year_hist)).sel(plev=85000)
             else:
-                ff  = ff0.sel(time=ff0.time.dt.year.isin(year_furt))
+                ff  = ff0.sel(time=ff0.time.dt.year.isin(year_furt)).sel(plev=85000)
 
             del ff0
 

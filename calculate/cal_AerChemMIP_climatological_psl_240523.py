@@ -138,7 +138,7 @@ def main():
             print('=============================================================')
 #        
         dataset_allmodel.attrs['description'] = 'Created on 2024-4-24. This file includes the counts of the rsds for single model, covering historical, SSP370 and SSP270lowNTCF experiments. All the variables is climatological, which is 1980-2014 for hist and 2031-2050 for SSP370.'
-        dataset_allmodel.to_netcdf('/data/AerChemMIP/process/multiple_model_climate_psl_month_MJJAS.nc')
+        dataset_allmodel.to_netcdf('/home/sun/data/AerChemMIP/process/multiple_model_climate_psl_month_MJJAS.nc')
 
 
         

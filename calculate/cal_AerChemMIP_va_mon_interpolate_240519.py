@@ -94,15 +94,15 @@ def main():
 
     # 3. Interpolate
     # 1.5 x 1.5 resolution
-    new_lat = np.linspace(-88.5, 88.5, 119)
-    new_lon = np.linspace(0, 358.5, 240)
+    new_lat = np.linspace(-90, 90, 91)
+    new_lon = np.linspace(0, 358, 180)
 
     for fff in files_all:
 #            print(fff)
         if fff[0] == '.':
             continue
-        elif fff in complete_list:
-            continue
+#        elif fff in complete_list:
+#            continue
         else:
             print(f'Now it is dealing with {fff}')
             ff0 = xr.open_dataset(data_path0 + fff)
