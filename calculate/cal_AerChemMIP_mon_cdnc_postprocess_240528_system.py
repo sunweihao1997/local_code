@@ -6,18 +6,18 @@ Note: It is multiple variable post-process and I do not want to change the scrip
 '''
 import os
 
-data_path = '/data/AerChemMIP/mon_ua/'
+data_path = '/home/sun/wd_disk/AerChemMIP/download/mon_cdnc/'
 
 files_all = os.listdir(data_path)
 
-variable_list  =  ['ua']
+variable_list  =  ['cdnc']
 
 var0           =  variable_list[0]
 
-end_path  = '/data/AerChemMIP/process/post-process/{}/'.format(var0)
+end_path  = "/home/sun/wd_disk/AerChemMIP/download/mon_cdnc_cat/"
 
-from cdo import *
-cdo = Cdo()
+#from cdo import *
+#cdo = Cdo()
 
 ncfiles   = []
 
@@ -1269,7 +1269,7 @@ def main():
     mri_data()
 #    cesm_data()
 #    bcc_data()
-    ukesm_data()
+#    ukesm_data()
     mpiesm_data()
     miroc6_data()
 #    noresm_data()

@@ -6,7 +6,7 @@ import xarray as xr
 import numpy as np
 import os
 
-pathin = '/home/sun/data/download_data/AerChemMIP/tasmin/'
+pathin = '/home/sun/wd_disk/AerChemMIP/download/mon_cdnc/'
 datalist = os.listdir(pathin)
 
 for ff in datalist:
@@ -14,5 +14,6 @@ for ff in datalist:
         f0 = xr.open_dataset(pathin + ff)
 
         print(f'Successfully read {ff}')
+        f0['cdnc'].to_netcdf('/home/sun/wd_disk/AerChemMIP/download/mon_cdnc_extract/' + ff)
     else:
         continue

@@ -1,6 +1,6 @@
 '''
-2024-5-22
-This script is to calculate climatological ua under SSP370/SSP370lowNTCF simulation
+2024-5-21
+This script is to calculate climatological rsds under SSP370/SSP370lowNTCF simulation
 
 Note:
 MJJAS / not include historical simulation
@@ -11,16 +11,17 @@ import os
 import sys
 import cftime
 
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
+#models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G']
+models_label = ['EC-Earth3-AerChem', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G']
 
-path_src = '/home/sun/data/AerChemMIP/mon_hus_samegrid/'
+path_src = '/home/sun/data/AerChemMIP/process/ps_samegrid/'
 
 # Only consider JJAS and unify the year axis
 months   =  [6, 7, 8]
 hist_year=  np.linspace(1985, 2014, 2014-1985+1)
 furt_year=  np.linspace(2031, 2050, 2050-2031+1)
 
-varname  =  'hus'
+varname  =  'ps'
 
 def return_array(filename, prtype):
     '''
@@ -109,10 +110,9 @@ def main():
             lon       = f1.lon.data
             lat       = f1.lat.data
             #print(hist_average.shape)
-            da_ssp  = xr.DataArray(data=ssp_average, dims=["time_ssp", "plev", "lat", "lon"],
+            da_ssp  = xr.DataArray(data=ssp_average, dims=["time_ssp", "lat", "lon"],
                                     coords=dict(
                                         lon=(["lon"], lon),
-                                        plev=(["plev"], f1.plev.data),
                                         lat=(["lat"], lat),
                                         time=(["time_ssp"], time_ssp),
                                     ),
@@ -120,10 +120,9 @@ def main():
                                         description=varname,
                                     ),
                                     )
-            da_ntcf = xr.DataArray(data=ntcf_average, dims=["time_ssp", "plev", "lat", "lon"],
+            da_ntcf = xr.DataArray(data=ntcf_average, dims=["time_ssp", "lat", "lon"],
                                     coords=dict(
                                         lon=(["lon"], lon),
-                                        plev=(["plev"], f1.plev.data),
                                         lat=(["lat"], lat),
                                         time=(["time_ssp"], time_ssp),
                                     ),
@@ -139,8 +138,11 @@ def main():
             print('Now the dealing with {} has all completed!'.format(modelname))
             print('=============================================================')
 #        
-        dataset_allmodel.attrs['description'] = 'Created on 2024-5-27. This file includes the counts of the hus for single model, covering SSP370 and SSP270lowNTCF experiments. All the variables is climatological, which is 1980-2014 for hist and 2031-2050 for SSP370.'
-        dataset_allmodel.to_netcdf('/home/sun/data/AerChemMIP/process/multiple_model_climate_hus_month_JJA.nc')
+        dataset_allmodel.attrs['description'] = 'Created on 2024-4-24. This file includes the counts of the rsds for single model, covering historical, SSP370 and SSP270lowNTCF experiments. All the variables is climatological, which is 1980-2014 for hist and 2031-2050 for SSP370.'
+        dataset_allmodel.to_netcdf('/home/sun/data/AerChemMIP/process/multiple_model_climate_ps_month_JJA.nc')
+
+
+        
 
         
 

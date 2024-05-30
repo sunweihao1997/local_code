@@ -12,7 +12,7 @@ begin
 
     level = 20000
     ;print(files_string(1))
-    do i = 0, 37
+    do i = 10, 10
         filename0_ua = files_string(i)
         filename0_va = str_sub_str(filename0_ua, "ua_", "va_")
 
@@ -24,6 +24,8 @@ begin
         v  = fv->va(:, {level}, :, :)
 
         div = uv2dv_cfd(u, v, u&lat, u&lon, 2)
+
+        sf0 = uv2sfvpF(u, v)
 
         copy_VarCoords(u, div)
 
@@ -37,14 +39,21 @@ begin
         copy_VarCoords(v, divv)
         ;printVarSummary(divu)
 
+        sf  = sf0(0, :, :, :)
+        copy_VarCoords(u, sf)
+
+        print(sf)
+
         ; Save to the ncfile
         outname = str_sub_str(filename0_ua, "ua_", "div_")
+        system("rm " + out_path + outname)
         fout = addfile(out_path + outname, "c")
         filedimdef(fout,"time",-1,True)
     ;
         fout->div  = div
         fout->divu = divu
         fout->divv = divv
+        fout->sf   = sf
     ;
         ;; Set file attribute
         setfileoption(fout,"DefineMode",True)
@@ -63,6 +72,8 @@ begin
         delete(divv)
         delete(dv)
         delete(fout)
+        delete(sf)
+        delete(sf0)
 
     end do
 

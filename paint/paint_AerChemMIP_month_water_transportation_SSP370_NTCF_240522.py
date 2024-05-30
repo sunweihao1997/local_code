@@ -13,7 +13,8 @@ from windspharm.xarray import VectorWind
 
 path_in   =  '/home/sun/data/process/analysis/AerChem/'
 
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
+models_label = ['EC-Earth3-AerChem', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6',] # GISS provide no daily data
+#models_label = ['EC-Earth3-AerChem', 'GFDL-ESM4', 'MRI-ESM2', ] # GISS provide no daily data
 
 varname      = 'tasmin'
 
@@ -39,6 +40,32 @@ def cal_multiple_model_avg(f0, exp_tag, timeaxis,):
         varname1 = mm + '_' + exp_tag
 
         multiple_model_avg += (f0[varname1].data / models_num)
+
+        print(f'{mm} model value is {np.nanmean(f0[varname1].data)}')
+
+    #
+    return multiple_model_avg
+
+def cal_multiple_model_avg2d(f0, exp_tag, timeaxis,):
+    '''
+    Because the input data is single model, so this function is to calculate the model-averaged data
+
+    timeaxis is 65 for historical and 36 for furture simulation
+    '''
+    # 1. Generate the averaged array
+    lat = f0.lat.data ; lon = f0.lon.data ; time = f0[timeaxis].data
+
+    multiple_model_avg = np.zeros((len(time), len(lat), len(lon)))
+
+    # 2. Calculation
+    models_num = len(models_label)
+
+    for mm in models_label:
+        varname1 = mm + '_' + exp_tag
+
+        multiple_model_avg += (f0[varname1].data / models_num)
+
+    #    print(f'{mm} model value is {np.nanmean(f0[varname1].data)}')
 
     #
     return multiple_model_avg
@@ -154,6 +181,13 @@ if __name__ == '__main__':
 
     ssp0_hus      =  cal_multiple_model_avg(f2, 'ssp',  'time_ssp')
     ntcf0_hus     =  cal_multiple_model_avg(f2, 'sspntcf', 'time_ssp')
+#    print(np.nanmean(ntcf0_hus))
+
+    # ------- data for psl ---------
+    f3  =  xr.open_dataset('/home/sun/data/AerChemMIP/process/multiple_model_climate_ps_month_MJJAS.nc')
+
+    ssp0_psl      =  cal_multiple_model_avg2d(f3, 'ssp',  'time_ssp')
+    ntcf0_psl     =  cal_multiple_model_avg2d(f3, 'sspntcf', 'time_ssp')
 
     # ------- add to ncfile -----
     ncfile  =  xr.Dataset(
@@ -161,9 +195,11 @@ if __name__ == '__main__':
         "ssp_ua":     (["lev", "lat", "lon"], np.nanmean(ssp0_ua, axis=0)),  
         "ssp_va":     (["lev", "lat", "lon"], np.nanmean(ssp0_va, axis=0)),  
         "ssp_hus":    (["lev", "lat", "lon"], np.nanmean(ssp0_hus, axis=0)), 
+        "ssp_ps":    (["lat", "lon"], np.nanmean(ssp0_psl, axis=0)), 
         "ntcf_ua":    (["lev", "lat", "lon"], np.nanmean(ntcf0_ua, axis=0)),  
         "ntcf_va":    (["lev", "lat", "lon"], np.nanmean(ntcf0_va, axis=0)),  
-        "ntcf_hus":   (["lev", "lat", "lon"], np.nanmean(ntcf0_hus, axis=0)),      
+        "ntcf_hus":   (["lev", "lat", "lon"], np.nanmean(ntcf0_hus, axis=0)),     
+        "ntcf_ps":   (["lat", "lon"], np.nanmean(ntcf0_psl, axis=0)),      
     },
     coords={
         "lat":  (["lat"],  f1.lat.data),
@@ -172,7 +208,9 @@ if __name__ == '__main__':
     },
     )
 
-    print(ncfile)
+    ncfile.attrs['description'] = 'Created on 28-May-2024. This file is for the calculation of vertical integral of moisture transportation.'
+
+    ncfile.to_netcdf('/home/sun/data/AerChemMIP/process/modelmean_climate_hus_ua_va_ps_month_MJJAS.nc')
 
 
 #    ttest     =  cal_student_ttest(ssp0, ntcf0)
