@@ -5,12 +5,13 @@ This script is to plot the changes in MJJAS ts between SSP370 and SSP370lowNTCF,
 import xarray as xr
 import numpy as np
 from scipy import stats
+import cartopy.util as cutil
 
 path_in   =  '/home/sun/data/process/analysis/AerChem/'
 
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
-models_label = ['EC-Earth3-AerChem','UKESM1-0-LL', 'GFDL-ESM4','MRI-ESM2'] # GISS provide no daily data
-models_label = ['MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
+#models_label = ['EC-Earth3-AerChem','UKESM1-0-LL', 'GFDL-ESM4','MRI-ESM2'] # GISS provide no daily data
+#models_label = ['MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
 
 varname      = 'div'
 
@@ -58,12 +59,13 @@ def plot_change_wet_day(ssp, sspntcf, left_string, figname, lon, lat, parray, ct
     from module_sun import set_cartopy_tick
 
     # -------   cartopy extent  -----
-    lonmin,lonmax,latmin,latmax  =  10,160,0,75
+    lonmin,lonmax,latmin,latmax  =  5,355,0,75
     extent     =  [lonmin,lonmax,latmin,latmax]
 
     # -------     figure    -----------
-    proj  =  ccrs.PlateCarree()
-    fig1    =  plt.figure(figsize=(10,8))
+    #proj  =    ccrs.Robinson(central_longitude=180)
+    proj   =    ccrs.PlateCarree(central_longitude=180)
+    fig1    =  plt.figure(figsize=(15,8))
     spec1   =  fig1.add_gridspec(nrows=1,ncols=1)
 
     left_title = '{}'.format(left_string)
@@ -87,23 +89,30 @@ def plot_change_wet_day(ssp, sspntcf, left_string, figname, lon, lat, parray, ct
     # ------      paint    -----------
     for row in range(1):
         col = 0
-        ax = fig1.add_subplot(spec1[row,col],projection=proj)
+        ax = fig1.add_subplot(spec1[row,col], projection=ccrs.PlateCarree(central_longitude=180))
+        ax.set_global()
+        
 
         # 设置刻度
-        set_cartopy_tick(ax=ax,extent=extent,xticks=np.linspace(10,160,11,dtype=int),yticks=np.linspace(0,70,8,dtype=int),nx=1,ny=1,labelsize=15)
+        set_cartopy_tick(ax=ax,extent=extent,xticks=np.arange(10,355,30,dtype=int),yticks=np.linspace(0,70,8,dtype=int),nx=1,ny=1,labelsize=15)
 
         # 添加赤道线
         #ax.plot([40,150],[0,0],'k--')
 
-        im  =  ax.contourf(lon, lat, pet[row], ct_level, cmap=new_cmap, alpha=1, extend='both')
+        # add cyclic point
+#        lon2d, lat2d = np.meshgrid(lon, lat)
+#        cdata, clon2d, clat2d = cutil.add_cyclic(pet[row], lon2d, lat2d)
+#
+#        im  =  ax.contourf(clon2d, clat2d, cdata, ct_level, cmap=new_cmap, alpha=1, extend='both')
+        im  =  ax.contourf(lon, lat, pet[row], ct_level, cmap='coolwarm', alpha=1, extend='both', transform=ccrs.PlateCarree())
 
         # t 检验
-        sp  =  ax.contourf(lon, lat, parray, levels=[0., 0.1], colors='none', hatches=['..'])
+        sp  =  ax.contourf(lon, lat, parray, levels=[0., 0.1], colors='none', hatches=['..'], transform=ccrs.PlateCarree())
 
         # 海岸线
         ax.coastlines(resolution='50m',lw=1.65)
 
-        topo  =  ax.contour(gen_f['longitude'].data, gen_f['latitude'].data, z, levels=[3000], colors='brown', linewidths=3)
+        #topo  =  ax.contour(gen_f['longitude'].data, gen_f['latitude'].data, z, levels=[3000], colors='brown', linewidths=3)
 
         ax.set_title(left_title, loc='left', fontsize=16.5)
         ax.set_title(right_title[row], loc='right', fontsize=16.5)
@@ -148,7 +157,7 @@ if __name__ == '__main__':
     #levels    =  [-14, -12, -10, -8, -6, -4, -2, -1, 1, 2, 4, 6, 8, 10, 12, 14]
     #levels    =  [-1.0, -.8, -.6, -.4, -.2, -0.1, -.05, .05, 0.1, .2, .4, .6, .8, 1.0,]
 
-    levels    =  np.array([-8, -6, -4, -3, -2, -1, -0.05, 0.05, 1, 2, 3, 4, 6, 8])
+    levels    =  np.array([-8, -6, -4, -3, -2, -1, 0, 1, 2, 3, 4, 6, 8])
 
     #plot_change_wet_day(np.nanmean(ssp0, axis=0) * 10e2, np.nanmean(ntcf0, axis=0) * 10e2, '200hPa v (MJJAS)', '200hPa v (MJJAS)', f0.lon.data, f0.lat.data, ttest, levels)
-    plot_change_wet_day(np.nanmean(ssp0, axis=0), np.nanmean(ntcf0, axis=0), '200hPa v (group2)', '200hPa v (group2)', f0.lon.data, f0.lat.data, ttest, levels/10)
+    plot_change_wet_day(np.nanmean(ssp0, axis=0), np.nanmean(ntcf0, axis=0), '200hPa v (MJJAS)', '200hPa v (MJJAS)', f0.lon.data, f0.lat.data, ttest, levels/10)
