@@ -134,7 +134,7 @@ def cal_student_ttest(array1, array2):
 if __name__ == '__main__':
     from scipy.ndimage import gaussian_filter
 
-    f0  =  xr.open_dataset('/home/sun/data/AerChemMIP/process/modelmean_climate_water_transportation_integral_JJA_MPI.nc')
+    f0  =  xr.open_dataset('/home/sun/data/AerChemMIP/process/modelmean_climate_water_transportation_integral_MJJAS.nc')
 
     ssp0      =  f0['vert_integral_ssp'].data
     ntcf0     =  f0['vert_integral_ntcf'].data
@@ -151,7 +151,7 @@ if __name__ == '__main__':
     #levels    =  [-14, -12, -10, -8, -6, -4, -2, -1, 1, 2, 4, 6, 8, 10, 12, 14]
     #levels    =  [-1.0, -.8, -.6, -.4, -.2, -0.1, -.05, .05, 0.1, .2, .4, .6, .8, 1.0,]
 
-    levels    =  np.array([-6, -4, -3, -2, -1, 0, 1, 2, 3, 4, 6,])
+    levels    =  np.array([-10, -8, -6, -4, -3, -2, -1, 0, 1, 2, 3, 4, 6, 8, 10])
 
     #plot_change_wet_day(np.nanmean(ssp0, axis=0) * 10e2, np.nanmean(ntcf0, axis=0) * 10e2, '200hPa v (MJJAS)', '200hPa v (MJJAS)', f0.lon.data, f0.lat.data, ttest, levels)
-    plot_change_wet_day(np.nanmean(ssp0, axis=0) * 1e6, np.nanmean(ntcf0, axis=0) * 1e6, 'ms integral (JJA MPI)', 'ms integral (JJA MPI)', f0.lon.data, f0.lat.data, ttest, levels)
+    plot_change_wet_day(np.nanmean(ssp0, axis=0) * 1e6, np.nanmean(ntcf0, axis=0) * 1e6, 'ms integral (MJJAS)', 'ms integral (MJJAS)', f0.lon.data, f0.lat.data, ttest, levels)

@@ -13,14 +13,14 @@ import cftime
 
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
 
-path_src = '/home/sun/data/AerChemMIP/mon_va_samegrid/'
+path_src = '/home/sun/data/AerChemMIP/mon_ua_samegrid/'
 
 # Only consider JJAS and unify the year axis
 months   =  [5, 6, 7, 8, 9]
 hist_year=  np.linspace(1985, 2014, 2014-1985+1)
 furt_year=  np.linspace(2031, 2050, 2050-2031+1)
 
-varname  =  'va'
+varname  =  'ua'
 
 def return_array(filename, prtype):
     '''
@@ -140,7 +140,7 @@ def main():
             print('=============================================================')
 #        
         dataset_allmodel.attrs['description'] = 'Created on 2024-5-22. This file includes the counts of the va for single model, covering SSP370 and SSP270lowNTCF experiments. All the variables is climatological, which is 1980-2014 for hist and 2031-2050 for SSP370.'
-        dataset_allmodel.to_netcdf('/home/sun/data/AerChemMIP/process/multiple_model_climate_va_month_MJJAS.nc')
+        dataset_allmodel.to_netcdf('/home/sun/data/AerChemMIP/process/multiple_model_climate_ua_month_MJJAS.nc')
 
         
 

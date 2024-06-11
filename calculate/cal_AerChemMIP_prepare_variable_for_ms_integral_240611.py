@@ -1,10 +1,8 @@
 '''
-2024-5-22
-This script is to plot the changes in MJJAS ts between SSP370 and SSP370lowNTCF, the simulation of historical is ignored
+2024-6-11
+This function is to calculate the variables for calculating the vertical integral of moisture transportation
 
-two calculation is needed:
-1. calculate the modelmean
-2. calculate the divergence and divergent wind at 200 hPa
+Note: Due to the anomalous valus, here only prepare one model's output, detailed introduction could be found in 2024-06-11 obsidian
 '''
 import xarray as xr
 import numpy as np
@@ -13,8 +11,8 @@ from windspharm.xarray import VectorWind
 
 path_in   =  '/home/sun/data/process/analysis/AerChem/'
 
-#models_label = ['EC-Earth3-AerChem', 'GFDL-ESM4', 'MRI-ESM2', 'UKESM1-0-LL'] # GISS provide no daily data
-models_label = ['MIROC6', ] # GISS provide no daily data
+models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
+models_label = ['GISS-E2-1-G', ] # GISS provide no daily data
 
 varname      = 'tasmin'
 
@@ -210,14 +208,8 @@ if __name__ == '__main__':
 
     ncfile.attrs['description'] = 'Created on 28-May-2024. This file is for the calculation of vertical integral of moisture transportation.'
 
-    ncfile.to_netcdf('/home/sun/data/AerChemMIP/process/modelmean_climate_hus_ua_va_ps_month_MJJAS.nc')
+    ncfile.to_netcdf('/home/sun/data/AerChemMIP/process/modelmean_climate_hus_ua_va_ps_month_MJJAS_GISS-E2-1-G.nc')
 
 
-#    ttest     =  cal_student_ttest(ssp0, ntcf0)
 
-
-#    # Note that the variable in the above is three-dimension while the first is the number os the year
-#    levels    =  [-1, -0.8, -0.6, -0.4, -0.2, -0.1, 0.1, 0.2, 0.4, 0.6, 0.8, 1]
-#    plot_change_wet_day(np.nanmean(ssp0, axis=0), np.nanmean(ntcf0, axis=0), 'ts (MJJAS)', 'ts (MJJAS)', f0.lon.data, f0.lat.data, ttest, levels)
-#    print(ssp0.shape)
 

@@ -2,7 +2,7 @@
 ; This script is to use the ncl function to calculate the vertical integral of the moisture transportation
 begin
 
-    f0 = addfile("/home/sun/data/AerChemMIP/process/modelmean_climate_hus_ua_va_ps_month_MJJAS.nc", "r")
+    f0 = addfile("/home/sun/data/AerChemMIP/process/modelmean_climate_hus_ua_va_ps_month_MJJAS_UKESM1-0-LL.nc", "r")
 
     u_ssp    = f0->ssp_ua
     v_ssp    = f0->ssp_va
@@ -52,7 +52,6 @@ begin
     div_ssp  = uv2dv_cfd(uq_ssp,  vq_ssp,  lat, lon, 2)
     div_ntcf = uv2dv_cfd(uq_ntcf, vq_ntcf, lat, lon, 2)
 
-    printMinMax(hus_ntcf, 0)
 
     ;printMinMax(div_ntcf, 0)
 
@@ -68,21 +67,31 @@ begin
                 ;print("Continue")
                 vert_integral_ssp(latt, lonn)  = 0
                 vert_integral_ntcf(latt, lonn) = 0
+            else if ismissing(ps_ssp(latt, lonn)) then
+                vert_integral_ssp(latt, lonn)  = 0
+                vert_integral_ntcf(latt, lonn) = 0
             else
-                ;print(ps_ssp(latt, lonn))
+                ;print(ps_ssp(:, :))
                 ;print(div_ssp(:, latt, lonn))
                 vert_integral_ssp(latt, lonn)  = vibeta(lev, div_ssp(:, latt, lonn),  1, ps_ssp(latt, lonn),  pbot, ptop)
                 vert_integral_ntcf(latt, lonn) = vibeta(lev, div_ntcf(:, latt, lonn), 1, ps_ntcf(latt, lonn), pbot, ptop)
+;            if vert_integral_ssp(latt, lonn) > 1e-5 .or. vert_integral_ssp(latt, lonn) < -1e-5 then 
+;                vert_integral_ssp(latt, lonn)  = 0
+;                vert_integral_ntcf(latt, lonn) = 0
+;            end if
+            end if
             end if
         end do
     end do
+
+    printMinMax(vert_integral_ssp, 0)
 
     copy_VarCoords(ps_ssp, vert_integral_ssp)
     copy_VarCoords(ps_ssp, vert_integral_ntcf)
 
     ; Write to ncfile
-    system("rm -rf /home/sun/data/AerChemMIP/process/modelmean_climate_water_transportation_integral_MJJAS.nc")
-    fout = addfile("/home/sun/data/AerChemMIP/process/modelmean_climate_water_transportation_integral_MJJAS.nc", "c")
+    system("rm -rf /home/sun/data/AerChemMIP/process/modelmean_climate_water_transportation_integral_MJJAS_UKESM1-0-LL.nc")
+    fout = addfile("/home/sun/data/AerChemMIP/process/modelmean_climate_water_transportation_integral_MJJAS_UKESM1-0-LL.nc", "c")
     filedimdef(fout,"time",-1,True)
 ;
     fout->vert_integral_ssp  = vert_integral_ssp
