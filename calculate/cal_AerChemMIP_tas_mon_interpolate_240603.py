@@ -8,17 +8,17 @@ import xarray as xr
 import numpy as np
 
 #type0         = ['wet_day', 'pr10', 'pr10-25', 'pr1-10', 'pr20', 'pr25', 'pr10-20']
-type0         = ['pr']
+type0         = ['ts']
 
-data_path0    = '/data/AerChemMIP/process/post-process/pr/'
+data_path0    = '/data/AerChemMIP/process/post-process/tas_cat/'
 
-interp_path0  = '/data/AerChemMIP/process/post-process/pr_samegrid/'
+interp_path0  = '/data/AerChemMIP/process/post-process/tas_samegrid/'
 
 #models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'CESM2-WACCM', 'BCC-ESM1', 'NorESM2-LM', 'MPI-ESM-1-2-HAM', 'MIROC6', 'CNRM-ESM']
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'GISS-E2-1-G', 'MPI-ESM-1-2-HAM', 'MIROC6', ]
 
 #variable_list  =  ['tas', 'sfcWind', 'hurs', 'hfss', 'hfls']
-variable_list  =  ['pr',] # All of the above is wet_day
+variable_list  =  ['tas',] # All of the above is wet_day
 
 year_hist = np.linspace(1950, 2014, 2014 - 1950 + 1)
 year_furt = np.linspace(2015, 2050, 2050 - 2015 + 1)
@@ -96,20 +96,21 @@ def main():
     new_lon = np.linspace(0, 358.5, 240)
 
     for fff in files_all:
-#            print(fff)
+        print(f'Now it is dealing with {fff}')
         if fff[0] == '.':
             continue
         else:
             ff0 = xr.open_dataset(data_path0 + fff)
             #print(ff0)
             if 'historical' in fff:
-                ff  = ff0.sel(time=ff0.time.dt.year.isin(year_hist))
+                #ff  = ff0.sel(time=ff0.time.dt.year.isin(year_hist))
+                continue
             else:
                 ff  = ff0.sel(time=ff0.time.dt.year.isin(year_furt))
 
             del ff0
 
-            print(f'Now it is dealing with {fff}')
+            
 
             unify_lat_lon(ff, new_lat, new_lon, fff, interp_path0)
 

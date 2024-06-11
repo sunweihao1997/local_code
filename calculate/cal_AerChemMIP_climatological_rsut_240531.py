@@ -1,11 +1,9 @@
 '''
-2024-5-19
-This script is to calculate climatological ts under SSP370/SSP370lowNTCF simulation
+2024-5-31
+This script is to calculate climatological rsds under SSP370/SSP370lowNTCF simulation
 
 Note:
 MJJAS / not include historical simulation
-
-For some reasons, here I modified by expand the time range to 2015-2050
 '''
 import xarray as xr
 import numpy as np
@@ -13,16 +11,17 @@ import os
 import sys
 import cftime
 
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
+models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G']
+#models_label = ['UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6',]
 
-path_src = '/data/AerChemMIP/process/post-process/ts_samegrid/'
+path_src = '/data/AerChemMIP/process/post-process/rsdt_samegrid/'
 
 # Only consider JJAS and unify the year axis
 months   =  [5, 6, 7, 8, 9]
 hist_year=  np.linspace(1985, 2014, 2014-1985+1)
-furt_year=  np.linspace(2015, 2050, 2050-2015+1)
+furt_year=  np.linspace(2031, 2050, 2050-2031+1)
 
-varname  =  'tas'
+varname  =  'rsdt'
 
 def return_array(filename, prtype):
     '''
@@ -96,18 +95,19 @@ def main():
 
 ## --------------------------------------------------------------------------------------------------------------------        
             if len(group_ssp) == 3:
-                ssp_average  = (group_ssp[0]['ts'].data + group_ssp[1]['ts'].data + group_ssp[2]['ts'].data) / 3
-                ntcf_average = (group_ntcf[0]['ts'].data + group_ntcf[1]['ts'].data + group_ntcf[2]['ts'].data) / 3
+                print(group_ntcf[2][varname].data.shape)
+                ssp_average  = (group_ssp[0][varname].data + group_ssp[1][varname].data + group_ssp[2][varname].data) / 3
+                ntcf_average = (group_ntcf[0][varname].data + group_ntcf[1][varname].data + group_ntcf[2][varname].data) / 3
             elif len(group_ssp) == 1:
-                ssp_average  = group_ssp[0]['ts'].data
-                ntcf_average = group_ntcf[0]['ts'].data
+                ssp_average  = group_ssp[0][varname].data
+                ntcf_average = group_ntcf[0][varname].data
             else:
                 sys.exit(f'The length of {modelname} is wrong!, which is {len(group_ssp)}')
 #
 #        date0 = cftime.num2date(np.linspace(1, 360, 360), units='days since 2000-01-01', calendar='360_day')
 #        # Add them to the DataArray
             time_hist = np.linspace(1985, 2014, 2014-1985+1)
-            time_ssp  = np.linspace(2015, 2050, 2050-2015+1)
+            time_ssp  = np.linspace(2031, 2050, 2050-2031+1)
             lon       = f1.lon.data
             lat       = f1.lat.data
             #print(hist_average.shape)
@@ -139,11 +139,9 @@ def main():
             print('Now the dealing with {} has all completed!'.format(modelname))
             print('=============================================================')
 #        
-        dataset_allmodel.attrs['description'] = 'Created on 2024-4-24. This file includes the counts of the ts for single model, covering historical, SSP370 and SSP270lowNTCF experiments. All the variables is climatological, which is 1980-2014 for hist and 2031-2050 for SSP370.'
-        dataset_allmodel.to_netcdf('/data/AerChemMIP/process/multiple_model_climate_ts_month_MJJAS_36years.nc')
+        dataset_allmodel.attrs['description'] = 'Created on 2024-5-31. This file includes the counts of the od550aer for single model, covering historical, SSP370 and SSP270lowNTCF experiments. All the variables is climatological, which is 1980-2014 for hist and 2031-2050 for SSP370.'
+        dataset_allmodel.to_netcdf('/data/AerChemMIP/process/multiple_model_climate_rsdt_month_MJJAS.nc')
 
-
-        
 
         
 

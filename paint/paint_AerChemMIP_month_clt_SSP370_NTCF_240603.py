@@ -9,10 +9,10 @@ from scipy import stats
 path_in   =  '/home/sun/data/process/analysis/AerChem/'
 
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2'] # GISS provide no daily data
-models_label = ['MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
+#models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2'] # GISS provide no daily data
+#models_label = ['MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
 
-varname      = 'tasmin'
+varname      = 'clt'
 
 gen_f     = xr.open_dataset('/data/AerChemMIP/geopotential/geo_1279l4_0.1x0.1.grib2_v4_unpack.nc')
 
@@ -134,14 +134,14 @@ def cal_student_ttest(array1, array2):
     return p_value
 
 if __name__ == '__main__':
-    f0  =  xr.open_dataset('/data/AerChemMIP/process/multiple_model_climate_ts_month_MJJAS.nc')
+    f0  =  xr.open_dataset('/data/AerChemMIP/process/multiple_model_climate_clt_month_MJJAS.nc')
 
     ssp0      =  cal_multiple_model_avg(f0, 'ssp',  'time_ssp')
     ntcf0     =  cal_multiple_model_avg(f0, 'sspntcf', 'time_ssp')
 
     ttest     =  cal_student_ttest(ssp0, ntcf0)
 
-
+    print(np.nanmean(ssp0))
     # Note that the variable in the above is three-dimension while the first is the number os the year
     levels    =  [-1, -0.8, -0.6, -0.4, -0.2, -0.1, 0.1, 0.2, 0.4, 0.6, 0.8, 1]
-    plot_change_wet_day(np.nanmean(ssp0, axis=0), np.nanmean(ntcf0, axis=0), 'ts (group2)', 'ts (group2)', f0.lon.data, f0.lat.data, ttest, levels)
+    plot_change_wet_day(np.nanmean(ssp0, axis=0), np.nanmean(ntcf0, axis=0), 'clt (MJJAS)', 'clt (MJJAS)', f0.lon.data, f0.lat.data, ttest, levels)

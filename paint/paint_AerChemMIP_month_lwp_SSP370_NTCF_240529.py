@@ -6,17 +6,15 @@ import xarray as xr
 import numpy as np
 from scipy import stats
 
-path_in   =  '/home/sun/data/process/analysis/AerChem/'
+path_in   =  '/data/AerChemMIP/process/'
 
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2'] # GISS provide no daily data
-models_label = ['MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
+models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MPI-ESM-1-2-HAM',] # GISS provide no daily data
 
-varname      = 'tasmin'
+varname      = 'div'
 
-gen_f     = xr.open_dataset('/data/AerChemMIP/geopotential/geo_1279l4_0.1x0.1.grib2_v4_unpack.nc')
-
-z         = gen_f['z'].data[0] / 9.8
+#gen_f     = xr.open_dataset('/home/sun/data/topography/geo_1279l4_0.1x0.1.grib2_v4_unpack.nc')
+#
+#z         = gen_f['z'].data[0] / 9.8
 
 def cal_multiple_model_avg(f0, exp_tag, timeaxis,):
     '''
@@ -98,12 +96,12 @@ def plot_change_wet_day(ssp, sspntcf, left_string, figname, lon, lat, parray, ct
         im  =  ax.contourf(lon, lat, pet[row], ct_level, cmap=new_cmap, alpha=1, extend='both')
 
         # t 检验
-        sp  =  ax.contourf(lon, lat, parray, levels=[0., 0.05], colors='none', hatches=['..'])
+        sp  =  ax.contourf(lon, lat, parray, levels=[0., 0.05], colors='none', hatches=['.'])
 
         # 海岸线
         ax.coastlines(resolution='50m',lw=1.65)
 
-        topo  =  ax.contour(gen_f['longitude'].data, gen_f['latitude'].data, z, levels=[3000], colors='red', linewidth=4.5)
+        #topo  =  ax.contour(gen_f['longitude'].data, gen_f['latitude'].data, z, levels=[3000], colors='brown', linewidths=3)
 
         ax.set_title(left_title, loc='left', fontsize=16.5)
         ax.set_title(right_title[row], loc='right', fontsize=16.5)
@@ -134,14 +132,14 @@ def cal_student_ttest(array1, array2):
     return p_value
 
 if __name__ == '__main__':
-    f0  =  xr.open_dataset('/data/AerChemMIP/process/multiple_model_climate_ts_month_MJJAS.nc')
+    f0  =  xr.open_dataset('/data/AerChemMIP/process/multiple_model_climate_lwp_month_MJJAS.nc')
 
     ssp0      =  cal_multiple_model_avg(f0, 'ssp',  'time_ssp')
     ntcf0     =  cal_multiple_model_avg(f0, 'sspntcf', 'time_ssp')
 
     ttest     =  cal_student_ttest(ssp0, ntcf0)
 
-
+    print(np.nanmean(ntcf0))
     # Note that the variable in the above is three-dimension while the first is the number os the year
-    levels    =  [-1, -0.8, -0.6, -0.4, -0.2, -0.1, 0.1, 0.2, 0.4, 0.6, 0.8, 1]
-    plot_change_wet_day(np.nanmean(ssp0, axis=0), np.nanmean(ntcf0, axis=0), 'ts (group2)', 'ts (group2)', f0.lon.data, f0.lat.data, ttest, levels)
+    levels    =  [-14, -12, -10, -8, -6, -4, -2, -1, 1, 2, 4, 6, 8, 10, 12, 14]
+    plot_change_wet_day(np.nanmean(ssp0, axis=0)*1e3, np.nanmean(ntcf0, axis=0)*1e3, 'lwp (MJJAS)', 'lwp (MJJAS)', f0.lon.data, f0.lat.data, ttest, levels)

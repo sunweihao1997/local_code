@@ -1,5 +1,5 @@
 '''
-2024-4-15
+2024-6-3
 This script is to deal with the CMIP6 wet days, intepolating them to the same grids
 
 '''
