@@ -1,6 +1,8 @@
 '''
 2024-5-20
 This script is to plot the changes in MJJAS ts between SSP370 and SSP370lowNTCF, the simulation of historical is ignored
+
+add detailed changes over ocean by contour
 '''
 import xarray as xr
 import numpy as np
@@ -9,9 +11,12 @@ from scipy import stats
 path_in   =  '/home/sun/data/process/analysis/AerChem/'
 
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
-#models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2'] # GISS provide no daily data
-#models_label = ['MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
+#models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
+
+mask_file = xr.open_dataset("/data/AerChemMIP/process/ERA5_land_sea_mask_model-grid.nc")
+f0  =  xr.open_dataset('/data/AerChemMIP/process/multiple_model_climate_ts_month_MJJAS.nc')
+
+mask_file = mask_file.interp(latitude=f0.lat, longitude=f0.lon)
 
 
 varname      = 'tasmin'
@@ -73,6 +78,10 @@ def plot_change_wet_day(ssp, sspntcf, left_string, figname, lon, lat, parray, ct
 
     pet        = [(ssp - sspntcf)]
 
+    ocean_data = pet[0].copy()
+    ocean_data[mask_file['lsm'].data[0]>0.05] = np.nan
+
+
     # -------    colormap --------------
     coolwarm = plt.get_cmap('coolwarm')
 
@@ -92,12 +101,15 @@ def plot_change_wet_day(ssp, sspntcf, left_string, figname, lon, lat, parray, ct
         ax = fig1.add_subplot(spec1[row,col],projection=proj)
 
         # 设置刻度
-        set_cartopy_tick(ax=ax,extent=extent,xticks=np.linspace(40,150,7,dtype=int),yticks=np.linspace(0,50,6,dtype=int),nx=1,ny=1,labelsize=15)
+        set_cartopy_tick(ax=ax,extent=extent,xticks=np.linspace(40,140,6,dtype=int),yticks=np.linspace(0,50,6,dtype=int),nx=1,ny=1,labelsize=15)
 
         # 添加赤道线
         #ax.plot([40,150],[0,0],'k--')
 
         im  =  ax.contourf(lon, lat, pet[row], ct_level, cmap=new_cmap, alpha=1, extend='both')
+
+        im2 =  ax.contour(lon, lat,  ocean_data, np.linspace(-0.2, 0.2, 9), colors='grey', alpha=0.8)
+        ax.clabel(im2, fontsize=5, inline=1)
 
         # t 检验
         sp  =  ax.contourf(lon, lat, parray, levels=[0., 0.05], colors='none', hatches=['..'])
@@ -146,4 +158,4 @@ if __name__ == '__main__':
 
     # Note that the variable in the above is three-dimension while the first is the number os the year
     levels    =  [-1, -0.8, -0.6, -0.4, -0.2, -0.1, 0.1, 0.2, 0.4, 0.6, 0.8, 1]
-    plot_change_wet_day(np.nanmean(ssp0, axis=0), np.nanmean(ntcf0, axis=0), 'ts (group2)', 'ts (group2)', f0.lon.data, f0.lat.data, ttest, levels)
+    plot_change_wet_day(np.nanmean(ssp0, axis=0), np.nanmean(ntcf0, axis=0), 'ts (MJJAS)', 'ts (MJJAS)', f0.lon.data, f0.lat.data, ttest, levels)

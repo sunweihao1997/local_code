@@ -65,26 +65,26 @@ def cal_land_sea_thermal_contrast(ncfile, model_tag):
         weighted_ntcf_ocean  = np.nansum(single_ntcf_ocean.data[tt]* weights_ocean)  / np.nansum(weights_ocean)
 
 
-        land_sea_contrast_ssp[tt] = (weighted_ssp_land - start_point_land)  / (weighted_ssp_ocean - start_point_ocean)
-        land_sea_contrast_ntcf[tt]= (weighted_ntcf_land - start_point_land) / (weighted_ntcf_ocean - start_point_ocean)
+        land_sea_contrast_ssp[tt] = (weighted_ssp_land - start_point_land)  - (weighted_ssp_ocean - start_point_ocean)
+        land_sea_contrast_ntcf[tt]= (weighted_ntcf_land - start_point_land) - (weighted_ntcf_ocean - start_point_ocean)
 
     return land_sea_contrast_ssp, land_sea_contrast_ntcf
 
 def paint_evolution_landsea_contrast(ssp, sspntcf, ssp_std, ntcf_std, left_string, right_string,):
-    fig, ax = plt.subplots(figsize=(35, 10))
+    fig, ax = plt.subplots(figsize=(25, 10))
 
     # Paint the member average
     ax.plot(np.linspace(2015, 2050, 36), ssp,     color='royalblue',      linewidth=3.25, alpha=1, label='SSP370')
     ax.plot(np.linspace(2015, 2050, 36), sspntcf, color='red',            linewidth=3.25, alpha=1, label='SSP370lowNTCF')
 
     # Paint the model deviation
-    ax.fill_between(np.linspace(2015, 2050, 36), ssp   + ssp_std,     ssp  - ssp_std, facecolor='royalblue', alpha=0.35)
-    ax.fill_between(np.linspace(2015, 2050, 36), sspntcf  + ntcf_std, sspntcf - ntcf_std, facecolor='red', alpha=0.35)
+    ax.fill_between(np.linspace(2015, 2050, 36), ssp   + ssp_std,     ssp  - ssp_std, facecolor='royalblue', alpha=0.2)
+    ax.fill_between(np.linspace(2015, 2050, 36), sspntcf  + ntcf_std, sspntcf - ntcf_std, facecolor='red', alpha=0.2)
 
-    plt.legend(loc='upper right', fontsize=37.5)
+    plt.legend(loc='lower right', fontsize=25)
 
-    ax.set_title(left_string,  loc='left',  fontsize=35)
-    ax.set_title(right_string, loc='right', fontsize=35)
+    ax.set_title(left_string,  loc='left',  fontsize=25)
+    ax.set_title(right_string, loc='right', fontsize=25)
 
     plt.savefig(f"/data/paint/SSP370_SSP370lowNTCF_landsea_thermal_contrast.png", dpi=500)
 
