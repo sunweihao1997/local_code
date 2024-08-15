@@ -10,6 +10,7 @@ import numpy as np
 from scipy.fft import fft, ifft
 
 import matplotlib.pyplot as plt
+import sys
 
 models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'MPI-ESM-1-2-HAM', 'MIROC6', ]
 #models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2', 'MPI-ESM-1-2-HAM', 'MIROC6', ]
@@ -46,6 +47,10 @@ def judge_monsoon_onset(pr_series, start=90, threshold=5, thresholdday=10):
     '''
         The input is series of precipitation, start from the 90th day
     '''
+    # 1. calculate derivate
+    dy_dx = np.gradient(pr_series)
+    print(np.argmax(dy_dx))
+
     for i in range(0, 220):
 #        if pr_series[start + i] -  np.average(pr_series[0:30])< threshold:
 #            continue
@@ -58,8 +63,18 @@ def judge_monsoon_onset(pr_series, start=90, threshold=5, thresholdday=10):
 
         else:
             break
+    print(start + i)
 
     return start + i
+
+def judge_monsoon_onset_Luwang(pr_series, start=90, threshold=5, thresholdday=10):
+    '''
+        The input is series of precipitation, start from the 90th day
+    '''
+    # 1. calculate derivate
+    dy_dx = np.gradient(pr_series)
+
+    return np.argmax(dy_dx)
             
 def generate_onset_array(f0,):
 
@@ -77,15 +92,33 @@ onset_array_hist = generate_onset_array(f0,)
 onset_array_ssp3 = generate_onset_array(f0,)
 onset_array_ntcf = generate_onset_array(f0,)
 
+# ===========Test the result of harmonic==============
+#fbob = f0.sel(lat=slice(5,15), lon=slice(90, 100))
+#a = np.average(np.average(fbob['UKESM1-0-LL_hist'].data, axis=1), axis=1) * 86400
+#b = harmonics_sum_f(a, 8)
+##print(a)
+#plt.figure()
+#
+## 绘制折线图
+#plt.plot(a, marker='o')
+#plt.plot(b, color='red')
+#plt.savefig('test.png')
+#
+#judge_monsoon_onset(b)
+#
+#sys.exit()
+# ==========End the Test============
+
 j = 0
-num = 10
+num_harmonic = 10
 for mm in range(len(models_label)):
+    print(f'Now it is dealing with {models_label[mm]}')
     for latt in range(len(f0.lat.data)):
         for lonn in range(len(f0.lon.data)): 
             #onset_array[latt, lonn] = judge_monsoon_onset(moving_average(f0['EC-Earth3-AerChem_hist'].data[:, latt, lonn] * 86400, 5), threshold=threshold0)
-            onset_array_hist[mm, latt, lonn] = judge_monsoon_onset(harmonics_sum_f(f0['{}_hist'.format(models_label[mm])].data[:, latt, lonn] * 86400, num), threshold=threshold0)
-            onset_array_ssp3[mm, latt, lonn] = judge_monsoon_onset(harmonics_sum_f(f0['{}_ssp'.format(models_label[mm])].data[:, latt, lonn] * 86400, num), threshold=threshold0)
-            onset_array_ntcf[mm, latt, lonn] = judge_monsoon_onset(harmonics_sum_f(f0['{}_sspntcf'.format(models_label[mm])].data[:, latt, lonn] * 86400, num), threshold=threshold0)
+            onset_array_hist[mm, latt, lonn] = judge_monsoon_onset_Luwang(harmonics_sum_f(f0['{}_hist'.format(models_label[mm])].data[:, latt, lonn] * 86400, 12), threshold=threshold0)
+            onset_array_ssp3[mm, latt, lonn] = judge_monsoon_onset_Luwang(harmonics_sum_f(f0['{}_ssp'.format(models_label[mm])].data[:, latt, lonn] * 86400, 12), threshold=threshold0)
+            onset_array_ntcf[mm, latt, lonn] = judge_monsoon_onset_Luwang(harmonics_sum_f(f0['{}_sspntcf'.format(models_label[mm])].data[:, latt, lonn] * 86400, 12), threshold=threshold0)
 
     j += 1
 
@@ -108,7 +141,7 @@ ncfile  =  xr.Dataset(
     )
 
 ncfile.attrs['description'] = 'The new means it dropped NorESM'
-ncfile.to_netcdf('/home/sun/data/process/analysis/AerChem/' + 'modelmean_onset_day_threshold4_10_harmonics.nc')
+ncfile.to_netcdf('/home/sun/data/process/analysis/AerChem/' + 'modelmean_onset_day_Luwang_criterion.nc')
 
 #f0 = xr.open_dataset('/home/sun/data/process/analysis/AerChem/multiple_model_climate_prect_daily.nc').sel(lat=slice(10, 30), lon=slice(105, 120))
 

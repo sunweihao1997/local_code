@@ -107,7 +107,7 @@ def paint_ISV_track(uas, vas, rlut, psl, p, figname, levels, windscale, Day0 = n
         ax  =  fig1.add_subplot(spec1[row, 0], projection = proj)
 
         # set ticks
-        set_cartopy_tick(ax=ax,extent=extent,xticks=np.linspace(30,120,7,dtype=int),yticks=np.linspace(0,60,7,dtype=int),nx=1,ny=1,labelsize=12)
+        set_cartopy_tick(ax=ax,extent=extent,xticks=np.linspace(30, 135, 8,dtype=int),yticks=np.linspace(0,60,7,dtype=int),nx=1,ny=1,labelsize=20)
 
         ax.coastlines(resolution='50m',lw=1.65)
 
@@ -136,7 +136,7 @@ def paint_ISV_track(uas, vas, rlut, psl, p, figname, levels, windscale, Day0 = n
         ax  =  fig1.add_subplot(spec1[row, 1], projection = proj)
 
         # set ticks
-        set_cartopy_tick(ax=ax,extent=extent,xticks=np.linspace(30,120,7,dtype=int),yticks=np.linspace(0,60,7,dtype=int),nx=1,ny=1,labelsize=12)
+        set_cartopy_tick(ax=ax,extent=extent,xticks=np.linspace(30, 135, 8,dtype=int),yticks=np.linspace(0,60,7,dtype=int),nx=1,ny=1,labelsize=20)
 
         ax.coastlines(resolution='50m',lw=1.65)
 
@@ -165,7 +165,7 @@ def paint_ISV_track(uas, vas, rlut, psl, p, figname, levels, windscale, Day0 = n
         ax  =  fig1.add_subplot(spec1[row, 2], projection = proj)
 
         # set ticks
-        set_cartopy_tick(ax=ax,extent=extent,xticks=np.linspace(30,120,7,dtype=int),yticks=np.linspace(0,60,7,dtype=int),nx=1,ny=1,labelsize=20)
+        set_cartopy_tick(ax=ax,extent=extent,xticks=np.linspace(30, 135, 8,dtype=int),yticks=np.linspace(0,60,7,dtype=int),nx=1,ny=1,labelsize=20)
 
         ax.coastlines(resolution='50m',lw=1.65)
 
@@ -260,19 +260,20 @@ if __name__ == '__main__':
                     [-1*f1['rlut_low_hist'].data, -1*f1['rlut_low_ssp'].data, -1*f1['rlut_low_ntcf'].data], 
                     [-1*f1['psl_low_hist'].data,  -1*f1['psl_low_ssp'].data,  -1*f1['psl_low_ntcf'].data], 
                     correlation_file['rlutp_fi'][:, 1, ::-1],
-                    figname='low-frq.pdf',
+                    figname='low-frq-1day.pdf',
                     levels=np.linspace(-3, 3, 13),
-                    windscale=0.03
+                    windscale=0.03,
+                    Day0 = np.linspace(-6,6,13)
                     )
 
-#    paint_ISV_track([f1['uas_high_hist'].data,   -1*f1['uas_high_ssp'].data, f1['uas_high_ntcf'].data], 
-#                    [f1['vas_high_hist'].data,   -1*f1['vas_high_ssp'].data, f1['vas_high_ntcf'].data], 
-#                    [f1['rlut_high_hist'].data,  -1*f1['rlut_high_ssp'].data, f1['rlut_high_ntcf'].data], 
-#                    [f1['psl_high_hist'].data,   -1*f1['psl_high_ssp'].data,  f1['psl_high_ntcf'].data], 
-#                    correlation_file['rlutp_bh'][:, 0, ::-1],
-#                    figname='high-frq.pdf',
-#                    levels=np.linspace(-1.5, 1.5, 13),
-#                    windscale=0.02,
-#                    Day0=np.linspace(-12,12,13)
-#                    )
+    paint_ISV_track([f1['uas_high_hist'].data,   -1*f1['uas_high_ssp'].data, f1['uas_high_ntcf'].data], 
+                    [f1['vas_high_hist'].data,   -1*f1['vas_high_ssp'].data, f1['vas_high_ntcf'].data], 
+                    [f1['rlut_high_hist'].data,  -1*f1['rlut_high_ssp'].data, f1['rlut_high_ntcf'].data], 
+                    [f1['psl_high_hist'].data,   -1*f1['psl_high_ssp'].data,  f1['psl_high_ntcf'].data], 
+                    correlation_file['rlutp_bh'][:, 0, ::-1],
+                    figname='high-frq-1day.pdf',
+                    levels=np.linspace(-1.5, 1.5, 13),
+                    windscale=0.02,
+                    Day0=np.linspace(-6,6,13)
+                    )
 #print(np.nanmin(correlation_file['rlutp_bh']))
