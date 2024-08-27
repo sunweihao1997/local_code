@@ -140,7 +140,11 @@ def main():
             print('=============================================================')
 #        
         dataset_allmodel.attrs['description'] = 'Created on 2024-4-24. This file includes the counts of the ts for single model, covering historical, SSP370 and SSP270lowNTCF experiments. All the variables is climatological, which is 1980-2014 for hist and 2031-2050 for SSP370.'
+<<<<<<< HEAD
         dataset_allmodel.to_netcdf('/Volumes/Untitled/AerChemMIP/process/multiple_model_climate_tas_month_March_April_36years.nc')
+=======
+        dataset_allmodel.to_netcdf('/data/AerChemMIP/process/multiple_model_climate_ts_month_March_36years.nc')
+>>>>>>> 9210326 (update from ubuntu 20240827)
 
 
         

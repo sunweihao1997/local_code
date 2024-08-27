@@ -16,7 +16,7 @@ models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI
 path_src = '/home/sun/data/AerChemMIP/mon_omega_samegrid/'
 
 # Only consider JJAS and unify the year axis
-months   =  [6, 7, 8,]
+months   =  [3, 4]
 hist_year=  np.linspace(1985, 2014, 2014-1985+1)
 furt_year=  np.linspace(2031, 2050, 2050-2031+1)
 
