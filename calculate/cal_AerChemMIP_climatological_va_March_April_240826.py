@@ -15,7 +15,7 @@ models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI
 
 
 # Only consider JJAS and unify the year axis
-months   =  [3, 4]
+months   =  [4,]
 #months   =  [11]
 hist_year=  np.linspace(1985, 2014, 2014-1985+1)
 furt_year=  np.linspace(2015, 2050, 2050-2015+1)
@@ -143,7 +143,7 @@ def main():
             print('=============================================================')
 #        
         dataset_allmodel.attrs['description'] = 'Created on 2024-5-27. This file includes the counts of the {} for single model, covering SSP370 and SSP270lowNTCF experiments. All the variables is climatological, which is 1980-2014 for hist and 2031-2050 for SSP370.'.format(varname)
-        dataset_allmodel.to_netcdf('/home/sun/data/AerChemMIP/process/multiple_model_climate_{}_month_MA.nc'.format(varname))
+        dataset_allmodel.to_netcdf('/home/sun/data/AerChemMIP/process/multiple_model_climate_{}_month_A.nc'.format(varname))
 
         
 

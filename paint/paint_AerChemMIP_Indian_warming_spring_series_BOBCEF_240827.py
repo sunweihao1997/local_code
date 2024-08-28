@@ -58,57 +58,66 @@ def cal_student_ttest(array1, array2):
 
     return p_value
 # ================= File Information ====================
-data_path = "/Volumes/Untitled/AerChemMIP/process/"
-data_name = "multiple_model_climate_tas_month_March_April_36years.nc"
 
-f0        = xr.open_dataset(data_path + data_name).sel(lat=slice(10, 25), lon=slice(70, 90))
+import pymannkendall as mk
+data_path = "/home/sun/data/AerChemMIP/process/"
+data_name = "multiple_model_climate_va_month_AM.nc"
+
+f0        = xr.open_dataset(data_path + data_name).sel(lat=slice(-10, 10), lon=slice(76,85), plev=92500)
 #print(f0)
 
 ssp0_indian, ssp0_indian_std      =  cal_multiple_model_avg(f0, 'ssp',  'time_ssp')
 #sys.exit(ssp0_indian_std.shape)
 ntcf0_indian,ntcf0_indian_std     =  cal_multiple_model_avg(f0, 'sspntcf', 'time_ssp')
 
-f1        = xr.open_dataset(data_path + data_name).sel(lat=slice(10, 25))
-#print(f0)
-
-ssp0_zonal, ssp0_zonal_std      =  cal_multiple_model_avg(f1, 'ssp',  'time_ssp')
-ntcf0_zonal, ntcf0_zonal_std    =  cal_multiple_model_avg(f1, 'sspntcf', 'time_ssp')
+#f1        = xr.open_dataset(data_path + data_name).sel(lat=slice(10, 25))
+##print(f0)
+#
+#ssp0_zonal, ssp0_zonal_std      =  cal_multiple_model_avg(f1, 'ssp',  'time_ssp')
+#ntcf0_zonal, ntcf0_zonal_std    =  cal_multiple_model_avg(f1, 'sspntcf', 'time_ssp')
 
 #ttest     =  cal_student_ttest(ssp0, ntcf0)
 
 # =======================================================
 
 # =============== calculation ===============
-series1_indian = np.average(np.average(ssp0_indian, axis=1),  axis=1)
-series2_indian = np.average(np.average(ntcf0_indian, axis=1), axis=1)
-series1_zonal  = np.nanmean(np.nanmean(ssp0_zonal, axis=1),  axis=1)
-series2_zonal  = np.nanmean(np.nanmean(ntcf0_zonal, axis=1), axis=1)
+series1_indian = np.nanmean(np.nanmean(ssp0_indian, axis=1),  axis=1)
+series2_indian = np.nanmean(np.nanmean(ntcf0_indian, axis=1), axis=1)
+#series1_zonal  = np.nanmean(np.nanmean(ssp0_zonal, axis=1),  axis=1)
+#series2_zonal  = np.nanmean(np.nanmean(ntcf0_zonal, axis=1), axis=1)
 
-series1_indian_std = np.std(np.average(np.average(ssp0_indian_std, axis=2),  axis=2), axis=0)
-series2_indian_std = np.std(np.average(np.average(ntcf0_indian_std, axis=2), axis=2) - np.average(np.average(ssp0_indian_std, axis=2),  axis=2), axis=0)
+series1_indian_std = np.std(np.nanmean(np.nanmean(ssp0_indian_std, axis=2),  axis=2), axis=0)
+series2_indian_std = np.std(np.nanmean(np.nanmean(ntcf0_indian_std, axis=2), axis=2) - np.nanmean(np.nanmean(ssp0_indian_std, axis=2),  axis=2), axis=0)
 #print(series2_indian_std.shape)
 #print(series1_indian - series1_zonal)
 #print(series2_indian)
+
 
 def paint_evolution_landsea_contrast(ssp, sspntcf, ssp_std, ntcf_std, left_string, right_string,):
     fig, ax = plt.subplots(figsize=(12, 10))
 
     # Paint the member average
 #    ax.plot(np.linspace(2015, 2050, 36), ssp,     color='royalblue',      linewidth=3.25, alpha=1, label='SSP370')
-    ax.plot(np.linspace(2015, 2050, 36), sspntcf - ssp, color='red',            linewidth=3.25, alpha=1, label='SSP370lowNTCF')
+    ax.plot(np.linspace(2015, 2050, 36), sspntcf - ssp, color='k',            linewidth=3.25, alpha=1, label='SSP370lowNTCF - SSP370')
+
+    result = mk.original_test(sspntcf - ssp)
+    print(result)
 
     # Paint the model deviation
 #    ax.fill_between(np.linspace(2015, 2050, 36), ssp   + ssp_std,     ssp  - ssp_std, facecolor='royalblue', alpha=0.2)
-    ax.fill_between(np.linspace(2015, 2050, 36), sspntcf  - ssp + ntcf_std, sspntcf - ssp - ntcf_std, facecolor='red', alpha=0.2)
+    ax.fill_between(np.linspace(2015, 2050, 36), sspntcf  - ssp + ntcf_std, sspntcf - ssp - ntcf_std, facecolor='k', alpha=0.2)
 
     plt.legend(loc='lower right', fontsize=25)
+    print(sspntcf - ssp)
 
     ax.set_title(left_string,  loc='left',  fontsize=25)
     ax.set_title(right_string, loc='right', fontsize=25)
 
+    plt.tick_params(axis='both', which='major', labelsize=20)
+
     ax.set_ylim((-1, 1))
 
-    plt.savefig("/Volumes/Untitled/paint/SSP370_SSP370lowNTCF_indian_tas.png", dpi=500)
+    plt.savefig("/home/sun/paint/SSP370_SSP370lowNTCF_indian_925va.pdf", dpi=500)
 
     plt.close()
 
