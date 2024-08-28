@@ -98,10 +98,7 @@ def paint_evolution_landsea_contrast(ssp, sspntcf, ssp_std, ntcf_std, left_strin
 
     # Paint the member average
 #    ax.plot(np.linspace(2015, 2050, 36), ssp,     color='royalblue',      linewidth=3.25, alpha=1, label='SSP370')
-    ax.plot(np.linspace(2015, 2050, 36), sspntcf - ssp, color='k',            linewidth=3.25, alpha=1, label='SSP370lowNTCF - SSP370')
-
-    result = mk.original_test(sspntcf - ssp)
-    print(result)
+    ax.plot(np.linspace(2015, 2050, 36), sspntcf - ssp, color='red',            linewidth=3.25, alpha=1, label='SSP370lowNTCF')
 
     # Paint the model deviation
 #    ax.fill_between(np.linspace(2015, 2050, 36), ssp   + ssp_std,     ssp  - ssp_std, facecolor='royalblue', alpha=0.2)
@@ -113,11 +110,9 @@ def paint_evolution_landsea_contrast(ssp, sspntcf, ssp_std, ntcf_std, left_strin
     ax.set_title(left_string,  loc='left',  fontsize=25)
     ax.set_title(right_string, loc='right', fontsize=25)
 
-    plt.tick_params(axis='both', which='major', labelsize=20)
-
     ax.set_ylim((-1, 1))
 
-    plt.savefig("/home/sun/paint/SSP370_SSP370lowNTCF_indian_925va.pdf", dpi=500)
+    plt.savefig("/Volumes/Untitled/paint/SSP370_SSP370lowNTCF_indian_tas.png", dpi=500)
 
     plt.close()
 

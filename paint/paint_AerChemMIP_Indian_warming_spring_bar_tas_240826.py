@@ -105,7 +105,7 @@ def paint_evolution_landsea_contrast(ssp, sspntcf, ssp_std, ntcf_std, left_strin
 
     #ax.set_ylim((-1, 2))
 
-    plt.savefig("/Volumes/Untitled/paint/SSP370_SSP370lowNTCF_indian_tas_hist.png", dpi=500)
+    plt.savefig("/Volumes/Untitled/paint/SSP370_SSP370lowNTCF_indian_ts_hist.png", dpi=500)
 
     plt.close()
 
