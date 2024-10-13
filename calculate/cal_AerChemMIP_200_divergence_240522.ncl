@@ -11,8 +11,9 @@ begin
     files_string = systemfunc("ls " + path_ua)
 
     level = 20000
+    ;print(files_string)
     ;print(files_string(1))
-    do i = 10, 10
+    do i = 0, 37
         filename0_ua = files_string(i)
         filename0_va = str_sub_str(filename0_ua, "ua_", "va_")
 
@@ -42,7 +43,7 @@ begin
         sf  = sf0(0, :, :, :)
         copy_VarCoords(u, sf)
 
-        print(sf)
+        ;print(sf)
 
         ; Save to the ncfile
         outname = str_sub_str(filename0_ua, "ua_", "div_")

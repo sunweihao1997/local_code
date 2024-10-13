@@ -6,16 +6,16 @@ import xarray as xr
 import numpy as np
 from scipy import stats
 
-path_in   =  '/data/AerChemMIP/process/'
+path_in   =  '/Volumes/Untitled/AerChemMIP/process/'
 
-models_label = ['EC-Earth3-AerChem', 'UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G']
-models_label = ['MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G']
-models_label = ['UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2',]
+models_label = ['UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G']
+#models_label = ['MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G']
+#models_label = ['UKESM1-0-LL', 'GFDL-ESM4', 'MRI-ESM2',]
 
 
 varname      = 'div'
 
-#gen_f     = xr.open_dataset('/home/sun/data/topography/geo_1279l4_0.1x0.1.grib2_v4_unpack.nc')
+#gen_f     = xr.open_dataset('/home/sun/Volumes/Untitled/topography/geo_1279l4_0.1x0.1.grib2_v4_unpack.nc')
 #
 #z         = gen_f['z'].data[0] / 9.8
 
@@ -55,11 +55,11 @@ def plot_change_wet_day(ssp, sspntcf, left_string, figname, lon, lat, parray, ct
     from matplotlib.colors import LinearSegmentedColormap
 
     import sys
-    sys.path.append("/root/local_code/module/")
+    sys.path.append("/Users/sunweihao/local_code/module/")
     from module_sun import set_cartopy_tick
 
     # -------   cartopy extent  -----
-    lonmin,lonmax,latmin,latmax  =  40,150,0,50
+    lonmin,lonmax,latmin,latmax  =  40,130,0,40
     extent     =  [lonmin,lonmax,latmin,latmax]
 
     # -------     figure    -----------
@@ -91,7 +91,7 @@ def plot_change_wet_day(ssp, sspntcf, left_string, figname, lon, lat, parray, ct
         ax = fig1.add_subplot(spec1[row,col],projection=proj)
 
         # 设置刻度
-        set_cartopy_tick(ax=ax,extent=extent,xticks=np.linspace(40,150,7,dtype=int),yticks=np.linspace(0,50,6,dtype=int),nx=1,ny=1,labelsize=15)
+        set_cartopy_tick(ax=ax,extent=extent,xticks=np.linspace(40,130,7,dtype=int),yticks=np.linspace(0,50,6,dtype=int),nx=1,ny=1,labelsize=15)
 
         # 添加赤道线
         #ax.plot([40,150],[0,0],'k--')
@@ -116,10 +116,10 @@ def plot_change_wet_day(ssp, sspntcf, left_string, figname, lon, lat, parray, ct
     cb  =  fig1.colorbar(im, cax=cbar_ax, shrink=0.1, pad=0.01, orientation='horizontal')
     cb.ax.tick_params(labelsize=10)
 
-    cb.set_ticks(ct_level)
-    cb.set_ticklabels(ct_level)
+#    cb.set_ticks(ct_level)
+#    cb.set_ticklabels(ct_level)
 
-    plt.savefig("/data/paint/AerChemMIP_modelgroup_spatial_MJJAS_ssp370_ntcf_{}.png".format(figname))
+    plt.savefig("/Volumes/Untitled/paint/AerChemMIP_modelgroup_spatial_MJJAS_ssp370_ntcf_{}.pdf".format(figname))
 
 def cal_student_ttest(array1, array2):
     '''
@@ -135,7 +135,7 @@ def cal_student_ttest(array1, array2):
     return p_value
 
 if __name__ == '__main__':
-    f0  =  xr.open_dataset('/data/AerChemMIP/process/multiple_model_climate_rsdscs_month_MJJAS.nc')
+    f0  =  xr.open_dataset('/Volumes/Untitled/AerChemMIP/process/multiple_model_climate_rsds_month_MJJAS.nc')
 
     ssp0      =  cal_multiple_model_avg(f0, 'ssp',  'time_ssp')
     ntcf0     =  cal_multiple_model_avg(f0, 'sspntcf', 'time_ssp')
@@ -145,4 +145,5 @@ if __name__ == '__main__':
 
     # Note that the variable in the above is three-dimension while the first is the number os the year
     levels    =  [-14, -12, -10, -8, -6, -4, -2, -1, 1, 2, 4, 6, 8, 10, 12, 14]
-    plot_change_wet_day(np.nanmean(ssp0, axis=0), np.nanmean(ntcf0, axis=0), 'rsdscs (group1)', 'rsdscs (group1)', f0.lon.data, f0.lat.data, ttest, levels)
+    levels    =  np.linspace(-10, 10, 11)
+    plot_change_wet_day(-1*np.nanmean(ssp0, axis=0), -1*np.nanmean(ntcf0, axis=0), 'rsds', 'rsds', f0.lon.data, f0.lat.data, ttest, levels)

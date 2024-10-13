@@ -20,7 +20,7 @@ months   =  [3, 4]
 hist_year=  np.linspace(1985, 2014, 2014-1985+1)
 furt_year=  np.linspace(2015, 2050, 2050-2015+1)
 
-varname  =  'divv'
+varname  =  'div'
 
 def return_array(filename, prtype):
     '''
@@ -138,7 +138,7 @@ def main():
             print('=============================================================')
 #        
         dataset_allmodel.attrs['description'] = 'Created on 2024-4-24. This file includes the counts of the rsds for single model, covering historical, SSP370 and SSP270lowNTCF experiments. All the variables is climatological, which is 1980-2014 for hist and 2015-2050 for SSP370.'
-        dataset_allmodel.to_netcdf('/home/sun/data/AerChemMIP/process/multiple_model_climate_divv200_month_MJJAS.nc')
+        dataset_allmodel.to_netcdf('/home/sun/data/AerChemMIP/process/multiple_model_climate_div200_month_MA.nc')
 
 
 
