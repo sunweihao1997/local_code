@@ -37,7 +37,7 @@ set_cartopy_tick(ax=ax,extent=extent,xticks=np.linspace(30,120,7,dtype=int),ytic
 
 diff_withdraw = f0['withdraw_ssp3'].data - f0['withdraw_ntcf'].data
 #print(diff_onset[:, 50])
-diff_withdraw[diff_withdraw == 0.] = np.nan
+diff_withdraw[(f0['withdraw_ssp3'].data - f0['withdraw_hist'].data) == 0.] = np.nan
 im = ax.pcolormesh(f0.lon.data, f0.lat.data, -1.05*(diff_withdraw), cmap=newcmp, vmin=-15, vmax=15)
 #df = pd.DataFrame(data=1.25*(f0['onset_ssp3'].data - f0['onset_ntcf'].data), columns=f0.lon.data, index=f0.lat.data)
 #sns.heatmap(df)
@@ -53,4 +53,4 @@ cbar.set_label('Day', size=25)  # 设置 colorbar 标签的文本和大小
 
 # 设置 colorbar 的刻度标签大小
 cbar.ax.tick_params(labelsize=20)  # 可以调整刻度标签的大小
-plt.savefig('/home/sun/paint/AerMIP/Article_rainyseason_Bingwang_diff_threshold4_ssp370_minus_ssp370ntcf.pdf')
+plt.savefig('/home/sun/paint/AerMIP/Article_withdraw_Bingwang_diff_threshold4_ssp370_minus_ssp370ntcf.pdf')

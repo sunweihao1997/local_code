@@ -47,7 +47,9 @@ cmap = plt.get_cmap('coolwarm').copy()
 
 set_cartopy_tick(ax=ax,extent=extent,xticks=np.linspace(30,120,7,dtype=int),yticks=np.linspace(0,60,7,dtype=int),nx=1,ny=1,labelsize=25)
 
-im = ax.pcolormesh(f0.lon.data, f0.lat.data, -1*(five_points_smoother((f0['withdraw_ssp3'].data - f1['onset_ssp3'].data) - (f0['withdraw_ntcf'].data - f1['onset_ntcf'].data))), cmap=newcmp, vmin=-15, vmax=15)
+rainyseason = 1*(five_points_smoother((f0['withdraw_ntcf'].data - f1['onset_ntcf'].data) - (f0['withdraw_ssp3'].data - f1['onset_ssp3'].data)))
+rainyseason[(f1['onset_ssp3'].data-f1['onset_hist'].data)==0] = np.nan
+im = ax.pcolormesh(f0.lon.data, f0.lat.data, rainyseason, cmap=newcmp, vmin=-20, vmax=20)#df = pd.DataFrame(data=1.25*(f0['onset_ssp3'].data - f0['onset_ntcf'].data), columns=f0.lon.data, index=f0.lat.data)
 #df = pd.DataFrame(data=1.25*(f0['onset_ssp3'].data - f0['onset_ntcf'].data), columns=f0.lon.data, index=f0.lat.data)
 #sns.heatmap(df)
 
