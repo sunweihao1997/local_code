@@ -13,7 +13,7 @@ from sklearn.linear_model import LinearRegression
 sys.path.append("/home/sun/mycode/paint/")
 from paint_lunwen_version3_0_fig2b_2m_tem_wind_20220426 import set_cartopy_tick,save_fig,add_vector_legend
 
-path_in   =  '/home/sun/data/process/analysis/AerChem/'
+#path_in   =  '/home/sun/data/process/analysis/AerChem/'
 
 models_label = ['EC-Earth3-AerChem', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 'MIROC6', 'GISS-E2-1-G'] # GISS provide no daily data
 #models_label = ['EC-Earth3-AerChem','GFDL-ESM4','MRI-ESM2'] # GISS provide no daily data
@@ -21,9 +21,9 @@ models_label = ['EC-Earth3-AerChem', 'GFDL-ESM4', 'MRI-ESM2','MPI-ESM-1-2-HAM', 
 
 varname      = 'div'
 
-gen_f     = xr.open_dataset('/home/sun/data/topography/geo_1279l4_0.1x0.1.grib2_v4_unpack.nc')
-
-z         = gen_f['z'].data[0] / 9.8
+#gen_f     = xr.open_dataset('/home/sun/data/topography/geo_1279l4_0.1x0.1.grib2_v4_unpack.nc')
+#
+#z         = gen_f['z'].data[0] / 9.8
 
 def cal_multiple_model_avg(f0, exp_tag, timeaxis,):
     '''
@@ -211,12 +211,13 @@ if __name__ == '__main__':
 #    v         =  ssp0
 
     # -------- psl -------------
-    f0  =  xr.open_dataset('/home/sun/data/AerChemMIP/process/multiple_model_climate_psl_month_MA.nc')
+    f0  =  xr.open_dataset('/Volumes/Untitled/AerChemMIP/process/multiple_model_climate_tas_month_March_April_36years.nc')
 
     ssp0      =  cal_multiple_model_avg(f0, 'ssp',  'time_ssp')
     ntcf0     =  cal_multiple_model_avg(f0, 'sspntcf', 'time_ssp')
 
     psl         = ssp0
+    sys.exit()
 #    print(psl[45, :])
 #    psl         =  np.nanmean(ssp0[-15:], axis=0) - np.nanmean(ssp0[:15], axis=0)
 #    psl         =  -1*(np.gradient(ssp0, axis=0) - np.gradient(ntcf0, axis=0))
